@@ -254,11 +254,11 @@ public class CSCalc
 		case XOR:
 			return Double.longBitsToDouble(Double.doubleToRawLongBits(var1) ^ Double.doubleToRawLongBits(var2));
 		case ">>":
-			return Double.longBitsToDouble(Double.doubleToRawLongBits(var1) >> (int) var2);
+			return var1 / Math.pow(2D, (int) var2);
 		case ">>>":
-			return Double.longBitsToDouble(Double.doubleToRawLongBits(var1) >>> (int) var2);
+			return var1 / Math.pow(2D, (int) var2);
 		case "<<":
-			return Double.longBitsToDouble(Double.doubleToRawLongBits(var1) << (int) var2);
+			return var1 * Math.pow(2D, (int) var2);
 		}
 		return 0D;
 	}
