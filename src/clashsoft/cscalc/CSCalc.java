@@ -37,16 +37,11 @@ public class CSCalc
 	public double				result;
 	public double				mem;
 	
-	public Properties			properties;
+	public Properties			properties	= new Properties();
 	
 	public CSCalc()
 	{
-		this.properties = new Properties();
-		this.setLoggingLevel(0);
-		this.setDevMode(false);
-		this.setColor(Color.LIGHT_GRAY);
-		this.setLAF(0);
-		this.reset();
+		
 	}
 	
 	public static void main(String[] args)
@@ -89,12 +84,13 @@ public class CSCalc
 	
 	public void init()
 	{
+		this.resetSettings();
 		this.devInfo("CSCalc version " + this.version, 1);
 		this.devInfo("Initializing...", 1);
 		this.loadSettings();
 		GUI.init();
 		GUI.instance.updateSettings();
-		this.update();
+		this.reset();
 	}
 	
 	public void reset()
@@ -106,12 +102,22 @@ public class CSCalc
 		this.decimalPoint = 0;
 		this.second = false;
 		this.mode = "+";
+		this.update();
 	}
 	
 	public void update()
 	{
 		GUI.instance.inputTextField.setText(this.var1 + "\n" + this.mode + " " + this.var2);
 		GUI.instance.resultTextField.setText("" + this.result);
+	}
+	
+	public void resetSettings()
+	{
+		this.properties = new Properties();
+		this.setLoggingLevel(0);
+		this.setDevMode(false);
+		this.setColor(Color.LIGHT_GRAY);
+		this.setLAF(0);
 	}
 	
 	public void loadSettings()
@@ -207,7 +213,7 @@ public class CSCalc
 	
 	public void setCalculation(String calc)
 	{
-		if (this.second && this.var2 != 0D)
+		if (this.second)
 		{
 			this.var1 = this.calculate(this.var1, this.mode, this.var2);
 			this.var2 = 0D;
@@ -244,21 +250,21 @@ public class CSCalc
 		case "%":
 			return var1 % var2;
 		case "^":
-			return Math.pow(var1, var2);
+			return MathHelper.power(var1, var2);
 		case ROOT:
-			return Math.pow(var1, 1D / var2);
+			return MathHelper.root(var1, var2);
 		case "|":
-			return Double.longBitsToDouble(Double.doubleToRawLongBits(1) | Double.doubleToRawLongBits(var2));
+			return MathHelper.or(var1, var2);
 		case "&":
-			return Double.longBitsToDouble(Double.doubleToRawLongBits(var1) & Double.doubleToRawLongBits(var2));
+			return MathHelper.and(var1, var2);
 		case XOR:
-			return Double.longBitsToDouble(Double.doubleToRawLongBits(var1) ^ Double.doubleToRawLongBits(var2));
+			return MathHelper.xor(var1, var2);
 		case ">>":
-			return var1 / Math.pow(2D, (int) var2);
+			return MathHelper.rshift(var1, var2);
 		case ">>>":
-			return var1 / Math.pow(2D, (int) var2);
+			return MathHelper.rshiftu(var1, var2);
 		case "<<":
-			return var1 * Math.pow(2D, (int) var2);
+			return MathHelper.lshift(var1, var2);
 		}
 		return 0D;
 	}
@@ -531,8 +537,7 @@ public class CSCalc
 		}
 		else if ("reset".equals(text))
 		{
-			this.reset();
-			// TODO Reset Settings
+			this.resetSettings();
 		}
 		else if ("info".equals(text))
 		{
@@ -555,11 +560,70 @@ public class CSCalc
 		}
 	}
 	
-	// Key Manager
-	
 	public void window_keyTyped(char c)
 	{
-		// TODO
+		switch (c)
+		{
+		case '0':
+			this.button0_click();
+			break;
+		case '1':
+			this.button1_click();
+			break;
+		case '2':
+			this.button2_click();
+			break;
+		case '3':
+			this.button3_click();
+			break;
+		case '4':
+			this.button4_click();
+			break;
+		case '5':
+			this.button5_click();
+			break;
+		case '6':
+			this.button6_click();
+			break;
+		case '7':
+			this.button7_click();
+			break;
+		case '8':
+			this.button8_click();
+			break;
+		case '9':
+			this.button9_click();
+			break;
+		case '.':
+		case ',':
+			this.buttonDecimalPoint_click();
+			break;
+		case '+':
+			this.buttonAdd_click();
+			break;
+		case '-':
+			this.buttonNegate_click();
+			break;
+		case '*':
+			this.buttonMultiply_click();
+			break;
+		case '/':
+			this.buttonDivide_click();
+			break;
+		case '%':
+			this.buttonRemainder_click();
+			break;
+		case '^':
+			this.buttonPower_click();
+			break;
+		case 'v':
+		case 'r':
+			this.buttonRoot_click();
+			break;
+		case 's':
+			this.buttonSubstract_click();
+			break;
+		}
 	}
 	
 	public void commandInputTextField_keyTyped(char c)

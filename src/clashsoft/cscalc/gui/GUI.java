@@ -14,6 +14,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import clashsoft.cscalc.CSCalc;
+import clashsoft.cscalc.gui.graph.Graph;
 
 import com.alee.laf.WebLookAndFeel;
 import com.jgoodies.forms.factories.FormFactory;
@@ -38,18 +39,13 @@ public class GUI
 	public JTextPane			consoleTextField;
 	
 	public JTabbedPane			tabbedPane;
-	
 	public JPanel				panelCalculateTab;
 	public JPanel				panelSettingsTab;
 	public JPanel				panelDevTab;
 	
-	public JPanel				panelNumpad;
-	public JPanel				panelBasicOperations;
-	public JPanel				panelBinaryOperations;
-	public JPanel				panelClear;
-	
 	public JButton				buttonCalculate;
 	
+	public JPanel				panelNumpad;
 	public JButton				button0;
 	public JButton				button1;
 	public JButton				button2;
@@ -63,12 +59,14 @@ public class GUI
 	public JButton				buttonDecimalPoint;
 	public JButton				buttonNegate;
 	
+	public JPanel				panelBasicOperations;
 	public JButton				buttonAdd;
 	public JButton				buttonSubstract;
 	public JButton				buttonMultiply;
 	public JButton				buttonDivide;
 	public JButton				buttonRemainder;
 	
+	public JPanel				panelBinaryOperations;
 	public JButton				buttonAND;
 	public JButton				buttonOR;
 	public JButton				buttonXOR;
@@ -77,24 +75,34 @@ public class GUI
 	public JButton				buttonBitshiftRightU;
 	public JButton				buttonBitshiftLeft;
 	
+	public JPanel				panelClear;
 	public JButton				buttonCE;
 	public JButton				buttonC;
+	
 	public JPanel				panelAdvancedOperations;
 	public JButton				buttonPower;
 	public JButton				buttonRoot;
 	public JButton				buttonPI;
 	public JButton				buttonE;
+	
+	public JPanel				panelLookAndFeel;
+	public JPanel				panelDevSettings;
+	
+	public JButton				buttonFont;
+	public JColorChooser		colorChooser;
+	public JComboBox			comboBoxLAF;
 	public JCheckBox			checkboxDevMode;
 	public JLabel				labelDevModeLogging;
 	public JRadioButton			radioButtonLogDebug;
 	public JRadioButton			radioButtonLogExtended;
 	public JRadioButton			radioButtonLogMinimal;
 	
-	public JPanel				panelLookAndFeel;
-	public JColorChooser		colorChooser;
-	public JButton				buttonFont;
-	public JPanel				panelDevSettings;
-	public JComboBox			comboBoxLAF;
+	public JPanel				panelDraw;
+	public JPanel				panelDraw_Input;
+	public Graph				canvasGraph;
+	public JButton				buttonDraw;
+	public JComboBox			comboBoxGraph;
+	public JLabel				lblFx;
 	
 	public static void init()
 	{
@@ -119,6 +127,14 @@ public class GUI
 		this.initLAF(this.calc.getLAF(), false);
 		
 		this.frame = new JFrame();
+		this.frame.addKeyListener(new KeyAdapter()
+		{
+			@Override
+			public void keyPressed(KeyEvent e)
+			{
+				calc.window_keyTyped(e.getKeyChar());
+			}
+		});
 		this.frame.setResizable(false);
 		this.frame.addWindowListener(new WindowAdapter()
 		{
@@ -146,7 +162,7 @@ public class GUI
 		this.addPanels();
 		this.addTextFields();
 		
-		instance.calc.devInfo("Initializing GUI...", 2);
+		this.calc.devInfo("Initializing GUI...", 2);
 		
 		this.addCalculateButton();
 		this.addNumpadButtons();
@@ -154,9 +170,12 @@ public class GUI
 		this.addBinaryOperationButtons();
 		this.addAdvancedOperationButtons();
 		this.addClearButtons();
+		
+		this.addDraw();
+		
 		this.addSettings();
 		
-		instance.calc.devInfo("Done Initializing GUI", 2);
+		this.calc.devInfo("Done Initializing GUI", 2);
 	}
 	
 	private void addPanels()
@@ -167,54 +186,58 @@ public class GUI
 		this.panelCalculateTab.setLayout(null);
 		this.tabbedPane.addTab(I18n.getString("GUI.panelCalculateTab.text"), null, this.panelCalculateTab, I18n.getString("GUI.panelCalculateTab.toolTipText")); //$NON-NLS-1$
 		
+		this.panelDraw = new JPanel();
+		this.panelDraw.setLayout(new BorderLayout(0, 0));
+		this.tabbedPane.addTab(I18n.getString("GUI.panelDrawTab.text"), null, this.panelDraw, I18n.getString("GUI.panelDrawTab.toolTipText"));
+		
 		this.panelSettingsTab = new JPanel();
-		this.tabbedPane.addTab(I18n.getString("GUI.panelSettingsTab.text"), null, this.panelSettingsTab, I18n.getString("GUI.panelSettingsTab.toolTipText"));
 		this.panelSettingsTab.setLayout(new BorderLayout(0, 0));
+		this.tabbedPane.addTab(I18n.getString("GUI.panelSettingsTab.text"), null, this.panelSettingsTab, I18n.getString("GUI.panelSettingsTab.toolTipText")); ////$NON-NLS-1$
+		
+		this.panelDevTab = new JPanel();
+		this.panelDevTab.setLayout(new BorderLayout(0, 0));
+		this.tabbedPane.addTab(I18n.getString("GUI.panelDevTab.text"), null, this.panelDevTab, I18n.getString("GUI.panelDevTab.toolTipText")); //$NON-NLS-1$
 		
 		// Settings Panels
 		
 		this.panelLookAndFeel = new JPanel();
-		this.panelLookAndFeel.setBorder(new TitledBorder(I18n.getString("GUI.panelLookAndFeel.borderTitle")));
+		this.panelLookAndFeel.setBorder(new TitledBorder(I18n.getString("GUI.panelLookAndFeel.borderTitle"))); //$NON-NLS-1$
 		this.panelLookAndFeel.setLayout(new FormLayout(new ColumnSpec[] { ColumnSpec.decode("200px:grow"), FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("200px:grow"), }, new RowSpec[] { RowSpec.decode("24px"), FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("259px:grow"), }));
 		this.panelSettingsTab.add(this.panelLookAndFeel, BorderLayout.CENTER);
 		
 		this.panelDevSettings = new JPanel();
-		this.panelDevSettings.setBorder(new TitledBorder(I18n.getString("GUI.panelDevSettings.borderTitle")));
+		this.panelDevSettings.setBorder(new TitledBorder(I18n.getString("GUI.panelDevSettings.borderTitle"))); //$NON-NLS-1$
 		this.panelDevSettings.setLayout(new FormLayout(new ColumnSpec[] { ColumnSpec.decode("default:grow"), ColumnSpec.decode("default:grow"), FormFactory.LABEL_COMPONENT_GAP_COLSPEC, ColumnSpec.decode("default:grow"), FormFactory.LABEL_COMPONENT_GAP_COLSPEC, ColumnSpec.decode("default:grow"), }, new RowSpec[] { RowSpec.decode("23px"), RowSpec.decode("23px"), }));
 		this.panelSettingsTab.add(this.panelDevSettings, BorderLayout.NORTH);
-		
-		this.panelDevTab = new JPanel();
-		this.panelDevTab.setLayout(new BorderLayout(0, 0));
-		this.tabbedPane.addTab(I18n.getString("GUI.panelDevTab.text"), null, this.panelDevTab, I18n.getString("GUI.panelDevTab.toolTipText"));
 		
 		// Calculate Panels
 		
 		this.panelNumpad = new JPanel();
-		this.panelNumpad.setBounds(6, 118, 124, 176);
+		this.panelNumpad.setBounds(6, 110, 124, 176);
 		this.panelCalculateTab.add(this.panelNumpad);
 		this.panelNumpad.setBorder(new TitledBorder(I18n.getString("GUI.panelNumpad.borderTitle"))); //$NON-NLS-1$
 		this.panelNumpad.setLayout(null);
 		
 		this.panelBasicOperations = new JPanel();
-		this.panelBasicOperations.setBounds(142, 118, 124, 94);
+		this.panelBasicOperations.setBounds(142, 110, 124, 94);
 		this.panelBasicOperations.setBorder(new TitledBorder(I18n.getString("GUI.panelBasicOperations.borderTitle"))); //$NON-NLS-1$
 		this.panelBasicOperations.setLayout(null);
 		this.panelCalculateTab.add(this.panelBasicOperations);
 		
 		this.panelAdvancedOperations = new JPanel();
-		this.panelAdvancedOperations.setBounds(287, 224, 166, 70);
+		this.panelAdvancedOperations.setBounds(287, 216, 166, 70);
 		this.panelAdvancedOperations.setLayout(null);
 		this.panelAdvancedOperations.setBorder(new TitledBorder(I18n.getString("GUI.panelAdvancedOperations.borderTitle"))); //$NON-NLS-1$
 		this.panelCalculateTab.add(this.panelAdvancedOperations);
 		
 		this.panelBinaryOperations = new JPanel();
-		this.panelBinaryOperations.setBounds(287, 118, 166, 94);
+		this.panelBinaryOperations.setBounds(287, 110, 166, 94);
 		this.panelBinaryOperations.setLayout(null);
 		this.panelBinaryOperations.setBorder(new TitledBorder(I18n.getString("GUI.panelBinaryOperations.borderTitle"))); //$NON-NLS-1$
 		this.panelCalculateTab.add(this.panelBinaryOperations);
 		
 		this.panelClear = new JPanel();
-		this.panelClear.setBounds(142, 224, 124, 70);
+		this.panelClear.setBounds(142, 216, 124, 70);
 		this.panelClear.setBorder(new TitledBorder(I18n.getString("GUI.panelClear.borderTitle"))); //$NON-NLS-1$
 		this.panelClear.setLayout(null);
 		this.panelCalculateTab.add(this.panelClear);
@@ -623,7 +646,7 @@ public class GUI
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_RIGHT);
 		
 		this.inputTextField = new JTextPane();
-		this.inputTextField.setBounds(6, 6, 447, 60);
+		this.inputTextField.setBounds(6, 6, 447, 52);
 		this.inputTextField.setText(I18n.getString("GUI.inputTextField.text")); //$NON-NLS-1$
 		this.inputTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
 		this.inputTextField.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
@@ -631,7 +654,7 @@ public class GUI
 		this.panelCalculateTab.add(this.inputTextField);
 		
 		this.resultTextField = new JTextPane();
-		this.resultTextField.setBounds(6, 78, 447, 28);
+		this.resultTextField.setBounds(6, 70, 447, 28);
 		this.resultTextField.setText(I18n.getString("GUI.resultTextField.text")); //$NON-NLS-1$
 		this.resultTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
 		this.resultTextField.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
@@ -668,7 +691,7 @@ public class GUI
 	private void addCalculateButton()
 	{
 		this.buttonCalculate = new JButton(I18n.getString("GUI.buttonCalculate.text"));
-		this.buttonCalculate.setBounds(6, 306, 447, 67);
+		this.buttonCalculate.setBounds(6, 298, 447, 75);
 		this.buttonCalculate.addActionListener(new ActionListener()
 		{
 			@Override
@@ -782,6 +805,64 @@ public class GUI
 		logLevelGroup.add(this.radioButtonLogMinimal);
 	}
 	
+	private void addDraw()
+	{
+		this.canvasGraph = new Graph();
+		this.panelDraw.add(this.canvasGraph, BorderLayout.CENTER);
+		
+		this.panelDraw_Input = new JPanel();
+		GridBagLayout inputPanelConstraint = new GridBagLayout();
+		inputPanelConstraint.columnWidths = new int[] { 0, 415, 0, 0 };
+		inputPanelConstraint.rowHeights = new int[] { 0, 0 };
+		inputPanelConstraint.columnWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
+		inputPanelConstraint.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
+		this.panelDraw_Input.setLayout(inputPanelConstraint);
+		this.panelDraw.add(this.panelDraw_Input, BorderLayout.NORTH);
+		
+		this.lblFx = new JLabel(I18n.getString("GUI.lblFx.text")); //$NON-NLS-1$
+		GridBagConstraints gbc_lblFx = new GridBagConstraints();
+		gbc_lblFx.fill = GridBagConstraints.BOTH;
+		gbc_lblFx.insets = new Insets(0, 0, 0, 5);
+		gbc_lblFx.gridx = 0;
+		gbc_lblFx.gridy = 0;
+		this.panelDraw_Input.add(this.lblFx, gbc_lblFx);
+		
+		this.comboBoxGraph = new JComboBox();
+		this.comboBoxGraph.setBackground(Color.WHITE);
+		this.comboBoxGraph.setEditable(true);
+		GridBagConstraints graphConstraint = new GridBagConstraints();
+		graphConstraint.insets = new Insets(0, 0, 0, 5);
+		graphConstraint.fill = GridBagConstraints.BOTH;
+		graphConstraint.gridx = 1;
+		graphConstraint.gridy = 0;
+		this.panelDraw_Input.add(this.comboBoxGraph, graphConstraint);
+		
+		this.buttonDraw = new JButton("\u2192");
+		this.buttonDraw.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				String item = (String) comboBoxGraph.getEditor().getItem();
+				if (!canvasGraph.hasEquation(item))
+				{
+					comboBoxGraph.addItem(item);
+					canvasGraph.addEquation(item);
+				}
+				
+				while (canvasGraph.getEquationCount() > 10)
+				{
+					comboBoxGraph.removeItemAt(0);
+					canvasGraph.removeEquation(0);
+				}
+			}
+		});
+		GridBagConstraints drawButtonConstraint = new GridBagConstraints();
+		drawButtonConstraint.fill = GridBagConstraints.BOTH;
+		drawButtonConstraint.gridx = 2;
+		drawButtonConstraint.gridy = 0;
+		this.panelDraw_Input.add(this.buttonDraw, drawButtonConstraint);
+	}
+	
 	public void setDevMode(boolean dev)
 	{
 		if (this.tabbedPane != null)
@@ -808,14 +889,14 @@ public class GUI
 	
 	public void setCurrentTab(int tab)
 	{
-		if (tab == this.tabbedPane.indexOfComponent(this.panelSettingsTab))
-		{
-			this.frame.setResizable(true);
-		}
-		else
+		if (tab == this.tabbedPane.indexOfComponent(this.panelCalculateTab))
 		{
 			this.frame.setResizable(false);
 			this.frame.setSize(480, 450);
+		}
+		else
+		{
+			this.frame.setResizable(true);
 		}
 	}
 	
