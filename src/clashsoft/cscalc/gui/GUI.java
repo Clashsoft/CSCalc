@@ -2,6 +2,7 @@ package clashsoft.cscalc.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Date;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -24,11 +25,11 @@ import com.jgoodies.forms.layout.RowSpec;
 
 public class GUI
 {
-	public static GUI			instance		= new GUI();
+	public static GUI			instance			= new GUI();
 	
 	public CSCalc				calc;
 	
-	public LookAndFeelInfo[]	lookAndFeels	= UIManager.getInstalledLookAndFeels();
+	public LookAndFeelInfo[]	lookAndFeels		= UIManager.getInstalledLookAndFeels();
 	
 	public JFrame				frame;
 	
@@ -65,6 +66,9 @@ public class GUI
 	public JButton				buttonMultiply;
 	public JButton				buttonDivide;
 	public JButton				buttonRemainder;
+	public JButton				buttonReciprocal;
+	public JButton				buttonPower;
+	public JButton				buttonRoot;
 	
 	public JPanel				panelBinaryOperations;
 	public JButton				buttonAND;
@@ -79,11 +83,12 @@ public class GUI
 	public JButton				buttonCE;
 	public JButton				buttonC;
 	
-	public JPanel				panelAdvancedOperations;
-	public JButton				buttonPower;
-	public JButton				buttonRoot;
+	public JPanel				panelConstants;
 	public JButton				buttonPI;
 	public JButton				buttonE;
+	public JButton				buttonInfinity;
+	public JButton				buttonNegativeInfinity;
+	public JButton				buttonNaN;
 	
 	public JPanel				panelLookAndFeel;
 	public JPanel				panelDevSettings;
@@ -98,11 +103,27 @@ public class GUI
 	public JRadioButton			radioButtonLogMinimal;
 	
 	public JPanel				panelDraw;
-	public JPanel				panelDraw_Input;
+	public JPanel				panelDrawInput;
 	public Graph				canvasGraph;
 	public JButton				buttonDraw;
 	public JComboBox			comboBoxGraph;
-	public JLabel				lblFx;
+	public JLabel				labelFX;
+	
+	public JPopupMenu			popupMenuGraph;
+	public JMenu				menuZoom;
+	public JMenuItem			menuItemZoomDefault;
+	public JMenuItem			menuItemZoomMultipied;
+	public JMenuItem			menuItemZoomCubed;
+	public JMenuItem			menuItemZoomNumber;
+	public JMenuItem			menuItemZoomInfo;
+	
+	public JPopupMenu			popupMenuInputTextField;
+	public JMenuItem			menuItemDisplayMode;
+	public JRadioButtonMenuItem	menuItemDisplayDecimal;
+	public JRadioButtonMenuItem	menuItemDisplayHexadecimal;
+	public JRadioButtonMenuItem	menuItemDisplayBinary;
+	
+	private ButtonGroup			buttonGroupDisplay	= new ButtonGroup();
 	
 	public static void init()
 	{
@@ -126,16 +147,18 @@ public class GUI
 	{
 		this.initLAF(this.calc.getLAF(), false);
 		
-		this.frame = new JFrame();
+		this.frame = new JFrame(I18n.getString("GUI.frame.title")); //$NON-NLS-1$
+		this.frame.setResizable(false);
+		this.frame.setBounds(100, 100, 480, 450);
+		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.frame.addKeyListener(new KeyAdapter()
 		{
 			@Override
 			public void keyPressed(KeyEvent e)
 			{
-				calc.window_keyTyped(e.getKeyChar());
+				GUI.this.calc.window_keyTyped(e.getKeyChar());
 			}
 		});
-		this.frame.setResizable(false);
 		this.frame.addWindowListener(new WindowAdapter()
 		{
 			@Override
@@ -144,19 +167,17 @@ public class GUI
 				GUI.this.calc.exit();
 			}
 		});
-		this.frame.setTitle(I18n.getString("GUI.frame.title")); //$NON-NLS-1$
-		this.frame.setBounds(100, 100, 480, 450);
-		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		this.tabbedPane = new JTabbedPane(SwingConstants.TOP);
+		this.tabbedPane.setBounds(0, 0, 480, 448);
 		this.tabbedPane.addChangeListener(new ChangeListener()
 		{
+			@Override
 			public void stateChanged(ChangeEvent e)
 			{
-				setCurrentTab(tabbedPane.getSelectedIndex());
+				GUI.this.setCurrentTab(GUI.this.tabbedPane.getSelectedIndex());
 			}
 		});
-		this.tabbedPane.setBounds(0, 0, 480, 448);
 		this.frame.getContentPane().add(this.tabbedPane);
 		
 		this.addPanels();
@@ -184,7 +205,7 @@ public class GUI
 		
 		this.panelCalculateTab = new JPanel();
 		this.panelCalculateTab.setLayout(null);
-		this.tabbedPane.addTab(I18n.getString("GUI.panelCalculateTab.text"), null, this.panelCalculateTab, I18n.getString("GUI.panelCalculateTab.toolTipText")); //$NON-NLS-1$
+		this.tabbedPane.addTab(I18n.getString("GUI.panelCalculateTab.text"), null, this.panelCalculateTab, I18n.getString("GUI.panelCalculateTab.toolTipText"));
 		
 		this.panelDraw = new JPanel();
 		this.panelDraw.setLayout(new BorderLayout(0, 0));
@@ -214,30 +235,30 @@ public class GUI
 		
 		this.panelNumpad = new JPanel();
 		this.panelNumpad.setBounds(6, 110, 124, 176);
-		this.panelCalculateTab.add(this.panelNumpad);
 		this.panelNumpad.setBorder(new TitledBorder(I18n.getString("GUI.panelNumpad.borderTitle"))); //$NON-NLS-1$
 		this.panelNumpad.setLayout(null);
+		this.panelCalculateTab.add(this.panelNumpad);
 		
 		this.panelBasicOperations = new JPanel();
-		this.panelBasicOperations.setBounds(142, 110, 124, 94);
+		this.panelBasicOperations.setBounds(142, 110, 166, 94);
 		this.panelBasicOperations.setBorder(new TitledBorder(I18n.getString("GUI.panelBasicOperations.borderTitle"))); //$NON-NLS-1$
 		this.panelBasicOperations.setLayout(null);
 		this.panelCalculateTab.add(this.panelBasicOperations);
 		
-		this.panelAdvancedOperations = new JPanel();
-		this.panelAdvancedOperations.setBounds(287, 216, 166, 70);
-		this.panelAdvancedOperations.setLayout(null);
-		this.panelAdvancedOperations.setBorder(new TitledBorder(I18n.getString("GUI.panelAdvancedOperations.borderTitle"))); //$NON-NLS-1$
-		this.panelCalculateTab.add(this.panelAdvancedOperations);
+		this.panelConstants = new JPanel();
+		this.panelConstants.setBounds(320, 216, 124, 94);
+		this.panelConstants.setBorder(new TitledBorder(I18n.getString("GUI.panelAdvancedOperations.borderTitle"))); //$NON-NLS-1$
+		this.panelConstants.setLayout(null);
+		this.panelCalculateTab.add(this.panelConstants);
 		
 		this.panelBinaryOperations = new JPanel();
-		this.panelBinaryOperations.setBounds(287, 110, 166, 94);
-		this.panelBinaryOperations.setLayout(null);
+		this.panelBinaryOperations.setBounds(142, 216, 166, 94);
 		this.panelBinaryOperations.setBorder(new TitledBorder(I18n.getString("GUI.panelBinaryOperations.borderTitle"))); //$NON-NLS-1$
+		this.panelBinaryOperations.setLayout(null);
 		this.panelCalculateTab.add(this.panelBinaryOperations);
 		
 		this.panelClear = new JPanel();
-		this.panelClear.setBounds(142, 216, 124, 70);
+		this.panelClear.setBounds(320, 110, 124, 94);
 		this.panelClear.setBorder(new TitledBorder(I18n.getString("GUI.panelClear.borderTitle"))); //$NON-NLS-1$
 		this.panelClear.setLayout(null);
 		this.panelCalculateTab.add(this.panelClear);
@@ -246,6 +267,7 @@ public class GUI
 	private void addNumpadButtons()
 	{
 		this.button0 = new JButton(I18n.getString("GUI.button0.text")); //$NON-NLS-1$
+		this.button0.setBounds(47, 140, 29, 29);
 		this.button0.addActionListener(new ActionListener()
 		{
 			@Override
@@ -254,10 +276,10 @@ public class GUI
 				GUI.this.calc.button0_click();
 			}
 		});
-		this.button0.setBounds(47, 140, 29, 29);
 		this.panelNumpad.add(this.button0);
 		
 		this.button1 = new JButton(I18n.getString("GUI.button1.text")); //$NON-NLS-1$
+		this.button1.setBounds(6, 99, 29, 29);
 		this.button1.addActionListener(new ActionListener()
 		{
 			@Override
@@ -266,10 +288,10 @@ public class GUI
 				GUI.this.calc.button1_click();
 			}
 		});
-		this.button1.setBounds(6, 99, 29, 29);
 		this.panelNumpad.add(this.button1);
 		
 		this.button2 = new JButton(I18n.getString("GUI.button2.text")); //$NON-NLS-1$
+		this.button2.setBounds(47, 99, 29, 29);
 		this.button2.addActionListener(new ActionListener()
 		{
 			@Override
@@ -278,10 +300,10 @@ public class GUI
 				GUI.this.calc.button2_click();
 			}
 		});
-		this.button2.setBounds(47, 99, 29, 29);
 		this.panelNumpad.add(this.button2);
 		
 		this.button3 = new JButton(I18n.getString("GUI.button3.text")); //$NON-NLS-1$
+		this.button3.setBounds(88, 99, 29, 29);
 		this.button3.addActionListener(new ActionListener()
 		{
 			@Override
@@ -290,10 +312,10 @@ public class GUI
 				GUI.this.calc.button3_click();
 			}
 		});
-		this.button3.setBounds(88, 99, 29, 29);
 		this.panelNumpad.add(this.button3);
 		
 		this.button4 = new JButton(I18n.getString("GUI.button4.text")); //$NON-NLS-1$
+		this.button4.setBounds(6, 58, 29, 29);
 		this.button4.addActionListener(new ActionListener()
 		{
 			@Override
@@ -302,10 +324,10 @@ public class GUI
 				GUI.this.calc.button4_click();
 			}
 		});
-		this.button4.setBounds(6, 58, 29, 29);
 		this.panelNumpad.add(this.button4);
 		
 		this.button5 = new JButton(I18n.getString("GUI.button5.text")); //$NON-NLS-1$
+		this.button5.setBounds(47, 58, 29, 29);
 		this.button5.addActionListener(new ActionListener()
 		{
 			@Override
@@ -314,10 +336,10 @@ public class GUI
 				GUI.this.calc.button5_click();
 			}
 		});
-		this.button5.setBounds(47, 58, 29, 29);
 		this.panelNumpad.add(this.button5);
 		
 		this.button6 = new JButton(I18n.getString("GUI.button6.text")); //$NON-NLS-1$
+		this.button6.setBounds(88, 58, 29, 29);
 		this.button6.addActionListener(new ActionListener()
 		{
 			@Override
@@ -326,10 +348,10 @@ public class GUI
 				GUI.this.calc.button6_click();
 			}
 		});
-		this.button6.setBounds(88, 58, 29, 29);
 		this.panelNumpad.add(this.button6);
 		
 		this.button7 = new JButton(I18n.getString("GUI.button7.text")); //$NON-NLS-1$
+		this.button7.setBounds(6, 17, 29, 29);
 		this.button7.addActionListener(new ActionListener()
 		{
 			@Override
@@ -338,10 +360,10 @@ public class GUI
 				GUI.this.calc.button7_click();
 			}
 		});
-		this.button7.setBounds(6, 17, 29, 29);
 		this.panelNumpad.add(this.button7);
 		
 		this.button8 = new JButton(I18n.getString("GUI.button8.text")); //$NON-NLS-1$
+		this.button8.setBounds(47, 17, 29, 29);
 		this.button8.addActionListener(new ActionListener()
 		{
 			@Override
@@ -350,10 +372,10 @@ public class GUI
 				GUI.this.calc.button8_click();
 			}
 		});
-		this.button8.setBounds(47, 17, 29, 29);
 		this.panelNumpad.add(this.button8);
 		
 		this.button9 = new JButton(I18n.getString("GUI.button9.text")); //$NON-NLS-1$
+		this.button9.setBounds(88, 17, 29, 29);
 		this.button9.addActionListener(new ActionListener()
 		{
 			@Override
@@ -362,10 +384,11 @@ public class GUI
 				GUI.this.calc.button9_click();
 			}
 		});
-		this.button9.setBounds(88, 17, 29, 29);
 		this.panelNumpad.add(this.button9);
 		
 		this.buttonDecimalPoint = new JButton(I18n.getString("GUI.buttonDecimalPoint.text")); //$NON-NLS-1$
+		this.buttonDecimalPoint.setToolTipText(I18n.getString("GUI.buttonDecimalPoint.toolTipText")); //$NON-NLS-1$
+		this.buttonDecimalPoint.setBounds(88, 140, 29, 29);
 		this.buttonDecimalPoint.addActionListener(new ActionListener()
 		{
 			@Override
@@ -374,11 +397,11 @@ public class GUI
 				GUI.this.calc.buttonDecimalPoint_click();
 			}
 		});
-		this.buttonDecimalPoint.setToolTipText(I18n.getString("GUI.buttonDecimalPoint.toolTipText")); //$NON-NLS-1$
-		this.buttonDecimalPoint.setBounds(88, 140, 29, 29);
 		this.panelNumpad.add(this.buttonDecimalPoint);
 		
 		this.buttonNegate = new JButton(I18n.getString("GUI.buttonNegate.text")); //$NON-NLS-1$
+		this.buttonNegate.setToolTipText(I18n.getString("GUI.buttonNegate.toolTipText")); //$NON-NLS-1$
+		this.buttonNegate.setBounds(6, 140, 29, 29);
 		this.buttonNegate.addActionListener(new ActionListener()
 		{
 			@Override
@@ -387,14 +410,14 @@ public class GUI
 				GUI.this.calc.buttonNegate_click();
 			}
 		});
-		this.buttonNegate.setToolTipText(I18n.getString("GUI.buttonNegate.toolTipText")); //$NON-NLS-1$
-		this.buttonNegate.setBounds(6, 140, 29, 29);
 		this.panelNumpad.add(this.buttonNegate);
 	}
 	
 	private void addBasicOperationButtons()
 	{
 		this.buttonAdd = new JButton(I18n.getString("GUI.buttonAdd.text")); //$NON-NLS-1$
+		this.buttonAdd.setToolTipText(I18n.getString("GUI.buttonAdd.toolTipText")); //$NON-NLS-1$
+		this.buttonAdd.setBounds(6, 17, 29, 29);
 		this.buttonAdd.addActionListener(new ActionListener()
 		{
 			@Override
@@ -403,11 +426,11 @@ public class GUI
 				GUI.this.calc.buttonAdd_click();
 			}
 		});
-		this.buttonAdd.setToolTipText(I18n.getString("GUI.buttonAdd.toolTipText")); //$NON-NLS-1$
-		this.buttonAdd.setBounds(6, 17, 29, 29);
 		this.panelBasicOperations.add(this.buttonAdd);
 		
 		this.buttonSubstract = new JButton(I18n.getString("GUI.buttonSubstract.text")); //$NON-NLS-1$
+		this.buttonSubstract.setToolTipText(I18n.getString("GUI.buttonSubstract.toolTipText")); //$NON-NLS-1$
+		this.buttonSubstract.setBounds(47, 17, 29, 29);
 		this.buttonSubstract.addActionListener(new ActionListener()
 		{
 			@Override
@@ -416,11 +439,11 @@ public class GUI
 				GUI.this.calc.buttonSubstract_click();
 			}
 		});
-		this.buttonSubstract.setToolTipText(I18n.getString("GUI.buttonSubstract.toolTipText")); //$NON-NLS-1$
-		this.buttonSubstract.setBounds(47, 17, 29, 29);
 		this.panelBasicOperations.add(this.buttonSubstract);
 		
 		this.buttonMultiply = new JButton(I18n.getString("GUI.buttonMultiply.text")); //$NON-NLS-1$
+		this.buttonMultiply.setToolTipText(I18n.getString("GUI.buttonMultiply.toolTipText")); //$NON-NLS-1$
+		this.buttonMultiply.setBounds(6, 58, 29, 29);
 		this.buttonMultiply.addActionListener(new ActionListener()
 		{
 			@Override
@@ -429,11 +452,11 @@ public class GUI
 				GUI.this.calc.buttonMultiply_click();
 			}
 		});
-		this.buttonMultiply.setToolTipText(I18n.getString("GUI.buttonMultiply.toolTipText")); //$NON-NLS-1$
-		this.buttonMultiply.setBounds(6, 58, 29, 29);
 		this.panelBasicOperations.add(this.buttonMultiply);
 		
 		this.buttonDivide = new JButton(I18n.getString("GUI.buttonDivide.text")); //$NON-NLS-1$
+		this.buttonDivide.setToolTipText(I18n.getString("GUI.buttonDivide.toolTipText")); //$NON-NLS-1$
+		this.buttonDivide.setBounds(47, 58, 29, 29);
 		this.buttonDivide.addActionListener(new ActionListener()
 		{
 			@Override
@@ -442,11 +465,11 @@ public class GUI
 				GUI.this.calc.buttonDivide_click();
 			}
 		});
-		this.buttonDivide.setToolTipText(I18n.getString("GUI.buttonDivide.toolTipText")); //$NON-NLS-1$
-		this.buttonDivide.setBounds(47, 58, 29, 29);
 		this.panelBasicOperations.add(this.buttonDivide);
 		
 		this.buttonRemainder = new JButton(I18n.getString("GUI.buttonRemainder.text")); //$NON-NLS-1$
+		this.buttonRemainder.setToolTipText(I18n.getString("GUI.buttonRemainder.toolTipText")); //$NON-NLS-1$
+		this.buttonRemainder.setBounds(88, 17, 29, 29);
 		this.buttonRemainder.addActionListener(new ActionListener()
 		{
 			@Override
@@ -455,138 +478,23 @@ public class GUI
 				GUI.this.calc.buttonRemainder_click();
 			}
 		});
-		this.buttonRemainder.setToolTipText(I18n.getString("GUI.buttonRemainder.toolTipText")); //$NON-NLS-1$
-		this.buttonRemainder.setBounds(88, 17, 29, 29);
 		this.panelBasicOperations.add(this.buttonRemainder);
-	}
-	
-	private void addBinaryOperationButtons()
-	{
-		this.buttonAND = new JButton(I18n.getString("GUI.buttonAND.text")); //$NON-NLS-1$
-		this.buttonAND.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonAND_click();
-			}
-		});
-		this.buttonAND.setToolTipText(I18n.getString("GUI.buttonAND.toolTipText")); //$NON-NLS-1$
-		this.buttonAND.setBounds(6, 17, 29, 29);
-		this.panelBinaryOperations.add(this.buttonAND);
 		
-		this.buttonOR = new JButton(I18n.getString("GUI.buttonOR.text")); //$NON-NLS-1$
-		this.buttonOR.addActionListener(new ActionListener()
+		this.buttonReciprocal = new JButton(I18n.getString("GUI.btnNewButton.text")); //$NON-NLS-1$
+		this.buttonReciprocal.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				GUI.this.calc.buttonOR_click();
+				GUI.this.calc.buttonReciprocal_click();
 			}
 		});
-		this.buttonOR.setToolTipText(I18n.getString("GUI.buttonOR.toolTipText")); //$NON-NLS-1$
-		this.buttonOR.setBounds(47, 17, 29, 29);
-		this.panelBinaryOperations.add(this.buttonOR);
+		this.buttonReciprocal.setBounds(88, 58, 29, 29);
+		this.panelBasicOperations.add(this.buttonReciprocal);
 		
-		this.buttonXOR = new JButton(CSCalc.XOR);
-		this.buttonXOR.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonXOR_click();
-			}
-		});
-		this.buttonXOR.setToolTipText(I18n.getString("GUI.buttonXOR.toolTipText")); //$NON-NLS-1$
-		this.buttonXOR.setBounds(88, 17, 29, 29);
-		this.panelBinaryOperations.add(this.buttonXOR);
-		
-		this.buttonNOT = new JButton(CSCalc.NOT);
-		this.buttonNOT.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonNOT_click();
-			}
-		});
-		this.buttonNOT.setToolTipText(I18n.getString("GUI.buttonNOT.toolTipText")); //$NON-NLS-1$
-		this.buttonNOT.setBounds(129, 17, 29, 29);
-		this.panelBinaryOperations.add(this.buttonNOT);
-		
-		this.buttonBitshiftRight = new JButton(I18n.getString("GUI.buttonBitshiftRight.text")); //$NON-NLS-1$
-		this.buttonBitshiftRight.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonBitshiftRight_click();
-			}
-		});
-		this.buttonBitshiftRight.setToolTipText(I18n.getString("GUI.buttonBitshiftRight.toolTipText")); //$NON-NLS-1$
-		this.buttonBitshiftRight.setBounds(6, 58, 29, 29);
-		this.panelBinaryOperations.add(this.buttonBitshiftRight);
-		
-		this.buttonBitshiftRightU = new JButton(I18n.getString("GUI.buttonBitshiftRightU.text")); //$NON-NLS-1$
-		this.buttonBitshiftRightU.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonBitshiftRightU_click();
-			}
-		});
-		this.buttonBitshiftRightU.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
-		this.buttonBitshiftRightU.setToolTipText(I18n.getString("GUI.buttonBitshiftRightU.toolTipText")); //$NON-NLS-1$
-		this.buttonBitshiftRightU.setBounds(47, 58, 29, 29);
-		this.panelBinaryOperations.add(this.buttonBitshiftRightU);
-		
-		this.buttonBitshiftLeft = new JButton(I18n.getString("GUI.buttonBitshiftLeft.text")); //$NON-NLS-1$
-		this.buttonBitshiftLeft.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonBitshiftLeft_click();
-			}
-		});
-		this.buttonBitshiftLeft.setToolTipText(I18n.getString("GUI.buttonBitshiftLeft.toolTipText")); //$NON-NLS-1$
-		this.buttonBitshiftLeft.setBounds(88, 58, 29, 29);
-		this.panelBinaryOperations.add(this.buttonBitshiftLeft);
-	}
-	
-	private void addClearButtons()
-	{
-		this.buttonCE = new JButton(I18n.getString("GUI.buttonCE.text")); //$NON-NLS-1$
-		this.buttonCE.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonC_click();
-			}
-		});
-		this.buttonCE.setToolTipText(I18n.getString("GUI.buttonCE.toolTipText")); //$NON-NLS-1$
-		this.buttonCE.setBounds(6, 17, 29, 29);
-		this.panelClear.add(this.buttonCE);
-		
-		this.buttonC = new JButton(I18n.getString("GUI.buttonC.text")); //$NON-NLS-1$
-		this.buttonC.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonCE_click();
-			}
-		});
-		this.buttonC.setToolTipText(I18n.getString("GUI.buttonC.toolTipText")); //$NON-NLS-1$
-		this.buttonC.setBounds(47, 17, 29, 29);
-		this.panelClear.add(this.buttonC);
-	}
-	
-	private void addAdvancedOperationButtons()
-	{
 		this.buttonPower = new JButton(I18n.getString("GUI.buttonPower.text")); //$NON-NLS-1$
+		this.buttonPower.setToolTipText(I18n.getString("GUI.buttonPower.toolTipText"));
+		this.buttonPower.setBounds(129, 17, 29, 29);
 		this.buttonPower.addActionListener(new ActionListener()
 		{
 			@Override
@@ -595,11 +503,11 @@ public class GUI
 				GUI.this.calc.buttonPower_click();
 			}
 		});
-		this.buttonPower.setToolTipText(I18n.getString("GUI.buttonPower.toolTipText")); //$NON-NLS-1$
-		this.buttonPower.setBounds(6, 17, 29, 29);
-		this.panelAdvancedOperations.add(this.buttonPower);
+		this.panelBasicOperations.add(this.buttonPower);
 		
-		this.buttonRoot = new JButton(CSCalc.ROOT);
+		this.buttonRoot = new JButton(I18n.getString("GUI.buttonRoot.text")); //$NON-NLS-1$
+		this.buttonRoot.setToolTipText(I18n.getString("GUI.buttonRoot.toolTipText")); //$NON-NLS-1$
+		this.buttonRoot.setBounds(129, 58, 29, 29);
 		this.buttonRoot.addActionListener(new ActionListener()
 		{
 			@Override
@@ -608,11 +516,139 @@ public class GUI
 				GUI.this.calc.buttonRoot_click();
 			}
 		});
-		this.buttonRoot.setToolTipText(I18n.getString("GUI.buttonRoot.toolTipText")); //$NON-NLS-1$
-		this.buttonRoot.setBounds(47, 17, 29, 29);
-		this.panelAdvancedOperations.add(this.buttonRoot);
+		this.panelBasicOperations.add(this.buttonRoot);
+	}
+	
+	private void addBinaryOperationButtons()
+	{
+		this.buttonAND = new JButton(I18n.getString("GUI.buttonAND.text")); //$NON-NLS-1$
+		this.buttonAND.setToolTipText(I18n.getString("GUI.buttonAND.toolTipText")); //$NON-NLS-1$
+		this.buttonAND.setBounds(6, 17, 29, 29);
+		this.buttonAND.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.buttonAND_click();
+			}
+		});
+		this.panelBinaryOperations.add(this.buttonAND);
 		
-		this.buttonPI = new JButton(CSCalc.PI);
+		this.buttonOR = new JButton(I18n.getString("GUI.buttonOR.text")); //$NON-NLS-1$
+		this.buttonOR.setToolTipText(I18n.getString("GUI.buttonOR.toolTipText")); //$NON-NLS-1$
+		this.buttonOR.setBounds(47, 17, 29, 29);
+		this.buttonOR.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.buttonOR_click();
+			}
+		});
+		this.panelBinaryOperations.add(this.buttonOR);
+		
+		this.buttonXOR = new JButton(I18n.getString("GUI.buttonXOR.text")); //$NON-NLS-1$
+		this.buttonXOR.setToolTipText(I18n.getString("GUI.buttonXOR.toolTipText")); //$NON-NLS-1$
+		this.buttonXOR.setBounds(88, 17, 29, 29);
+		this.buttonXOR.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.buttonXOR_click();
+			}
+		});
+		this.panelBinaryOperations.add(this.buttonXOR);
+		
+		this.buttonNOT = new JButton(CSCalc.NOT);
+		this.buttonNOT.setToolTipText(I18n.getString("GUI.buttonNOT.toolTipText")); //$NON-NLS-1$
+		this.buttonNOT.setBounds(129, 17, 29, 29);
+		this.buttonNOT.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.buttonNOT_click();
+			}
+		});
+		this.panelBinaryOperations.add(this.buttonNOT);
+		
+		this.buttonBitshiftRight = new JButton(I18n.getString("GUI.buttonBitshiftRight.text")); //$NON-NLS-1$
+		this.buttonBitshiftRight.setToolTipText(I18n.getString("GUI.buttonBitshiftRight.toolTipText")); //$NON-NLS-1$
+		this.buttonBitshiftRight.setBounds(6, 58, 29, 29);
+		this.buttonBitshiftRight.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.buttonBitshiftRight_click();
+			}
+		});
+		this.panelBinaryOperations.add(this.buttonBitshiftRight);
+		
+		this.buttonBitshiftRightU = new JButton(I18n.getString("GUI.buttonBitshiftRightU.text")); //$NON-NLS-1$
+		this.buttonBitshiftRightU.setToolTipText(I18n.getString("GUI.buttonBitshiftRightU.toolTipText")); //$NON-NLS-1$
+		this.buttonBitshiftRightU.setBounds(47, 58, 29, 29);
+		this.buttonBitshiftRightU.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
+		this.buttonBitshiftRightU.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.buttonBitshiftRightU_click();
+			}
+		});
+		this.panelBinaryOperations.add(this.buttonBitshiftRightU);
+		
+		this.buttonBitshiftLeft = new JButton(I18n.getString("GUI.buttonBitshiftLeft.text")); //$NON-NLS-1$
+		this.buttonBitshiftLeft.setToolTipText(I18n.getString("GUI.buttonBitshiftLeft.toolTipText")); //$NON-NLS-1$
+		this.buttonBitshiftLeft.setBounds(88, 58, 29, 29);
+		this.buttonBitshiftLeft.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.buttonBitshiftLeft_click();
+			}
+		});
+		this.panelBinaryOperations.add(this.buttonBitshiftLeft);
+	}
+	
+	private void addClearButtons()
+	{
+		this.buttonCE = new JButton(I18n.getString("GUI.buttonCE.text")); //$NON-NLS-1$
+		this.buttonCE.setToolTipText(I18n.getString("GUI.buttonCE.toolTipText")); //$NON-NLS-1$
+		this.buttonCE.setBounds(6, 17, 29, 29);
+		this.buttonCE.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.buttonCE_click();
+			}
+		});
+		this.panelClear.add(this.buttonCE);
+		
+		this.buttonC = new JButton(I18n.getString("GUI.buttonC.text")); //$NON-NLS-1$
+		this.buttonC.setToolTipText(I18n.getString("GUI.buttonC.toolTipText")); //$NON-NLS-1$
+		this.buttonC.setBounds(47, 17, 29, 29);
+		this.buttonC.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.buttonC_click();
+			}
+		});
+		this.panelClear.add(this.buttonC);
+	}
+	
+	private void addAdvancedOperationButtons()
+	{
+		
+		this.buttonPI = new JButton(I18n.getString("GUI.buttonPI.text")); //$NON-NLS-1$
+		this.buttonPI.setToolTipText(I18n.getString("GUI.buttonPI.toolTipText")); //$NON-NLS-1$
+		this.buttonPI.setBounds(6, 17, 29, 29);
 		this.buttonPI.addActionListener(new ActionListener()
 		{
 			@Override
@@ -621,11 +657,11 @@ public class GUI
 				GUI.this.calc.buttonPI_click();
 			}
 		});
-		this.buttonPI.setToolTipText(I18n.getString("GUI.buttonPI.toolTipText")); //$NON-NLS-1$
-		this.buttonPI.setBounds(88, 17, 29, 29);
-		this.panelAdvancedOperations.add(this.buttonPI);
+		this.panelConstants.add(this.buttonPI);
 		
-		this.buttonE = new JButton(CSCalc.E);
+		this.buttonE = new JButton(I18n.getString("GUI.buttonE.text")); //$NON-NLS-1$
+		this.buttonE.setToolTipText(I18n.getString("GUI.buttonE.toolTipText")); //$NON-NLS-1$
+		this.buttonE.setBounds(47, 17, 29, 29);
 		this.buttonE.addActionListener(new ActionListener()
 		{
 			@Override
@@ -634,48 +670,136 @@ public class GUI
 				GUI.this.calc.buttonE_click();
 			}
 		});
-		this.buttonE.setToolTipText(I18n.getString("GUI.buttonE.toolTipText")); //$NON-NLS-1$
-		this.buttonE.setBounds(129, 17, 29, 29);
-		this.panelAdvancedOperations.add(this.buttonE);
+		this.panelConstants.add(this.buttonE);
+		
+		this.buttonInfinity = new JButton(I18n.getString("GUI.buttonInfinity.text")); //$NON-NLS-1$
+		this.buttonInfinity.setToolTipText(I18n.getString("GUI.buttonInfinity.toolTipText")); //$NON-NLS-1$
+		this.buttonInfinity.setBounds(6, 58, 29, 29);
+		this.buttonInfinity.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.buttonInfinity_click();
+			}
+		});
+		this.panelConstants.add(this.buttonInfinity);
+		
+		this.buttonNegativeInfinity = new JButton(I18n.getString("GUI.buttonNegativeInfinity.text")); //$NON-NLS-1$
+		this.buttonNegativeInfinity.setToolTipText(I18n.getString("GUI.buttonNegativeInfinity.toolTipText")); //$NON-NLS-1$
+		this.buttonNegativeInfinity.setBounds(47, 58, 29, 29);
+		this.buttonNegativeInfinity.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.buttonNegativeInfinity_click();
+			}
+		});
+		this.panelConstants.add(this.buttonNegativeInfinity);
+		
+		this.buttonNaN = new JButton(I18n.getString("GUI.buttonNaN.text")); //$NON-NLS-1$
+		this.buttonNaN.setToolTipText(I18n.getString("GUI.buttonNaN.toolTipText")); //$NON-NLS-1$
+		this.buttonNaN.setBounds(88, 17, 29, 29);
+		this.buttonNaN.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
+		this.buttonNaN.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.buttonNaN_click();
+			}
+		});
+		this.panelConstants.add(this.buttonNaN);
 	}
 	
 	private void addTextFields()
 	{
+		
+		this.popupMenuInputTextField = new JPopupMenu();
+		addPopup(this.inputTextField, this.popupMenuInputTextField);
+		
+		this.menuItemDisplayMode = new JMenuItem(I18n.getString("GUI.mntmDisplayMode.text")); //$NON-NLS-1$
+		this.menuItemDisplayMode.setEnabled(false);
+		this.popupMenuInputTextField.add(this.menuItemDisplayMode);
+		
+		this.popupMenuInputTextField.addSeparator();
+		
+		this.menuItemDisplayDecimal = new JRadioButtonMenuItem(I18n.getString("GUI.menuItemDisplayDecimal.text")); //$NON-NLS-1$
+		this.menuItemDisplayDecimal.setSelected(true);
+		this.menuItemDisplayDecimal.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.setRadix(10);
+			}
+		});
+		this.popupMenuInputTextField.add(this.menuItemDisplayDecimal);
+		this.buttonGroupDisplay.add(this.menuItemDisplayDecimal);
+		
+		this.menuItemDisplayHexadecimal = new JRadioButtonMenuItem(I18n.getString("GUI.menuItemDisplayHexadecimal.text")); //$NON-NLS-1$
+		this.menuItemDisplayHexadecimal.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.setRadix(16);
+			}
+		});
+		this.popupMenuInputTextField.add(this.menuItemDisplayHexadecimal);
+		this.buttonGroupDisplay.add(this.menuItemDisplayHexadecimal);
+		
+		this.menuItemDisplayBinary = new JRadioButtonMenuItem(I18n.getString("GUI.menuItemDisplayBinary.text")); //$NON-NLS-1$
+		this.menuItemDisplayBinary.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.setRadix(2);
+			}
+		});
+		this.popupMenuInputTextField.add(this.menuItemDisplayBinary);
+		this.buttonGroupDisplay.add(this.menuItemDisplayBinary);
+		
 		StyledDocument doc;
 		SimpleAttributeSet center = new SimpleAttributeSet();
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_RIGHT);
 		
 		this.inputTextField = new JTextPane();
-		this.inputTextField.setBounds(6, 6, 447, 52);
 		this.inputTextField.setText(I18n.getString("GUI.inputTextField.text")); //$NON-NLS-1$
+		this.inputTextField.setBounds(6, 6, 447, 52);
 		this.inputTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
 		this.inputTextField.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		this.inputTextField.setEditable(false);
 		this.panelCalculateTab.add(this.inputTextField);
+		addPopup(this.inputTextField, this.popupMenuInputTextField);
+		
+		doc = this.resultTextField.getStyledDocument();
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 		
 		this.resultTextField = new JTextPane();
-		this.resultTextField.setBounds(6, 70, 447, 28);
 		this.resultTextField.setText(I18n.getString("GUI.resultTextField.text")); //$NON-NLS-1$
+		this.resultTextField.setBounds(6, 70, 447, 28);
 		this.resultTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
 		this.resultTextField.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		this.resultTextField.setEditable(false);
 		this.panelCalculateTab.add(this.resultTextField);
-		
-		doc = this.resultTextField.getStyledDocument();
-		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+		addPopup(this.resultTextField, this.popupMenuInputTextField);
 		
 		doc = this.inputTextField.getStyledDocument();
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 		
 		this.consoleTextField = new JTextPane();
-		this.consoleTextField.setEditable(false);
 		this.consoleTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
-		this.consoleTextField.setBackground(Color.WHITE);
-		this.consoleTextField.setForeground(Color.BLACK);
-		this.panelDevTab.add(this.consoleTextField, BorderLayout.CENTER);
+		this.consoleTextField.setEditable(false);
+		
+		JScrollPane scrollPane = new JScrollPane(this.consoleTextField);
+		this.panelDevTab.add(scrollPane, BorderLayout.CENTER);
 		
 		this.commandTextField = new JTextField();
 		this.commandTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
+		this.commandTextField.setColumns(10);
 		this.commandTextField.addKeyListener(new KeyAdapter()
 		{
 			@Override
@@ -684,14 +808,15 @@ public class GUI
 				GUI.this.calc.commandInputTextField_keyTyped(e.getKeyChar());
 			}
 		});
-		this.commandTextField.setColumns(10);
 		this.panelDevTab.add(this.commandTextField, BorderLayout.SOUTH);
 	}
 	
 	private void addCalculateButton()
 	{
 		this.buttonCalculate = new JButton(I18n.getString("GUI.buttonCalculate.text"));
-		this.buttonCalculate.setBounds(6, 298, 447, 75);
+		this.buttonCalculate.setToolTipText(I18n.getString("GUI.buttonCalculate.toolTipText")); //$NON-NLS-1$
+		this.buttonCalculate.setBounds(6, 322, 447, 54);
+		this.buttonCalculate.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		this.buttonCalculate.addActionListener(new ActionListener()
 		{
 			@Override
@@ -700,14 +825,13 @@ public class GUI
 				GUI.this.calc.buttonCalculate_click();
 			}
 		});
-		this.buttonCalculate.setToolTipText(I18n.getString("GUI.buttonCalculate.toolTipText")); //$NON-NLS-1$
-		this.buttonCalculate.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		this.panelCalculateTab.add(this.buttonCalculate);
 	}
 	
 	private void addSettings()
 	{
-		this.checkboxDevMode = new JCheckBox(I18n.getString("GUI.checkboxDevMode.text"));
+		this.checkboxDevMode = new JCheckBox(I18n.getString("GUI.checkboxDevMode.text")); //$NON-NLS-1$
+		this.checkboxDevMode.setToolTipText(I18n.getString("GUI.checkboxDevMode.toolTipText")); //$NON-NLS-1$
 		this.checkboxDevMode.addChangeListener(new ChangeListener()
 		{
 			@Override
@@ -716,13 +840,12 @@ public class GUI
 				GUI.this.calc.setDevMode(GUI.this.checkboxDevMode.isSelected());
 			}
 		});
-		this.checkboxDevMode.setToolTipText(I18n.getString("GUI.checkboxDevMode.toolTipText"));
 		this.panelDevSettings.add(this.checkboxDevMode, "1, 1, fill, top");
 		
-		this.labelDevModeLogging = new JLabel(I18n.getString("GUI.labelDevModeLogging.text"));
+		this.labelDevModeLogging = new JLabel(I18n.getString("GUI.labelDevModeLogging.text")); //$NON-NLS-1$
 		this.panelDevSettings.add(this.labelDevModeLogging, "1, 2, fill, center");
 		
-		this.radioButtonLogMinimal = new JRadioButton(I18n.getString("GUI.radioButtonLogMinimal.text"));
+		this.radioButtonLogMinimal = new JRadioButton(I18n.getString("GUI.radioButtonLogMinimal.text")); //$NON-NLS-1$
 		this.radioButtonLogMinimal.addChangeListener(new ChangeListener()
 		{
 			@Override
@@ -736,7 +859,7 @@ public class GUI
 		});
 		this.panelDevSettings.add(this.radioButtonLogMinimal, "2, 2, left, top");
 		
-		this.radioButtonLogDebug = new JRadioButton(I18n.getString("GUI.radioButtonLogDebug.text"));
+		this.radioButtonLogDebug = new JRadioButton(I18n.getString("GUI.radioButtonLogDebug.text")); //$NON-NLS-1$
 		this.radioButtonLogDebug.addChangeListener(new ChangeListener()
 		{
 			@Override
@@ -750,8 +873,7 @@ public class GUI
 		});
 		this.panelDevSettings.add(this.radioButtonLogDebug, "4, 2, left, top");
 		
-		this.radioButtonLogExtended = new JRadioButton(I18n.getString("GUI.radioButtonLogExtended.text"));
-		this.panelDevSettings.add(this.radioButtonLogExtended, "6, 2, fill, top");
+		this.radioButtonLogExtended = new JRadioButton(I18n.getString("GUI.radioButtonLogExtended.text")); //$NON-NLS-1$
 		this.radioButtonLogExtended.addChangeListener(new ChangeListener()
 		{
 			@Override
@@ -763,21 +885,22 @@ public class GUI
 				}
 			}
 		});
+		this.panelDevSettings.add(this.radioButtonLogExtended, "6, 2, fill, top");
 		
 		this.colorChooser = new JColorChooser();
+		this.colorChooser.setToolTipText(I18n.getString("GUI.colorChooser.toolTipText")); //$NON-NLS-1$
+		this.colorChooser.setColor(this.frame.getContentPane().getBackground());
 		this.colorChooser.getSelectionModel().addChangeListener(new ChangeListener()
 		{
 			@Override
 			public void stateChanged(ChangeEvent e)
 			{
-				setColor(colorChooser.getColor());
+				GUI.this.setColor(GUI.this.colorChooser.getColor());
 			}
 		});
-		this.colorChooser.setColor(this.frame.getContentPane().getBackground());
-		this.colorChooser.setToolTipText(I18n.getString("GUI.colorChooser.toolTipText"));
 		this.panelLookAndFeel.add(this.colorChooser, "1, 3, 3, 1, fill, fill");
 		
-		this.buttonFont = new JButton(I18n.getString("GUI.buttonFont.text"));
+		this.buttonFont = new JButton(I18n.getString("GUI.buttonFont.text")); //$NON-NLS-1$
 		this.panelLookAndFeel.add(this.buttonFont, "1, 1, fill, fill");
 		
 		DefaultComboBoxModel model = new DefaultComboBoxModel();
@@ -791,9 +914,10 @@ public class GUI
 		this.comboBoxLAF = new JComboBox();
 		this.comboBoxLAF.addItemListener(new ItemListener()
 		{
+			@Override
 			public void itemStateChanged(ItemEvent e)
 			{
-				setLAF(comboBoxLAF.getSelectedIndex(), true);
+				GUI.this.setLAF(GUI.this.comboBoxLAF.getSelectedIndex(), true);
 			}
 		});
 		this.comboBoxLAF.setModel(model);
@@ -810,57 +934,115 @@ public class GUI
 		this.canvasGraph = new Graph();
 		this.panelDraw.add(this.canvasGraph, BorderLayout.CENTER);
 		
-		this.panelDraw_Input = new JPanel();
+		this.popupMenuGraph = new JPopupMenu();
+		addPopup(this.canvasGraph, this.popupMenuGraph);
+		
+		this.menuZoom = new JMenu(I18n.getString("GUI.menuZoom.text")); //$NON-NLS-1$
+		this.popupMenuGraph.add(this.menuZoom);
+		
+		this.menuItemZoomInfo = new JMenuItem(I18n.getString("GUI.menuItemZoomInfo.text")); //$NON-NLS-1$
+		this.menuItemZoomInfo.setEnabled(false);
+		this.menuZoom.add(this.menuItemZoomInfo);
+		
+		this.menuZoom.addSeparator();
+		
+		this.menuItemZoomDefault = new JMenuItem(I18n.getString("GUI.menuItemZoomDefault.text")); //$NON-NLS-1$
+		this.menuItemZoomDefault.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.canvasGraph.setZoom(50F);
+			}
+		});
+		this.menuZoom.add(this.menuItemZoomDefault);
+		
+		this.menuItemZoomNumber = new JMenuItem(I18n.getString("GUI.menuItemZoomNumber.text")); //$NON-NLS-1$
+		this.menuItemZoomNumber.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.canvasGraph.setZoom(100F);
+			}
+		});
+		this.menuZoom.add(this.menuItemZoomNumber);
+		
+		this.menuItemZoomMultipied = new JMenuItem(I18n.getString("GUI.menuItemZoomMultipied.text")); //$NON-NLS-1$
+		this.menuItemZoomMultipied.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.canvasGraph.setZoom(40F);
+			}
+		});
+		this.menuZoom.add(this.menuItemZoomMultipied);
+		
+		this.menuItemZoomCubed = new JMenuItem(I18n.getString("GUI.menuItemZoomCubed.text")); //$NON-NLS-1$
+		this.menuItemZoomCubed.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.canvasGraph.setZoom(10F);
+			}
+		});
+		this.menuZoom.add(this.menuItemZoomCubed);
+		
 		GridBagLayout inputPanelConstraint = new GridBagLayout();
 		inputPanelConstraint.columnWidths = new int[] { 0, 415, 0, 0 };
 		inputPanelConstraint.rowHeights = new int[] { 0, 0 };
 		inputPanelConstraint.columnWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
 		inputPanelConstraint.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
-		this.panelDraw_Input.setLayout(inputPanelConstraint);
-		this.panelDraw.add(this.panelDraw_Input, BorderLayout.NORTH);
+		this.panelDrawInput = new JPanel();
+		this.panelDrawInput.setLayout(inputPanelConstraint);
+		this.panelDraw.add(this.panelDrawInput, BorderLayout.NORTH);
 		
-		this.lblFx = new JLabel(I18n.getString("GUI.lblFx.text")); //$NON-NLS-1$
 		GridBagConstraints gbc_lblFx = new GridBagConstraints();
 		gbc_lblFx.fill = GridBagConstraints.BOTH;
 		gbc_lblFx.insets = new Insets(0, 0, 0, 5);
 		gbc_lblFx.gridx = 0;
 		gbc_lblFx.gridy = 0;
-		this.panelDraw_Input.add(this.lblFx, gbc_lblFx);
+		this.labelFX = new JLabel(I18n.getString("GUI.labelFX.text")); //$NON-NLS-1$
+		this.panelDrawInput.add(this.labelFX, gbc_lblFx);
 		
-		this.comboBoxGraph = new JComboBox();
-		this.comboBoxGraph.setBackground(Color.WHITE);
-		this.comboBoxGraph.setEditable(true);
 		GridBagConstraints graphConstraint = new GridBagConstraints();
 		graphConstraint.insets = new Insets(0, 0, 0, 5);
 		graphConstraint.fill = GridBagConstraints.BOTH;
 		graphConstraint.gridx = 1;
 		graphConstraint.gridy = 0;
-		this.panelDraw_Input.add(this.comboBoxGraph, graphConstraint);
+		this.comboBoxGraph = new JComboBox();
+		this.comboBoxGraph.setBackground(Color.WHITE);
+		this.comboBoxGraph.setEditable(true);
+		this.comboBoxGraph.setMaximumRowCount(10);
+		this.panelDrawInput.add(this.comboBoxGraph, graphConstraint);
 		
-		this.buttonDraw = new JButton("\u2192");
-		this.buttonDraw.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				String item = (String) comboBoxGraph.getEditor().getItem();
-				if (!canvasGraph.hasEquation(item))
-				{
-					comboBoxGraph.addItem(item);
-					canvasGraph.addEquation(item);
-				}
-				
-				while (canvasGraph.getEquationCount() > 10)
-				{
-					comboBoxGraph.removeItemAt(0);
-					canvasGraph.removeEquation(0);
-				}
-			}
-		});
 		GridBagConstraints drawButtonConstraint = new GridBagConstraints();
 		drawButtonConstraint.fill = GridBagConstraints.BOTH;
 		drawButtonConstraint.gridx = 2;
 		drawButtonConstraint.gridy = 0;
-		this.panelDraw_Input.add(this.buttonDraw, drawButtonConstraint);
+		this.buttonDraw = new JButton(I18n.getString("GUI.buttonDraw.text")); //$NON-NLS-1$
+		this.buttonDraw.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				String item = (String) GUI.this.comboBoxGraph.getEditor().getItem();
+				if (!GUI.this.canvasGraph.hasEquation(item))
+				{
+					GUI.this.comboBoxGraph.addItem(item);
+					GUI.this.canvasGraph.addEquation(item);
+				}
+				
+				while (GUI.this.canvasGraph.getEquationCount() > 10)
+				{
+					GUI.this.comboBoxGraph.removeItemAt(0);
+					GUI.this.canvasGraph.removeEquation(0);
+				}
+			}
+		});
+		this.panelDrawInput.add(this.buttonDraw, drawButtonConstraint);
 	}
 	
 	public void setDevMode(boolean dev)
@@ -913,9 +1095,8 @@ public class GUI
 		{
 			component.setBackground(color);
 			Component[] sub = ((Container) component).getComponents();
-			for (int i = 0; i < sub.length; i++)
+			for (Component c : sub)
 			{
-				Component c = sub[i];
 				this.setColor(c, color);
 			}
 		}
@@ -942,6 +1123,7 @@ public class GUI
 	{
 		new Thread()
 		{
+			@Override
 			public void run()
 			{
 				try
@@ -954,20 +1136,20 @@ public class GUI
 					{
 						WebLookAndFeel.install();
 					}
-					else if (laf > 0 && laf - 2 < lookAndFeels.length)
+					else if (laf > 0 && laf - 2 < GUI.this.lookAndFeels.length)
 					{
-						UIManager.setLookAndFeel(lookAndFeels[laf - 2].getClassName());
+						UIManager.setLookAndFeel(GUI.this.lookAndFeels[laf - 2].getClassName());
 					}
 					
 					if (update)
 					{
 						WebLookAndFeel.updateAllComponentUIs();
-						JOptionPane.showMessageDialog(frame, "Restart the Application to apply LAF changes", "Warning", JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(GUI.this.frame, "Restart the Application to apply LAF changes", "Warning", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 				catch (Exception e)
 				{
-					print("Error setting native LAF: " + e.getMessage());
+					GUI.this.print("Error setting native LAF: " + e.getMessage());
 					e.printStackTrace();
 				}
 			}
@@ -978,8 +1160,38 @@ public class GUI
 	{
 		if (this.consoleTextField != null)
 		{
-			this.consoleTextField.setText(GUI.instance.consoleTextField.getText() + text + "\n");
+			String oldText = GUI.instance.consoleTextField.getText();
+			this.consoleTextField.setText(String.format("%s[%tr] %s%n", oldText, new Date(), text));
 		}
 		System.out.println(text);
+	}
+	
+	private static void addPopup(Component component, final JPopupMenu popup)
+	{
+		component.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mousePressed(MouseEvent e)
+			{
+				if (e.isPopupTrigger())
+				{
+					this.showMenu(e);
+				}
+			}
+			
+			@Override
+			public void mouseReleased(MouseEvent e)
+			{
+				if (e.isPopupTrigger())
+				{
+					this.showMenu(e);
+				}
+			}
+			
+			private void showMenu(MouseEvent e)
+			{
+				popup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
 	}
 }

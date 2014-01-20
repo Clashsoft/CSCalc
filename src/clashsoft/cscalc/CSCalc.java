@@ -107,8 +107,26 @@ public class CSCalc
 	
 	public void update()
 	{
-		GUI.instance.inputTextField.setText(this.var1 + "\n" + this.mode + " " + this.var2);
-		GUI.instance.resultTextField.setText("" + this.result);
+		int radix = this.getRadix();
+		String s1;
+		String s2;
+		String result;
+		
+		if (radix == 10)
+		{
+			s1 = "" + this.var1;
+			s2 = "" + this.var2;
+			result = "" + this.result;
+		}
+		else
+		{
+			s1 = MathHelper.toString(this.var1, radix);
+			s2 = MathHelper.toString(this.var2, radix);
+			result = MathHelper.toString(this.result, radix);
+		}
+		
+		GUI.instance.inputTextField.setText(s1 + "\n" + this.mode + " " + s2);
+		GUI.instance.resultTextField.setText(result);
 	}
 	
 	public void resetSettings()
@@ -118,6 +136,7 @@ public class CSCalc
 		this.setDevMode(false);
 		this.setColor(Color.LIGHT_GRAY);
 		this.setLAF(0);
+		this.setRadix(10);
 	}
 	
 	public void loadSettings()
@@ -165,6 +184,7 @@ public class CSCalc
 		{
 			this.var1 = value;
 		}
+		
 		this.update();
 	}
 	
@@ -182,49 +202,67 @@ public class CSCalc
 	
 	public void addNumber(int number)
 	{
-		if (this.second)
+		int radix = this.getRadix();
+		number %= radix;
+		if (this.decimalPoint > 0)
 		{
-			if (this.decimalPoint > 0)
+			double d = Math.pow(1D / radix, this.decimalPoint) * number;
+			this.devInfo("Adding Decimal Place: n=" + number + "; radix=" + radix + "; dp=" + this.decimalPoint + "; r=" + d, 1);
+			if (this.second)
 			{
-				this.var2 += Math.pow(0.1D, this.decimalPoint) * number;
-				this.decimalPoint++;
+				this.var2 += d;
 			}
 			else
 			{
-				this.var2 *= 10;
-				this.var2 += number;
+				this.var1 += d;
 			}
+			this.decimalPoint++;
 		}
 		else
 		{
-			if (this.decimalPoint > 0)
+			this.devInfo("Adding Number: n=" + number + "; radix=" + radix, 1);
+			if (this.second)
 			{
-				this.var1 += Math.pow(0.1D, this.decimalPoint) * number;
-				this.decimalPoint++;
+				this.var2 *= radix;
+				this.var2 += number;
 			}
 			else
 			{
-				this.var1 *= 10;
+				this.var1 *= radix;
 				this.var1 += number;
 			}
 		}
 		this.update();
 	}
 	
-	public void setCalculation(String calc)
+	/**
+	 * Sets the current operator and calculates the result if necessary.
+	 * <p>
+	 * If {@code op} is {@code null}, the result will be calculated but the
+	 * operator won't be set. This is used by the calculate button (=)
+	 * 
+	 * @param op
+	 *            the operator
+	 */
+	public void setCalculation(String op)
 	{
 		if (this.second)
 		{
-			this.var1 = this.calculate(this.var1, this.mode, this.var2);
-			this.var2 = 0D;
-			this.result = 0D;
-		}
-		else
-		{
-			this.second = true;
+			this.result = this.calculate(this.var1, this.mode, this.var2);
+			if (op != null)
+			{
+				this.var1 = this.result;
+				this.var2 = 0D;
+				this.result = 0D;
+			}
 		}
 		
-		this.mode = calc;
+		if (op != null)
+		{
+			this.second = true;
+			this.mode = op;
+		}
+		
 		this.setDecimalPoint(false);
 		this.update();
 	}
@@ -312,6 +350,24 @@ public class CSCalc
 		this.properties.setProperty("lookandfeel", laf + "");
 	}
 	
+	public int getRadix()
+	{
+		return Integer.parseInt(this.properties.getProperty("radix"));
+	}
+	
+	public void setRadix(int radix)
+	{
+		this.properties.setProperty("radix", radix + "");
+		
+		try
+		{
+			this.update();
+		}
+		catch (NullPointerException ex)
+		{
+		}
+	}
+	
 	public void devInfo(String text)
 	{
 		GUI.instance.print(text);
@@ -380,7 +436,6 @@ public class CSCalc
 	public void buttonDecimalPoint_click()
 	{
 		this.setDecimalPoint(true);
-		this.devInfo("Switching to Comma Mode", 1);
 	}
 	
 	// Basic Operations
@@ -471,21 +526,21 @@ public class CSCalc
 	
 	public void buttonCalculate_click()
 	{
-		this.result = this.calculate(this.var1, this.mode, this.var2);
-		this.second = false;
-		this.update();
+		this.setCalculation(null);
 	}
 	
 	// Clear Buttons
 	
 	public void buttonCE_click()
 	{
+		this.devInfo("Clearing Everything", 1);
 		this.reset();
 	}
 	
 	public void buttonC_click()
 	{
-		setCurrentVar(0D);
+		this.devInfo("Clearing Current Variable", 1);
+		this.setCurrentVar(0D);
 	}
 	
 	// Memory Buttons
@@ -502,7 +557,7 @@ public class CSCalc
 	
 	public void buttonMC_click()
 	{
-		this.mem = 0D;
+		
 	}
 	
 	// Konstanten Buttons
@@ -515,6 +570,21 @@ public class CSCalc
 	public void buttonE_click()
 	{
 		this.setCurrentVar(Math.E);
+	}
+	
+	public void buttonInfinity_click()
+	{
+		this.setCurrentVar(Double.POSITIVE_INFINITY);
+	}
+	
+	public void buttonNegativeInfinity_click()
+	{
+		this.setCurrentVar(Double.NEGATIVE_INFINITY);
+	}
+	
+	public void buttonNaN_click()
+	{
+		this.setCurrentVar(Double.NaN);
 	}
 	
 	public void handleCommand(String text)

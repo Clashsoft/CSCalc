@@ -1,7 +1,17 @@
 package clashsoft.cscalc;
 
-public class MathHelper
+import java.text.DecimalFormatSymbols;
+
+public strictfp class MathHelper
 {
+	/**
+	 * A constant to turn the decimal places of a {@code double} to an
+	 * {@code int}.
+	 * <p>
+	 * Equals 2<sup>32</sup>.
+	 */
+	public static double	DECIMAL_INT_FACTOR	= 2147483648D;
+	
 	public static double clamp(double d, double min, double max)
 	{
 		return d < min ? min : (d > max ? max : d);
@@ -34,16 +44,81 @@ public class MathHelper
 	
 	public static double and(double d1, double d2)
 	{
-		return Double.longBitsToDouble(Double.doubleToRawLongBits(d1) & Double.doubleToRawLongBits(d2));
+		return (long) d1 & (long) d2;
 	}
 	
 	public static double or(double d1, double d2)
 	{
-		return Double.longBitsToDouble(Double.doubleToRawLongBits(d1) | Double.doubleToRawLongBits(d2));
+		return (long) d1 | (long) d2;
 	}
 	
 	public static double xor(double d1, double d2)
 	{
-		return Double.longBitsToDouble(Double.doubleToRawLongBits(d1) ^ Double.doubleToRawLongBits(d2));
+		return (long) d1 ^ (long) d2;
+	}
+	
+	public static byte getDecimalPlaces(double d)
+	{
+		int i = getDecimal(d);
+		return (byte) (Integer.lowestOneBit(i) - Integer.numberOfTrailingZeros(i));
+	}
+	
+	public static long getInt(double d)
+	{
+		return (long) d;
+	}
+	
+	public static int getDecimal(double d)
+	{
+		return (int) ((d % 1D) * DECIMAL_INT_FACTOR);
+	}
+	
+	public static double getDouble(long i, int d)
+	{
+		return (double) i + ((double) d / DECIMAL_INT_FACTOR);
+	}
+	
+	public static String toString(double d, int radix)
+	{
+		long integer = getInt(d);
+		int decimal = getDecimal(d);
+		String is = Long.toString(integer, radix);
+		String ds = Integer.toString(decimal, radix).replaceAll("0*$", "");
+		return toString(is, ds, radix);
+	}
+	
+	protected static String toString(String value, String decimal, int radix)
+	{
+		int valueLength = value.length();
+		int decimalLength = decimal.length();
+		
+		StringBuilder builder = new StringBuilder(valueLength + decimalLength + 3);
+		
+		switch (radix)
+		{
+		case 10:
+			break;
+		case 2:
+			builder.append("0b");
+			break;
+		case 8:
+			builder.append("0");
+			break;
+		case 16:
+			builder.append("0x");
+			break;
+		default:
+			builder.append("(" + radix + ") ");
+			break;
+		}
+		
+		builder.append(value);
+		if (decimalLength > 0)
+		{
+			builder.append(DecimalFormatSymbols.getInstance().getDecimalSeparator());
+			builder.append(decimal);
+		}
+		
+		return builder.toString();
 	}
 }

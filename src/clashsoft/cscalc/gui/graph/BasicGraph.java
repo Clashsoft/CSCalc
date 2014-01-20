@@ -8,7 +8,6 @@ import java.awt.event.MouseWheelListener;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import clashsoft.cscalc.MathHelper;
 
@@ -19,8 +18,8 @@ public class BasicGraph extends Canvas
 	public ScriptEngineManager	manager				= new ScriptEngineManager();
 	public ScriptEngine			engine				= manager.getEngineByName("JavaScript");
 	
-	public float				zoomX				= 80F;
-	public float				zoomY				= 80F;
+	public float				zoomX				= 50F;
+	public float				zoomY				= 50F;
 	
 	public BasicGraph()
 	{
@@ -85,9 +84,16 @@ public class BasicGraph extends Canvas
 		this.repaint();
 	}
 	
+	public void setZoom(float zoom)
+	{
+		this.zoomX = zoom;
+		this.zoomY = zoom;
+		this.repaint();
+	}
+	
 	public String getEquation(int i)
 	{
-		return "x * 2";
+		return "x";
 	}
 	
 	public int getEquationCount()
@@ -103,9 +109,8 @@ public class BasicGraph extends Canvas
 			float f = ((Number) obj).floatValue();
 			return f;
 		}
-		catch (ScriptException ex)
+		catch (Exception ex)
 		{
-			ex.printStackTrace();
 			return 0F;
 		}
 	}
@@ -140,9 +145,13 @@ public class BasicGraph extends Canvas
 		Color intColor = getIntColor();
 		Color lineColor = getLineColor();
 		
+		int fontX = (int) centerX + 2;
+		int fontY = (int) centerY + 12;
+		
 		g.setColor(axisColor);
 		g.drawLine((int) centerX, 0, (int) centerX, height);
 		g.drawLine(0, (int) centerY, width, (int) centerY);
+		g.drawString("0.0", fontX, fontY);
 		
 		g.setColor(lineColor);
 		for (float f = stepX; f < centerX; f += stepX)
@@ -162,6 +171,8 @@ public class BasicGraph extends Canvas
 			
 			if (flag)
 			{
+				g.drawString("-" + f, i1 + 2, fontY);
+				g.drawString("" + f, i2 + 2, fontY);
 				g.setColor(lineColor);
 			}
 		}
@@ -182,6 +193,8 @@ public class BasicGraph extends Canvas
 			
 			if (flag)
 			{
+				g.drawString("" + f, fontX, i1 + 12);
+				g.drawString("-" + f, fontX, i2 + 12);
 				g.setColor(lineColor);
 			}
 		}
