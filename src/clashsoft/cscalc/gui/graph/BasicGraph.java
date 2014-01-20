@@ -6,17 +6,11 @@ import java.awt.Graphics;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
 import clashsoft.cscalc.MathHelper;
 
 public class BasicGraph extends Canvas
 {
 	private static final long	serialVersionUID	= 6584848915428177630L;
-	
-	public ScriptEngineManager	manager				= new ScriptEngineManager();
-	public ScriptEngine			engine				= manager.getEngineByName("JavaScript");
 	
 	public float				zoomX				= 50F;
 	public float				zoomY				= 50F;
@@ -103,16 +97,7 @@ public class BasicGraph extends Canvas
 	
 	public float getFX(float x, int i)
 	{
-		try
-		{
-			Object obj = this.engine.eval(getEquation(i).replace("x", "(" + x + ")"));
-			float f = ((Number) obj).floatValue();
-			return f;
-		}
-		catch (Exception ex)
-		{
-			return 0F;
-		}
+		return MathHelper.parsef(this.getEquation(i), x);
 	}
 	
 	@Override
