@@ -124,7 +124,7 @@ public class GUI
 	public JRadioButton			radioButtonHexadecimal;
 	public JRadioButton			radioButtonCustomRadix;
 	public JSlider				sliderRadix;
-	public JPanel				panel;
+	public JPanel				panelRadix;
 	public JRadioButton			rdbtnOctal;
 	
 	public static void init()
@@ -226,7 +226,13 @@ public class GUI
 		this.panelSettingsTab.addTab(I18n.getString("GUI.panelLookAndFeel.title"), null, this.panelLAFSettings, null);
 		
 		this.panelCalcSettings = new JPanel();
+		this.panelCalcSettings.setLayout(new BorderLayout(0, 0));
 		this.panelSettingsTab.addTab(I18n.getString("GUI.panelCalcSettings.title"), null, this.panelCalcSettings, null); //$NON-NLS-1$
+		
+		this.panelRadix = new JPanel();
+		this.panelRadix.setBorder(new TitledBorder(null, "Radix", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		this.panelRadix.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, }));
+		this.panelCalcSettings.add(this.panelRadix);
 		
 		// Dev Settings Panels
 		
@@ -785,30 +791,23 @@ public class GUI
 	
 	private void addSettings()
 	{
-		this.panelCalcSettings.setLayout(new BorderLayout(0, 0));
-		
-		this.panel = new JPanel();
-		this.panel.setBorder(new TitledBorder(null, "Radix", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		this.panelCalcSettings.add(this.panel);
-		this.panel.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, }));
-		
 		this.radioButtonBinary = new JRadioButton(I18n.getString("GUI.rdbtnBinary.text"));
-		this.panel.add(this.radioButtonBinary, "2, 2");
+		this.panelRadix.add(this.radioButtonBinary, "2, 2");
 		buttonGroupDisplay.add(this.radioButtonBinary);
 		
 		this.rdbtnOctal = new JRadioButton(I18n.getString("GUI.rdbtnOctal.text")); //$NON-NLS-1$
-		this.panel.add(this.rdbtnOctal, "2, 4");
+		this.panelRadix.add(this.rdbtnOctal, "2, 4");
 		
 		this.radioButtonDecimal = new JRadioButton(I18n.getString("GUI.rdbtnDecimal.text"));
-		this.panel.add(this.radioButtonDecimal, "2, 6");
+		this.panelRadix.add(this.radioButtonDecimal, "2, 6");
 		buttonGroupDisplay.add(this.radioButtonDecimal);
 		
 		this.radioButtonHexadecimal = new JRadioButton(I18n.getString("GUI.rdbtnHexadecimal.text"));
-		this.panel.add(this.radioButtonHexadecimal, "2, 8");
+		this.panelRadix.add(this.radioButtonHexadecimal, "2, 8");
 		buttonGroupDisplay.add(this.radioButtonHexadecimal);
 		
 		this.radioButtonCustomRadix = new JRadioButton(I18n.getString("GUI.rdbtnCustom.text"));
-		this.panel.add(this.radioButtonCustomRadix, "2, 10");
+		this.panelRadix.add(this.radioButtonCustomRadix, "2, 10");
 		buttonGroupDisplay.add(this.radioButtonCustomRadix);
 		
 		this.sliderRadix = new JSlider();
@@ -817,7 +816,7 @@ public class GUI
 		this.sliderRadix.setPaintTicks(true);
 		this.sliderRadix.setMinimum(2);
 		this.sliderRadix.setMaximum(36);
-		this.panel.add(this.sliderRadix, "4, 10");
+		this.panelRadix.add(this.sliderRadix, "4, 10");
 		
 		this.checkboxDevMode = new JCheckBox(I18n.getString("GUI.checkboxDevMode.text")); //$NON-NLS-1$
 		this.checkboxDevMode.setBounds(6, 6, 112, 23);
