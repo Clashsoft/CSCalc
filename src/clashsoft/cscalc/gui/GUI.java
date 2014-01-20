@@ -41,7 +41,7 @@ public class GUI
 	
 	public JTabbedPane			tabbedPane;
 	public JPanel				panelCalculateTab;
-	public JPanel				panelSettingsTab;
+	public JTabbedPane			panelSettingsTab;
 	public JPanel				panelDevTab;
 	
 	public JButton				buttonCalculate;
@@ -90,7 +90,7 @@ public class GUI
 	public JButton				buttonNegativeInfinity;
 	public JButton				buttonNaN;
 	
-	public JPanel				panelLookAndFeel;
+	public JPanel				panelLAFSettings;
 	public JPanel				panelDevSettings;
 	
 	public JButton				buttonFont;
@@ -117,13 +117,15 @@ public class GUI
 	public JMenuItem			menuItemZoomNumber;
 	public JMenuItem			menuItemZoomInfo;
 	
-	public JPopupMenu			popupMenuInputTextField;
-	public JMenuItem			menuItemDisplayMode;
-	public JRadioButtonMenuItem	menuItemDisplayDecimal;
-	public JRadioButtonMenuItem	menuItemDisplayHexadecimal;
-	public JRadioButtonMenuItem	menuItemDisplayBinary;
-	
 	private ButtonGroup			buttonGroupDisplay	= new ButtonGroup();
+	public JPanel				panelCalcSettings;
+	public JRadioButton			radioButtonDecimal;
+	public JRadioButton			radioButtonBinary;
+	public JRadioButton			radioButtonHexadecimal;
+	public JRadioButton			radioButtonCustomRadix;
+	public JSlider				sliderRadix;
+	public JPanel				panel;
+	public JRadioButton			rdbtnOctal;
 	
 	public static void init()
 	{
@@ -211,8 +213,7 @@ public class GUI
 		this.panelDraw.setLayout(new BorderLayout(0, 0));
 		this.tabbedPane.addTab(I18n.getString("GUI.panelDrawTab.text"), null, this.panelDraw, I18n.getString("GUI.panelDrawTab.toolTipText"));
 		
-		this.panelSettingsTab = new JPanel();
-		this.panelSettingsTab.setLayout(new BorderLayout(0, 0));
+		this.panelSettingsTab = new JTabbedPane(SwingConstants.TOP);
 		this.tabbedPane.addTab(I18n.getString("GUI.panelSettingsTab.text"), null, this.panelSettingsTab, I18n.getString("GUI.panelSettingsTab.toolTipText")); ////$NON-NLS-1$
 		
 		this.panelDevTab = new JPanel();
@@ -221,15 +222,16 @@ public class GUI
 		
 		// Settings Panels
 		
-		this.panelLookAndFeel = new JPanel();
-		this.panelLookAndFeel.setBorder(new TitledBorder(I18n.getString("GUI.panelLookAndFeel.borderTitle"))); //$NON-NLS-1$
-		this.panelLookAndFeel.setLayout(new FormLayout(new ColumnSpec[] { ColumnSpec.decode("200px:grow"), FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("200px:grow"), }, new RowSpec[] { RowSpec.decode("24px"), FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("259px:grow"), }));
-		this.panelSettingsTab.add(this.panelLookAndFeel, BorderLayout.CENTER);
+		this.panelLAFSettings = new JPanel();
+		this.panelSettingsTab.addTab(I18n.getString("GUI.panelLookAndFeel.title"), null, this.panelLAFSettings, null);
+		
+		this.panelCalcSettings = new JPanel();
+		this.panelSettingsTab.addTab(I18n.getString("GUI.panelCalcSettings.title"), null, this.panelCalcSettings, null); //$NON-NLS-1$
+		
+		// Dev Settings Panels
 		
 		this.panelDevSettings = new JPanel();
-		this.panelDevSettings.setBorder(new TitledBorder(I18n.getString("GUI.panelDevSettings.borderTitle"))); //$NON-NLS-1$
-		this.panelDevSettings.setLayout(new FormLayout(new ColumnSpec[] { ColumnSpec.decode("default:grow"), ColumnSpec.decode("default:grow"), FormFactory.LABEL_COMPONENT_GAP_COLSPEC, ColumnSpec.decode("default:grow"), FormFactory.LABEL_COMPONENT_GAP_COLSPEC, ColumnSpec.decode("default:grow"), }, new RowSpec[] { RowSpec.decode("23px"), RowSpec.decode("23px"), }));
-		this.panelSettingsTab.add(this.panelDevSettings, BorderLayout.NORTH);
+		this.panelSettingsTab.addTab(I18n.getString("GUI.panelDevSettings.title"), null, this.panelDevSettings, null); //$NON-NLS-1$
 		
 		// Calculate Panels
 		
@@ -720,51 +722,6 @@ public class GUI
 		SimpleAttributeSet center = new SimpleAttributeSet();
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_RIGHT);
 		
-		this.popupMenuInputTextField = new JPopupMenu();
-		
-		this.menuItemDisplayMode = new JMenuItem(I18n.getString("GUI.menuItemDisplayMode.text")); //$NON-NLS-1$
-		this.menuItemDisplayMode.setEnabled(false);
-		this.popupMenuInputTextField.add(this.menuItemDisplayMode);
-		
-		this.popupMenuInputTextField.addSeparator();
-		
-		this.menuItemDisplayDecimal = new JRadioButtonMenuItem(I18n.getString("GUI.menuItemDisplayDecimal.text")); //$NON-NLS-1$
-		this.menuItemDisplayDecimal.setSelected(true);
-		this.menuItemDisplayDecimal.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.setRadix(10);
-			}
-		});
-		this.popupMenuInputTextField.add(this.menuItemDisplayDecimal);
-		this.buttonGroupDisplay.add(this.menuItemDisplayDecimal);
-		
-		this.menuItemDisplayHexadecimal = new JRadioButtonMenuItem(I18n.getString("GUI.menuItemDisplayHexadecimal.text")); //$NON-NLS-1$
-		this.menuItemDisplayHexadecimal.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.setRadix(16);
-			}
-		});
-		this.popupMenuInputTextField.add(this.menuItemDisplayHexadecimal);
-		this.buttonGroupDisplay.add(this.menuItemDisplayHexadecimal);
-		
-		this.menuItemDisplayBinary = new JRadioButtonMenuItem(I18n.getString("GUI.menuItemDisplayBinary.text")); //$NON-NLS-1$
-		this.menuItemDisplayBinary.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.setRadix(2);
-			}
-		});
-		this.popupMenuInputTextField.add(this.menuItemDisplayBinary);
-		this.buttonGroupDisplay.add(this.menuItemDisplayBinary);
-		
 		this.inputTextField = new JTextPane();
 		this.inputTextField.setText(I18n.getString("GUI.inputTextField.text")); //$NON-NLS-1$
 		this.inputTextField.setBounds(6, 6, 447, 52);
@@ -772,7 +729,6 @@ public class GUI
 		this.inputTextField.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		this.inputTextField.setEditable(false);
 		this.panelCalculateTab.add(this.inputTextField);
-		addPopup(this.inputTextField, this.popupMenuInputTextField);
 		
 		doc = this.inputTextField.getStyledDocument();
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
@@ -784,7 +740,6 @@ public class GUI
 		this.resultTextField.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		this.resultTextField.setEditable(false);
 		this.panelCalculateTab.add(this.resultTextField);
-		addPopup(this.resultTextField, this.popupMenuInputTextField);
 		
 		doc = this.resultTextField.getStyledDocument();
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
@@ -830,7 +785,42 @@ public class GUI
 	
 	private void addSettings()
 	{
+		this.panelCalcSettings.setLayout(new BorderLayout(0, 0));
+		
+		this.panel = new JPanel();
+		this.panel.setBorder(new TitledBorder(null, "Radix", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		this.panelCalcSettings.add(this.panel);
+		this.panel.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, }));
+		
+		this.radioButtonBinary = new JRadioButton(I18n.getString("GUI.rdbtnBinary.text"));
+		this.panel.add(this.radioButtonBinary, "2, 2");
+		buttonGroupDisplay.add(this.radioButtonBinary);
+		
+		this.rdbtnOctal = new JRadioButton(I18n.getString("GUI.rdbtnOctal.text")); //$NON-NLS-1$
+		this.panel.add(this.rdbtnOctal, "2, 4");
+		
+		this.radioButtonDecimal = new JRadioButton(I18n.getString("GUI.rdbtnDecimal.text"));
+		this.panel.add(this.radioButtonDecimal, "2, 6");
+		buttonGroupDisplay.add(this.radioButtonDecimal);
+		
+		this.radioButtonHexadecimal = new JRadioButton(I18n.getString("GUI.rdbtnHexadecimal.text"));
+		this.panel.add(this.radioButtonHexadecimal, "2, 8");
+		buttonGroupDisplay.add(this.radioButtonHexadecimal);
+		
+		this.radioButtonCustomRadix = new JRadioButton(I18n.getString("GUI.rdbtnCustom.text"));
+		this.panel.add(this.radioButtonCustomRadix, "2, 10");
+		buttonGroupDisplay.add(this.radioButtonCustomRadix);
+		
+		this.sliderRadix = new JSlider();
+		this.sliderRadix.setPaintLabels(true);
+		this.sliderRadix.setSnapToTicks(true);
+		this.sliderRadix.setPaintTicks(true);
+		this.sliderRadix.setMinimum(2);
+		this.sliderRadix.setMaximum(36);
+		this.panel.add(this.sliderRadix, "4, 10");
+		
 		this.checkboxDevMode = new JCheckBox(I18n.getString("GUI.checkboxDevMode.text")); //$NON-NLS-1$
+		this.checkboxDevMode.setBounds(6, 6, 112, 23);
 		this.checkboxDevMode.setToolTipText(I18n.getString("GUI.checkboxDevMode.toolTipText")); //$NON-NLS-1$
 		this.checkboxDevMode.addChangeListener(new ChangeListener()
 		{
@@ -840,12 +830,15 @@ public class GUI
 				GUI.this.calc.setDevMode(GUI.this.checkboxDevMode.isSelected());
 			}
 		});
-		this.panelDevSettings.add(this.checkboxDevMode, "1, 1, fill, top");
+		this.panelDevSettings.setLayout(null);
+		this.panelDevSettings.add(this.checkboxDevMode);
 		
 		this.labelDevModeLogging = new JLabel(I18n.getString("GUI.labelDevModeLogging.text")); //$NON-NLS-1$
-		this.panelDevSettings.add(this.labelDevModeLogging, "1, 2, fill, center");
+		this.labelDevModeLogging.setBounds(6, 41, 112, 16);
+		this.panelDevSettings.add(this.labelDevModeLogging);
 		
 		this.radioButtonLogMinimal = new JRadioButton(I18n.getString("GUI.radioButtonLogMinimal.text")); //$NON-NLS-1$
+		this.radioButtonLogMinimal.setBounds(6, 69, 88, 23);
 		this.radioButtonLogMinimal.addChangeListener(new ChangeListener()
 		{
 			@Override
@@ -857,9 +850,10 @@ public class GUI
 				}
 			}
 		});
-		this.panelDevSettings.add(this.radioButtonLogMinimal, "2, 2, left, top");
+		this.panelDevSettings.add(this.radioButtonLogMinimal);
 		
 		this.radioButtonLogDebug = new JRadioButton(I18n.getString("GUI.radioButtonLogDebug.text")); //$NON-NLS-1$
+		this.radioButtonLogDebug.setBounds(6, 104, 74, 23);
 		this.radioButtonLogDebug.addChangeListener(new ChangeListener()
 		{
 			@Override
@@ -871,9 +865,10 @@ public class GUI
 				}
 			}
 		});
-		this.panelDevSettings.add(this.radioButtonLogDebug, "4, 2, left, top");
+		this.panelDevSettings.add(this.radioButtonLogDebug);
 		
 		this.radioButtonLogExtended = new JRadioButton(I18n.getString("GUI.radioButtonLogExtended.text")); //$NON-NLS-1$
+		this.radioButtonLogExtended.setBounds(6, 140, 117, 23);
 		this.radioButtonLogExtended.addChangeListener(new ChangeListener()
 		{
 			@Override
@@ -885,7 +880,12 @@ public class GUI
 				}
 			}
 		});
-		this.panelDevSettings.add(this.radioButtonLogExtended, "6, 2, fill, top");
+		this.panelDevSettings.add(this.radioButtonLogExtended);
+		
+		ButtonGroup logLevelGroup = new ButtonGroup();
+		logLevelGroup.add(this.radioButtonLogDebug);
+		logLevelGroup.add(this.radioButtonLogExtended);
+		logLevelGroup.add(this.radioButtonLogMinimal);
 		
 		this.colorChooser = new JColorChooser();
 		this.colorChooser.setToolTipText(I18n.getString("GUI.colorChooser.toolTipText")); //$NON-NLS-1$
@@ -898,10 +898,8 @@ public class GUI
 				GUI.this.setColor(GUI.this.colorChooser.getColor());
 			}
 		});
-		this.panelLookAndFeel.add(this.colorChooser, "1, 3, 3, 1, fill, fill");
-		
-		this.buttonFont = new JButton(I18n.getString("GUI.buttonFont.text")); //$NON-NLS-1$
-		this.panelLookAndFeel.add(this.buttonFont, "1, 1, fill, fill");
+		this.panelLAFSettings.setLayout(new FormLayout(new ColumnSpec[] { ColumnSpec.decode("215px"), FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("215px"), }, new RowSpec[] { RowSpec.decode("24px"), FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("307px"), }));
+		this.panelLAFSettings.add(this.colorChooser, "1, 3, 3, 1, fill, fill");
 		
 		DefaultComboBoxModel model = new DefaultComboBoxModel();
 		model.addElement("-Default-");
@@ -920,13 +918,10 @@ public class GUI
 				GUI.this.setLAF(GUI.this.comboBoxLAF.getSelectedIndex(), true);
 			}
 		});
-		this.comboBoxLAF.setModel(model);
-		this.panelLookAndFeel.add(this.comboBoxLAF, "3, 1, fill, fill");
+		this.panelLAFSettings.add(this.comboBoxLAF, "1, 1, fill, fill");
 		
-		ButtonGroup logLevelGroup = new ButtonGroup();
-		logLevelGroup.add(this.radioButtonLogDebug);
-		logLevelGroup.add(this.radioButtonLogExtended);
-		logLevelGroup.add(this.radioButtonLogMinimal);
+		this.buttonFont = new JButton(I18n.getString("GUI.buttonFont.text")); //$NON-NLS-1$
+		this.panelLAFSettings.add(this.buttonFont, "3, 1, fill, fill");
 	}
 	
 	private void addDraw()
@@ -1079,6 +1074,7 @@ public class GUI
 		else
 		{
 			this.frame.setResizable(true);
+			this.frame.setSize(640, 480);
 		}
 	}
 	
