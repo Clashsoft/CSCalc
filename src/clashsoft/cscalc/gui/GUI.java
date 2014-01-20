@@ -716,6 +716,53 @@ public class GUI
 	
 	private void addTextFields()
 	{
+		StyledDocument doc;
+		SimpleAttributeSet center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_RIGHT);
+		
+		this.inputTextField = new JTextPane();
+		this.inputTextField.setText(I18n.getString("GUI.inputTextField.text")); //$NON-NLS-1$
+		this.inputTextField.setBounds(6, 6, 447, 52);
+		this.inputTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
+		this.inputTextField.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
+		this.inputTextField.setEditable(false);
+		this.panelCalculateTab.add(this.inputTextField);
+		addPopup(this.inputTextField, this.popupMenuInputTextField);
+		
+		doc = this.inputTextField.getStyledDocument();
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+		
+		this.resultTextField = new JTextPane();
+		this.resultTextField.setText(I18n.getString("GUI.resultTextField.text")); //$NON-NLS-1$
+		this.resultTextField.setBounds(6, 70, 447, 28);
+		this.resultTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
+		this.resultTextField.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
+		this.resultTextField.setEditable(false);
+		this.panelCalculateTab.add(this.resultTextField);
+		addPopup(this.resultTextField, this.popupMenuInputTextField);
+		
+		doc = this.resultTextField.getStyledDocument();
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+		
+		this.consoleTextField = new JTextPane();
+		this.consoleTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
+		this.consoleTextField.setEditable(false);
+		
+		JScrollPane scrollPane = new JScrollPane(this.consoleTextField);
+		this.panelDevTab.add(scrollPane, BorderLayout.CENTER);
+		
+		this.commandTextField = new JTextField();
+		this.commandTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
+		this.commandTextField.setColumns(10);
+		this.commandTextField.addKeyListener(new KeyAdapter()
+		{
+			@Override
+			public void keyTyped(KeyEvent e)
+			{
+				GUI.this.calc.commandInputTextField_keyTyped(e.getKeyChar());
+			}
+		});
+		this.panelDevTab.add(this.commandTextField, BorderLayout.SOUTH);
 		
 		this.popupMenuInputTextField = new JPopupMenu();
 		addPopup(this.inputTextField, this.popupMenuInputTextField);
@@ -762,54 +809,6 @@ public class GUI
 		});
 		this.popupMenuInputTextField.add(this.menuItemDisplayBinary);
 		this.buttonGroupDisplay.add(this.menuItemDisplayBinary);
-		
-		StyledDocument doc;
-		SimpleAttributeSet center = new SimpleAttributeSet();
-		StyleConstants.setAlignment(center, StyleConstants.ALIGN_RIGHT);
-		
-		this.inputTextField = new JTextPane();
-		this.inputTextField.setText(I18n.getString("GUI.inputTextField.text")); //$NON-NLS-1$
-		this.inputTextField.setBounds(6, 6, 447, 52);
-		this.inputTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
-		this.inputTextField.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		this.inputTextField.setEditable(false);
-		this.panelCalculateTab.add(this.inputTextField);
-		addPopup(this.inputTextField, this.popupMenuInputTextField);
-		
-		doc = this.resultTextField.getStyledDocument();
-		doc.setParagraphAttributes(0, doc.getLength(), center, false);
-		
-		this.resultTextField = new JTextPane();
-		this.resultTextField.setText(I18n.getString("GUI.resultTextField.text")); //$NON-NLS-1$
-		this.resultTextField.setBounds(6, 70, 447, 28);
-		this.resultTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
-		this.resultTextField.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		this.resultTextField.setEditable(false);
-		this.panelCalculateTab.add(this.resultTextField);
-		addPopup(this.resultTextField, this.popupMenuInputTextField);
-		
-		doc = this.inputTextField.getStyledDocument();
-		doc.setParagraphAttributes(0, doc.getLength(), center, false);
-		
-		this.consoleTextField = new JTextPane();
-		this.consoleTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
-		this.consoleTextField.setEditable(false);
-		
-		JScrollPane scrollPane = new JScrollPane(this.consoleTextField);
-		this.panelDevTab.add(scrollPane, BorderLayout.CENTER);
-		
-		this.commandTextField = new JTextField();
-		this.commandTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
-		this.commandTextField.setColumns(10);
-		this.commandTextField.addKeyListener(new KeyAdapter()
-		{
-			@Override
-			public void keyTyped(KeyEvent e)
-			{
-				GUI.this.calc.commandInputTextField_keyTyped(e.getKeyChar());
-			}
-		});
-		this.panelDevTab.add(this.commandTextField, BorderLayout.SOUTH);
 	}
 	
 	private void addCalculateButton()
