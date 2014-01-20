@@ -105,6 +105,29 @@ public class CSCalc
 		this.update();
 	}
 	
+	public String getEquationString()
+	{
+		int radix = this.getRadix();
+		String s1;
+		String s2;
+		String result;
+		
+		if (radix == 10)
+		{
+			s1 = "" + this.var1;
+			s2 = "" + this.var2;
+			result = "" + this.result;
+		}
+		else
+		{
+			s1 = MathHelper.toString(this.var1, radix);
+			s2 = MathHelper.toString(this.var2, radix);
+			result = MathHelper.toString(this.result, radix);
+		}
+		
+		return s1 + " " + this.mode + " " + s2 + " = " + result;
+	}
+	
 	public void update()
 	{
 		int radix = this.getRadix();
@@ -601,9 +624,18 @@ public class CSCalc
 		{
 			GUI.instance.consoleTextField.setText("");
 		}
-		else if ("calculate".equals(text))
+		else if (text.startsWith("calc"))
 		{
-			this.buttonCalculate_click();
+			if (text.length() == 4)
+			{
+				this.devInfo("Result: " + this.getEquationString());
+			}
+			else
+			{
+				String s1 = text.substring(5);
+				double result = MathHelper.parse(s1);
+				this.devInfo(s1 + " = " + result);
+			}
 		}
 		else if ("reset".equals(text))
 		{
