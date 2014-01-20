@@ -118,14 +118,17 @@ public class GUI
 	public JMenuItem			menuItemZoomInfo;
 	
 	private ButtonGroup			buttonGroupDisplay	= new ButtonGroup();
+	
 	public JPanel				panelCalcSettings;
-	public JRadioButton			radioButtonDecimal;
+	public JPanel				panelRadix;
+	
 	public JRadioButton			radioButtonBinary;
+	public JRadioButton			radioButtonOctal;
+	public JRadioButton			radioButtonDecimal;
 	public JRadioButton			radioButtonHexadecimal;
 	public JRadioButton			radioButtonCustomRadix;
 	public JSlider				sliderRadix;
-	public JPanel				panelRadix;
-	public JRadioButton			rdbtnOctal;
+	public JLabel				labelRadix;
 	
 	public static void init()
 	{
@@ -231,7 +234,7 @@ public class GUI
 		
 		this.panelRadix = new JPanel();
 		this.panelRadix.setBorder(new TitledBorder(null, "Radix", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		this.panelRadix.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, }));
+		this.panelRadix.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("max(82dlu;default)"), FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"), FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("0dlu"), }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, }));
 		this.panelCalcSettings.add(this.panelRadix);
 		
 		// Dev Settings Panels
@@ -791,32 +794,98 @@ public class GUI
 	
 	private void addSettings()
 	{
-		this.radioButtonBinary = new JRadioButton(I18n.getString("GUI.rdbtnBinary.text"));
+		this.radioButtonBinary = new JRadioButton(I18n.getString("GUI.radioButtonBinary.text"));
+		this.radioButtonBinary.addItemListener(new ItemListener()
+		{
+			@Override
+			public void itemStateChanged(ItemEvent e)
+			{
+				if (GUI.this.radioButtonBinary.isSelected())
+				{
+					GUI.this.setRadix(2);
+				}
+			}
+		});
 		this.panelRadix.add(this.radioButtonBinary, "2, 2");
-		buttonGroupDisplay.add(this.radioButtonBinary);
+		this.buttonGroupDisplay.add(this.radioButtonBinary);
 		
-		this.rdbtnOctal = new JRadioButton(I18n.getString("GUI.rdbtnOctal.text")); //$NON-NLS-1$
-		this.panelRadix.add(this.rdbtnOctal, "2, 4");
+		this.radioButtonOctal = new JRadioButton(I18n.getString("GUI.radioButtonOctal.text")); //$NON-NLS-1$
+		this.radioButtonOctal.addItemListener(new ItemListener()
+		{
+			@Override
+			public void itemStateChanged(ItemEvent e)
+			{
+				if (GUI.this.radioButtonOctal.isSelected())
+				{
+					GUI.this.setRadix(8);
+				}
+			}
+		});
+		this.panelRadix.add(this.radioButtonOctal, "2, 4");
+		this.buttonGroupDisplay.add(this.radioButtonOctal);
 		
-		this.radioButtonDecimal = new JRadioButton(I18n.getString("GUI.rdbtnDecimal.text"));
+		this.radioButtonDecimal = new JRadioButton(I18n.getString("GUI.radioButtonDecimal.text"));
+		this.radioButtonDecimal.addItemListener(new ItemListener()
+		{
+			@Override
+			public void itemStateChanged(ItemEvent e)
+			{
+				if (GUI.this.radioButtonDecimal.isSelected())
+				{
+					GUI.this.setRadix(10);
+				}
+			}
+		});
 		this.panelRadix.add(this.radioButtonDecimal, "2, 6");
-		buttonGroupDisplay.add(this.radioButtonDecimal);
+		this.buttonGroupDisplay.add(this.radioButtonDecimal);
 		
-		this.radioButtonHexadecimal = new JRadioButton(I18n.getString("GUI.rdbtnHexadecimal.text"));
+		this.radioButtonHexadecimal = new JRadioButton(I18n.getString("GUI.radioButtonHexadecimal.text"));
+		this.radioButtonHexadecimal.addItemListener(new ItemListener()
+		{
+			@Override
+			public void itemStateChanged(ItemEvent e)
+			{
+				if (GUI.this.radioButtonHexadecimal.isSelected())
+				{
+					GUI.this.setRadix(16);
+				}
+			}
+		});
 		this.panelRadix.add(this.radioButtonHexadecimal, "2, 8");
-		buttonGroupDisplay.add(this.radioButtonHexadecimal);
+		this.buttonGroupDisplay.add(this.radioButtonHexadecimal);
 		
-		this.radioButtonCustomRadix = new JRadioButton(I18n.getString("GUI.rdbtnCustom.text"));
-		this.panelRadix.add(this.radioButtonCustomRadix, "2, 10");
-		buttonGroupDisplay.add(this.radioButtonCustomRadix);
+		this.radioButtonCustomRadix = new JRadioButton(I18n.getString("GUI.radioButtonCustomRadix.text"));
+		this.radioButtonCustomRadix.addItemListener(new ItemListener()
+		{
+			@Override
+			public void itemStateChanged(ItemEvent e)
+			{
+				GUI.this.sliderRadix.setEnabled(GUI.this.radioButtonCustomRadix.isSelected());
+			}
+		});
+		this.panelRadix.add(this.radioButtonCustomRadix, "2, 10, fill, top");
+		this.buttonGroupDisplay.add(this.radioButtonCustomRadix);
 		
 		this.sliderRadix = new JSlider();
+		this.sliderRadix.setMinorTickSpacing(1);
+		this.sliderRadix.setPaintTicks(true);
 		this.sliderRadix.setPaintLabels(true);
 		this.sliderRadix.setSnapToTicks(true);
-		this.sliderRadix.setPaintTicks(true);
+		this.sliderRadix.setValue(2);
+		this.sliderRadix.setEnabled(false);
 		this.sliderRadix.setMinimum(2);
 		this.sliderRadix.setMaximum(36);
-		this.panelRadix.add(this.sliderRadix, "4, 10");
+		this.sliderRadix.addChangeListener(new ChangeListener()
+		{
+			public void stateChanged(ChangeEvent e)
+			{
+				GUI.this.setRadix(GUI.this.sliderRadix.getValue());
+			}
+		});
+		this.panelRadix.add(this.sliderRadix, "4, 10, fill, top");
+		
+		this.labelRadix = new JLabel("0");
+		this.panelRadix.add(this.labelRadix, "6, 10, fill, top");
 		
 		this.checkboxDevMode = new JCheckBox(I18n.getString("GUI.checkboxDevMode.text")); //$NON-NLS-1$
 		this.checkboxDevMode.setBounds(6, 6, 112, 23);
@@ -897,8 +966,8 @@ public class GUI
 				GUI.this.setColor(GUI.this.colorChooser.getColor());
 			}
 		});
-		this.panelLAFSettings.setLayout(new FormLayout(new ColumnSpec[] { ColumnSpec.decode("215px"), FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("215px"), }, new RowSpec[] { RowSpec.decode("24px"), FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("307px"), }));
-		this.panelLAFSettings.add(this.colorChooser, "1, 3, 3, 1, fill, fill");
+		this.panelLAFSettings.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("190px:grow"), FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("190px:grow"), FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("24px"), FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("260px:grow"), FormFactory.RELATED_GAP_ROWSPEC, }));
+		this.panelLAFSettings.add(this.colorChooser, "2, 4, 3, 1, fill, fill");
 		
 		DefaultComboBoxModel model = new DefaultComboBoxModel();
 		model.addElement("-Default-");
@@ -909,6 +978,7 @@ public class GUI
 		}
 		
 		this.comboBoxLAF = new JComboBox();
+		this.comboBoxLAF.setModel(model);
 		this.comboBoxLAF.addItemListener(new ItemListener()
 		{
 			@Override
@@ -917,10 +987,10 @@ public class GUI
 				GUI.this.setLAF(GUI.this.comboBoxLAF.getSelectedIndex(), true);
 			}
 		});
-		this.panelLAFSettings.add(this.comboBoxLAF, "1, 1, fill, fill");
+		this.panelLAFSettings.add(this.comboBoxLAF, "2, 2, fill, fill");
 		
 		this.buttonFont = new JButton(I18n.getString("GUI.buttonFont.text")); //$NON-NLS-1$
-		this.panelLAFSettings.add(this.buttonFont, "3, 1, fill, fill");
+		this.panelLAFSettings.add(this.buttonFont, "4, 2, fill, fill");
 	}
 	
 	private void addDraw()
@@ -1039,28 +1109,54 @@ public class GUI
 		this.panelDrawInput.add(this.buttonDraw, drawButtonConstraint);
 	}
 	
-	public void setDevMode(boolean dev)
-	{
-		if (this.tabbedPane != null)
-		{
-			this.tabbedPane.setEnabledAt(this.tabbedPane.indexOfComponent(this.panelDevTab), dev);
-		}
-	}
-	
 	public void updateSettings()
 	{
 		int logLevel = this.calc.getLoggingLevel();
 		boolean devMode = this.calc.getDevMode();
 		Color color = this.calc.getColor();
 		int laf = this.calc.getLAF();
+		int radix = this.calc.getRadix();
 		
 		this.setDevMode(devMode);
 		this.setColor(color);
 		this.checkboxDevMode.setSelected(devMode);
 		this.comboBoxLAF.setSelectedIndex(laf);
+		
 		this.radioButtonLogMinimal.setSelected(logLevel == 0);
 		this.radioButtonLogExtended.setSelected(logLevel == 1);
 		this.radioButtonLogDebug.setSelected(logLevel == 2);
+		
+		boolean flag = false;
+		this.radioButtonBinary.setSelected(flag |= radix == 2);
+		this.radioButtonOctal.setSelected(flag |= radix == 8);
+		this.radioButtonDecimal.setSelected(flag |= radix == 10);
+		this.radioButtonHexadecimal.setSelected(flag |= radix == 16);
+		this.radioButtonCustomRadix.setSelected(!flag);
+		this.sliderRadix.setEnabled(!flag);
+		this.sliderRadix.setValue(radix);
+		this.labelRadix.setText("" + radix);
+	}
+	
+	public void setRadix(int radix)
+	{
+		this.calc.setRadix(radix);
+		
+		if (this.sliderRadix != null)
+		{
+			this.sliderRadix.setValue(radix);
+		}
+		if (this.labelRadix != null)
+		{
+			this.labelRadix.setText("" + radix);
+		}
+	}
+	
+	public void setDevMode(boolean dev)
+	{
+		if (this.tabbedPane != null)
+		{
+			this.tabbedPane.setEnabledAt(this.tabbedPane.indexOfComponent(this.panelDevTab), dev);
+		}
 	}
 	
 	public void setCurrentTab(int tab)
