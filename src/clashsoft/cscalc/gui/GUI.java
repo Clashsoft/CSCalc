@@ -720,6 +720,51 @@ public class GUI
 		SimpleAttributeSet center = new SimpleAttributeSet();
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_RIGHT);
 		
+		this.popupMenuInputTextField = new JPopupMenu();
+		
+		this.menuItemDisplayMode = new JMenuItem(I18n.getString("GUI.menuItemDisplayMode.text")); //$NON-NLS-1$
+		this.menuItemDisplayMode.setEnabled(false);
+		this.popupMenuInputTextField.add(this.menuItemDisplayMode);
+		
+		this.popupMenuInputTextField.addSeparator();
+		
+		this.menuItemDisplayDecimal = new JRadioButtonMenuItem(I18n.getString("GUI.menuItemDisplayDecimal.text")); //$NON-NLS-1$
+		this.menuItemDisplayDecimal.setSelected(true);
+		this.menuItemDisplayDecimal.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.setRadix(10);
+			}
+		});
+		this.popupMenuInputTextField.add(this.menuItemDisplayDecimal);
+		this.buttonGroupDisplay.add(this.menuItemDisplayDecimal);
+		
+		this.menuItemDisplayHexadecimal = new JRadioButtonMenuItem(I18n.getString("GUI.menuItemDisplayHexadecimal.text")); //$NON-NLS-1$
+		this.menuItemDisplayHexadecimal.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.setRadix(16);
+			}
+		});
+		this.popupMenuInputTextField.add(this.menuItemDisplayHexadecimal);
+		this.buttonGroupDisplay.add(this.menuItemDisplayHexadecimal);
+		
+		this.menuItemDisplayBinary = new JRadioButtonMenuItem(I18n.getString("GUI.menuItemDisplayBinary.text")); //$NON-NLS-1$
+		this.menuItemDisplayBinary.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.calc.setRadix(2);
+			}
+		});
+		this.popupMenuInputTextField.add(this.menuItemDisplayBinary);
+		this.buttonGroupDisplay.add(this.menuItemDisplayBinary);
+		
 		this.inputTextField = new JTextPane();
 		this.inputTextField.setText(I18n.getString("GUI.inputTextField.text")); //$NON-NLS-1$
 		this.inputTextField.setBounds(6, 6, 447, 52);
@@ -764,51 +809,6 @@ public class GUI
 		});
 		this.panelDevTab.add(this.commandTextField, BorderLayout.SOUTH);
 		
-		this.popupMenuInputTextField = new JPopupMenu();
-		addPopup(this.inputTextField, this.popupMenuInputTextField);
-		
-		this.menuItemDisplayMode = new JMenuItem(I18n.getString("GUI.mntmDisplayMode.text")); //$NON-NLS-1$
-		this.menuItemDisplayMode.setEnabled(false);
-		this.popupMenuInputTextField.add(this.menuItemDisplayMode);
-		
-		this.popupMenuInputTextField.addSeparator();
-		
-		this.menuItemDisplayDecimal = new JRadioButtonMenuItem(I18n.getString("GUI.menuItemDisplayDecimal.text")); //$NON-NLS-1$
-		this.menuItemDisplayDecimal.setSelected(true);
-		this.menuItemDisplayDecimal.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.setRadix(10);
-			}
-		});
-		this.popupMenuInputTextField.add(this.menuItemDisplayDecimal);
-		this.buttonGroupDisplay.add(this.menuItemDisplayDecimal);
-		
-		this.menuItemDisplayHexadecimal = new JRadioButtonMenuItem(I18n.getString("GUI.menuItemDisplayHexadecimal.text")); //$NON-NLS-1$
-		this.menuItemDisplayHexadecimal.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.setRadix(16);
-			}
-		});
-		this.popupMenuInputTextField.add(this.menuItemDisplayHexadecimal);
-		this.buttonGroupDisplay.add(this.menuItemDisplayHexadecimal);
-		
-		this.menuItemDisplayBinary = new JRadioButtonMenuItem(I18n.getString("GUI.menuItemDisplayBinary.text")); //$NON-NLS-1$
-		this.menuItemDisplayBinary.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.setRadix(2);
-			}
-		});
-		this.popupMenuInputTextField.add(this.menuItemDisplayBinary);
-		this.buttonGroupDisplay.add(this.menuItemDisplayBinary);
 	}
 	
 	private void addCalculateButton()
