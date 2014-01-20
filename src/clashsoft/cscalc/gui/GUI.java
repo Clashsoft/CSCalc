@@ -480,7 +480,8 @@ public class GUI
 		});
 		this.panelBasicOperations.add(this.buttonRemainder);
 		
-		this.buttonReciprocal = new JButton(I18n.getString("GUI.btnNewButton.text")); //$NON-NLS-1$
+		this.buttonReciprocal = new JButton(I18n.getString("GUI.buttonReciprocal.text")); //$NON-NLS-1$
+		this.buttonReciprocal.setToolTipText(I18n.getString("GUI.buttonReciprocal.toolTipText")); //$NON-NLS-1$
 		this.buttonReciprocal.addActionListener(new ActionListener()
 		{
 			@Override
@@ -618,7 +619,7 @@ public class GUI
 	{
 		this.buttonCE = new JButton(I18n.getString("GUI.buttonCE.text")); //$NON-NLS-1$
 		this.buttonCE.setToolTipText(I18n.getString("GUI.buttonCE.toolTipText")); //$NON-NLS-1$
-		this.buttonCE.setBounds(6, 17, 29, 29);
+		this.buttonCE.setBounds(6, 17, 112, 29);
 		this.buttonCE.addActionListener(new ActionListener()
 		{
 			@Override
@@ -631,7 +632,7 @@ public class GUI
 		
 		this.buttonC = new JButton(I18n.getString("GUI.buttonC.text")); //$NON-NLS-1$
 		this.buttonC.setToolTipText(I18n.getString("GUI.buttonC.toolTipText")); //$NON-NLS-1$
-		this.buttonC.setBounds(47, 17, 29, 29);
+		this.buttonC.setBounds(6, 58, 112, 29);
 		this.buttonC.addActionListener(new ActionListener()
 		{
 			@Override
