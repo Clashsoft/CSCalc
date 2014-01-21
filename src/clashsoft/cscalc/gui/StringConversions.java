@@ -4,6 +4,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import clashsoft.cscalc.strings.add.StringConverterAddBeginning;
 import clashsoft.cscalc.strings.add.StringConverterAddEnd;
+import clashsoft.cscalc.strings.character.StringConverterTrim;
+import clashsoft.cscalc.strings.conversion.*;
 import clashsoft.cscalc.strings.insert.StringConverterInsertAfter;
 import clashsoft.cscalc.strings.insert.StringConverterInsertInfront;
 import clashsoft.cscalc.strings.insert.StringConverterInsertPos;
@@ -49,7 +51,7 @@ public class StringConversions extends DefaultMutableTreeNode
 		node_1.add(new DefaultMutableTreeNode("Replace characters"));
 		node_1.add(new DefaultMutableTreeNode("Remove characters"));
 		node_1.add(new DefaultMutableTreeNode("Retain characters"));
-		node_1.add(new DefaultMutableTreeNode("Remove trailing whitespaces"));
+		node_1.add(new DefaultMutableTreeNode(new StringConverterTrim()));
 		node_1.add(new DefaultMutableTreeNode("Remove vowels"));
 		node_1.add(new DefaultMutableTreeNode("Remove special characters"));
 		add(node_1);
@@ -59,11 +61,11 @@ public class StringConversions extends DefaultMutableTreeNode
 		node_1.add(new DefaultMutableTreeNode("Truncate"));
 		add(node_1);
 		node_1 = new DefaultMutableTreeNode("Conversions");
-		node_1.add(new DefaultMutableTreeNode("lowercase"));
-		node_1.add(new DefaultMutableTreeNode("Sentence case"));
-		node_1.add(new DefaultMutableTreeNode("Title Case"));
-		node_1.add(new DefaultMutableTreeNode("UPPERCASE"));
-		node_1.add(new DefaultMutableTreeNode("Expand CamelCase"));
+		node_1.add(new DefaultMutableTreeNode(new StringConverterLowercase()));
+		node_1.add(new DefaultMutableTreeNode(new StringConverterSentenceCase()));
+		node_1.add(new DefaultMutableTreeNode(new StringConverterTitleCase()));
+		node_1.add(new DefaultMutableTreeNode(new StringConverterUppercase()));
+		node_1.add(new DefaultMutableTreeNode(new StringConverterExpandCamelCase()));
 		add(node_1);
 	}
 }
