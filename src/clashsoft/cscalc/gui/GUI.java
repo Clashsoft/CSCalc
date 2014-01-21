@@ -102,7 +102,7 @@ public class GUI
 	public JRadioButton			radioButtonLogExtended;
 	public JRadioButton			radioButtonLogMinimal;
 	
-	public JPanel				panelDraw;
+	public JPanel				panelGraph;
 	public JPanel				panelDrawInput;
 	public Graph				canvasGraph;
 	public JButton				buttonDraw;
@@ -129,6 +129,14 @@ public class GUI
 	public JRadioButton			radioButtonCustomRadix;
 	public JSlider				sliderRadix;
 	public JLabel				labelRadix;
+	public JPanel				panelStrings;
+	public JComboBox			comboBoxStringsCategory;
+	public JComboBox			comboBoxStringsSubcategory;
+	public JLabel				labelStringsCategory;
+	public JLabel				labelStringsSubcategory;
+	public JTextArea			textFieldStringsInput;
+	public JTextArea			textFieldStringsOutput;
+	public JLabel				labelStrings;
 	
 	public static void init()
 	{
@@ -137,9 +145,6 @@ public class GUI
 		instance.frame.setVisible(true);
 	}
 	
-	/**
-	 * Create the application.
-	 */
 	public GUI()
 	{
 		
@@ -197,9 +202,10 @@ public class GUI
 		this.addAdvancedOperationButtons();
 		this.addClearButtons();
 		
-		this.addDraw();
+		this.addGraphTab();
+		this.addStringsTab();
 		
-		this.addSettings();
+		this.addSettingsTab();
 		
 		this.calc.devInfo("Done Initializing GUI", 2);
 	}
@@ -210,18 +216,22 @@ public class GUI
 		
 		this.panelCalculateTab = new JPanel();
 		this.panelCalculateTab.setLayout(null);
-		this.tabbedPane.addTab(I18n.getString("GUI.panelCalculateTab.text"), null, this.panelCalculateTab, I18n.getString("GUI.panelCalculateTab.toolTipText"));
+		this.tabbedPane.addTab(I18n.getString("GUI.panelCalculateTab.text"), null, this.panelCalculateTab, I18n.getString("GUI.panelCalculateTab.toolTipText")); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		this.panelDraw = new JPanel();
-		this.panelDraw.setLayout(new BorderLayout(0, 0));
-		this.tabbedPane.addTab(I18n.getString("GUI.panelDrawTab.text"), null, this.panelDraw, I18n.getString("GUI.panelDrawTab.toolTipText"));
+		this.panelGraph = new JPanel();
+		this.panelGraph.setLayout(new BorderLayout(0, 0));
+		this.tabbedPane.addTab(I18n.getString("GUI.panelGraph.title"), null, this.panelGraph, I18n.getString("GUI.panelGraph.tooltip")); //$NON-NLS-1$ //$NON-NLS-2$
+		
+		this.panelStrings = new JPanel();
+		this.panelStrings.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("65dlu:grow"), FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("max(103dlu;default):grow"), FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("default:grow"), FormFactory.RELATED_GAP_ROWSPEC, }));
+		this.tabbedPane.addTab(I18n.getString("GUI.panelStrings.title"), null, this.panelStrings, I18n.getString("GUI.panelStrings.tooltip")); //$NON-NLS-1$
 		
 		this.panelSettingsTab = new JTabbedPane(SwingConstants.TOP);
-		this.tabbedPane.addTab(I18n.getString("GUI.panelSettingsTab.text"), null, this.panelSettingsTab, I18n.getString("GUI.panelSettingsTab.toolTipText")); ////$NON-NLS-1$
+		this.tabbedPane.addTab(I18n.getString("GUI.panelSettingsTab.text"), null, this.panelSettingsTab, I18n.getString("GUI.panelSettingsTab.toolTipText")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		this.panelDevTab = new JPanel();
 		this.panelDevTab.setLayout(new BorderLayout(0, 0));
-		this.tabbedPane.addTab(I18n.getString("GUI.panelDevTab.text"), null, this.panelDevTab, I18n.getString("GUI.panelDevTab.toolTipText")); //$NON-NLS-1$
+		this.tabbedPane.addTab(I18n.getString("GUI.panelDevTab.text"), null, this.panelDevTab, I18n.getString("GUI.panelDevTab.toolTipText")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		// Settings Panels
 		
@@ -792,7 +802,7 @@ public class GUI
 		this.panelCalculateTab.add(this.buttonCalculate);
 	}
 	
-	private void addSettings()
+	private void addSettingsTab()
 	{
 		this.radioButtonBinary = new JRadioButton(I18n.getString("GUI.radioButtonBinary.text"));
 		this.radioButtonBinary.addItemListener(new ItemListener()
@@ -877,6 +887,7 @@ public class GUI
 		this.sliderRadix.setMaximum(36);
 		this.sliderRadix.addChangeListener(new ChangeListener()
 		{
+			@Override
 			public void stateChanged(ChangeEvent e)
 			{
 				GUI.this.setRadix(GUI.this.sliderRadix.getValue());
@@ -993,10 +1004,10 @@ public class GUI
 		this.panelLAFSettings.add(this.buttonFont, "4, 2, fill, fill");
 	}
 	
-	private void addDraw()
+	private void addGraphTab()
 	{
 		this.canvasGraph = new Graph();
-		this.panelDraw.add(this.canvasGraph, BorderLayout.CENTER);
+		this.panelGraph.add(this.canvasGraph, BorderLayout.CENTER);
 		
 		this.popupMenuGraph = new JPopupMenu();
 		addPopup(this.canvasGraph, this.popupMenuGraph);
@@ -1061,7 +1072,7 @@ public class GUI
 		inputPanelConstraint.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
 		this.panelDrawInput = new JPanel();
 		this.panelDrawInput.setLayout(inputPanelConstraint);
-		this.panelDraw.add(this.panelDrawInput, BorderLayout.NORTH);
+		this.panelGraph.add(this.panelDrawInput, BorderLayout.NORTH);
 		
 		GridBagConstraints gbc_lblFx = new GridBagConstraints();
 		gbc_lblFx.fill = GridBagConstraints.BOTH;
@@ -1086,7 +1097,7 @@ public class GUI
 		drawButtonConstraint.fill = GridBagConstraints.BOTH;
 		drawButtonConstraint.gridx = 2;
 		drawButtonConstraint.gridy = 0;
-		this.buttonDraw = new JButton(I18n.getString("GUI.buttonDraw.text")); //$NON-NLS-1$
+		this.buttonDraw = new JButton("\u2192");
 		this.buttonDraw.addActionListener(new ActionListener()
 		{
 			@Override
@@ -1107,6 +1118,34 @@ public class GUI
 			}
 		});
 		this.panelDrawInput.add(this.buttonDraw, drawButtonConstraint);
+	}
+	
+	public void addStringsTab()
+	{
+		this.labelStringsCategory = new JLabel(I18n.getString("GUI.labelStringsCategory.text")); //$NON-NLS-1$
+		this.panelStrings.add(this.labelStringsCategory, "2, 2, right, default");
+		
+		this.comboBoxStringsCategory = new JComboBox();
+		this.panelStrings.add(this.comboBoxStringsCategory, "4, 2, 5, 1, fill, default");
+		
+		this.labelStringsSubcategory = new JLabel(I18n.getString("GUI.labelStringsSubcategory.text")); //$NON-NLS-1$
+		this.panelStrings.add(this.labelStringsSubcategory, "2, 4, right, default");
+		
+		this.comboBoxStringsSubcategory = new JComboBox();
+		this.panelStrings.add(this.comboBoxStringsSubcategory, "4, 4, 5, 1, fill, default");
+		
+		this.textFieldStringsInput = new JTextArea();
+		this.textFieldStringsInput.setBorder(UIManager.getBorder("TextField.border"));
+		this.textFieldStringsInput.setColumns(10);
+		this.panelStrings.add(this.textFieldStringsInput, "2, 6, 3, 3, fill, fill");
+		
+		this.labelStrings = new JLabel("\u2192");
+		this.panelStrings.add(this.labelStrings, "6, 8, right, default");
+		
+		this.textFieldStringsOutput = new JTextArea();
+		this.textFieldStringsOutput.setBorder(UIManager.getBorder("TextField.border"));
+		this.textFieldStringsOutput.setColumns(10);
+		this.panelStrings.add(this.textFieldStringsOutput, "8, 6, 1, 3, fill, fill");
 	}
 	
 	public void updateSettings()
