@@ -44,7 +44,7 @@ public class BasicGraph extends Canvas
 	
 	public Color getGraphColor(int i)
 	{
-		float hue = (float)i / (float)this.getEquationCount();
+		float hue = (float) i / (float) this.getEquationCount();
 		return Color.getHSBColor(hue, 1F, 1F);
 	}
 	
@@ -60,20 +60,22 @@ public class BasicGraph extends Canvas
 	
 	public float getStepX()
 	{
-		return getZoomX() < 20 ? 1 : 0.25F;
+		float z = getZoomX();
+		return z > 16F ? z / 1024F : z / 256F;
 	}
 	
 	public float getStepY()
 	{
-		return getZoomY() < 20 ? 1 : 0.25F;
+		float z = getZoomY();
+		return z > 16F ? z / 1024F : z / 256F;
 	}
 	
 	public void zoom(double zoom)
 	{
-		zoom *= -10F;
+		zoom *= -4F;
 		
-		this.zoomX = (float) MathHelper.clamp(this.zoomX + zoom, 4, 250);
-		this.zoomY = (float) MathHelper.clamp(this.zoomY + zoom, 4, 250);
+		this.zoomX = (float) MathHelper.clamp(this.zoomX + zoom, 4D, 256D);
+		this.zoomY = (float) MathHelper.clamp(this.zoomY + zoom, 4D, 256D);
 		
 		this.repaint();
 	}
@@ -97,30 +99,31 @@ public class BasicGraph extends Canvas
 	
 	public float getFX(float x, int i)
 	{
-		return MathHelper.parsef(this.getEquation(i), x);
+		float f = MathHelper.parsef(this.getEquation(i), x);
+		return f;
 	}
 	
 	@Override
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
 		super.paint(g);
 		
-		int width = this.getWidth();
-		int height = this.getHeight();
+		final int width = this.getWidth();
+		final int height = this.getHeight();
 		
-		float centerX = width / 2F;
-		float centerY = height / 2F;
+		final float centerX = width / 2F;
+		final float centerY = height / 2F;
 		
-		float zoomX = getZoomX();
-		float zoomY = getZoomY();
-		float stepX = getStepX();
-		float stepY = getStepY();
+		final float zoomX = getZoomX();
+		final float zoomY = getZoomY();
+		final float stepX = getStepX();
+		final float stepY = getStepY();
 		
-		this.drawGrid(g, width, height, centerX, centerY, zoomX, zoomY, stepX, stepY);
+		drawGrid(g, width, height, centerX, centerY, zoomX, zoomY, 0.1F, 0.1F);
 		
-		for (int i = 0; i < this.getEquationCount(); i++)
+		for (int i = 0; i < getEquationCount(); i++)
 		{
-			this.drawGraph(g, i, width, height, centerX, centerY, zoomX, zoomY, stepX, stepY);
+			drawGraph(g, i, width, height, centerX, centerY, zoomX, zoomY, stepX, stepY);
 		}
 	}
 	
@@ -133,10 +136,6 @@ public class BasicGraph extends Canvas
 		int fontX = (int) centerX + 2;
 		int fontY = (int) centerY + 12;
 		
-		g.setColor(axisColor);
-		g.drawLine((int) centerX, 0, (int) centerX, height);
-		g.drawLine(0, (int) centerY, width, (int) centerY);
-		g.drawString("0.0", fontX, fontY);
 		
 		g.setColor(lineColor);
 		for (float f = stepX; f < centerX; f += stepX)
@@ -163,7 +162,7 @@ public class BasicGraph extends Canvas
 		}
 		for (float f = stepY; f < centerY; f += stepY)
 		{
-			boolean flag = f == (int) f;
+			boolean flag = f % 1F == 0F;
 			
 			if (flag)
 			{
@@ -183,13 +182,17 @@ public class BasicGraph extends Canvas
 				g.setColor(lineColor);
 			}
 		}
+		
+		g.setColor(axisColor);
+		g.drawLine((int) centerX, 0, (int) centerX, height);
+		g.drawLine(0, (int) centerY, width, (int) centerY);
+		g.drawString("0.0", fontX, fontY);
 	}
 	
 	public void drawGraph(Graphics g, int equation, int width, int height, float centerX, float centerY, float zoomX, float zoomY, float stepX, float stepY)
 	{
 		g.setColor(this.getGraphColor(equation));
-		float y = this.getFX(0F, equation) * zoomY * 2;
-		for (float f1 = 0; f1 < centerX;)
+		for (float f1 = -centerX; f1 < centerX;)
 		{
 			float f0 = f1 + stepX;
 			float fx1 = this.getFX(f1, equation);
@@ -205,15 +208,8 @@ public class BasicGraph extends Canvas
 			int yp1 = (int) (centerY - y1);
 			int yp2 = (int) (centerY - y2);
 			
-			int xn1 = (int) (centerX - x1);
-			int xn2 = (int) (centerX - x2);
-			int yn1 = (int) (centerY - y + y1);
-			int yn2 = (int) (centerY - y + y2);
-			
 			g.drawLine(xp1, yp1, xp2, yp2);
-			g.drawLine(xp1 + 1, yp1 + 1, xp2 + 1, yp2 + 1);
-			g.drawLine(xn1, yn1, xn2, yn2);
-			g.drawLine(xn1 + 1, yn1 + 1, xn2 + 1, yn2 + 1);
+			g.drawLine(xp1, yp1 + 1, xp2, yp2 + 1);
 			
 			f1 = f0;
 		}
