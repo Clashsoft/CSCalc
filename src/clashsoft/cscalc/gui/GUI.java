@@ -223,7 +223,7 @@ public class GUI
 		this.tabbedPane.addTab(I18n.getString("GUI.panelGraph.title"), null, this.panelGraph, I18n.getString("GUI.panelGraph.tooltip")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		this.panelStrings = new JPanel();
-		this.panelStrings.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("65dlu:grow"), FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("max(103dlu;default):grow"), FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("default:grow"), FormFactory.RELATED_GAP_ROWSPEC, }));
+		this.panelStrings.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("left:default:grow"), FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"), FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("fill:default:grow"), FormFactory.RELATED_GAP_ROWSPEC, }));
 		this.tabbedPane.addTab(I18n.getString("GUI.panelStrings.title"), null, this.panelStrings, I18n.getString("GUI.panelStrings.tooltip")); //$NON-NLS-1$
 		
 		this.panelSettingsTab = new JTabbedPane(SwingConstants.TOP);
@@ -1122,30 +1122,30 @@ public class GUI
 	
 	public void addStringsTab()
 	{
-		this.labelStringsCategory = new JLabel(I18n.getString("GUI.labelStringsCategory.text")); //$NON-NLS-1$
-		this.panelStrings.add(this.labelStringsCategory, "2, 2, right, default");
+		this.labelStringsCategory = new JLabel(I18n.getString("GUI.labelStringsCategory.text"));
+		this.panelStrings.add(this.labelStringsCategory, "2, 2, right, fill");
 		
 		this.comboBoxStringsCategory = new JComboBox();
-		this.panelStrings.add(this.comboBoxStringsCategory, "4, 2, 5, 1, fill, default");
+		this.panelStrings.add(this.comboBoxStringsCategory, "6, 2, fill, fill");
 		
 		this.labelStringsSubcategory = new JLabel(I18n.getString("GUI.labelStringsSubcategory.text")); //$NON-NLS-1$
-		this.panelStrings.add(this.labelStringsSubcategory, "2, 4, right, default");
+		this.panelStrings.add(this.labelStringsSubcategory, "2, 4, right, fill");
 		
 		this.comboBoxStringsSubcategory = new JComboBox();
-		this.panelStrings.add(this.comboBoxStringsSubcategory, "4, 4, 5, 1, fill, default");
+		this.panelStrings.add(this.comboBoxStringsSubcategory, "6, 4, fill, fill");
 		
 		this.textFieldStringsInput = new JTextArea();
 		this.textFieldStringsInput.setBorder(UIManager.getBorder("TextField.border"));
 		this.textFieldStringsInput.setColumns(10);
-		this.panelStrings.add(this.textFieldStringsInput, "2, 6, 3, 3, fill, fill");
+		this.panelStrings.add(this.textFieldStringsInput, "2, 8, fill, fill");
 		
 		this.labelStrings = new JLabel("\u2192");
-		this.panelStrings.add(this.labelStrings, "6, 8, right, default");
+		this.panelStrings.add(this.labelStrings, "4, 8, center, center");
 		
 		this.textFieldStringsOutput = new JTextArea();
 		this.textFieldStringsOutput.setBorder(UIManager.getBorder("TextField.border"));
 		this.textFieldStringsOutput.setColumns(10);
-		this.panelStrings.add(this.textFieldStringsOutput, "8, 6, 1, 3, fill, fill");
+		this.panelStrings.add(this.textFieldStringsOutput, "6, 8, fill, fill");
 	}
 	
 	public void updateSettings()
