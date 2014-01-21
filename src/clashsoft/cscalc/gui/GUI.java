@@ -13,15 +13,21 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.tree.DefaultTreeModel;
 
 import clashsoft.cscalc.CSCalc;
 import clashsoft.cscalc.gui.graph.Graph;
+import clashsoft.cscalc.strings.IStringConverter;
 
 import com.alee.laf.WebLookAndFeel;
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 public class GUI
 {
@@ -130,13 +136,11 @@ public class GUI
 	public JSlider				sliderRadix;
 	public JLabel				labelRadix;
 	public JPanel				panelStrings;
-	public JComboBox			comboBoxStringsCategory;
-	public JComboBox			comboBoxStringsSubcategory;
-	public JLabel				labelStringsCategory;
-	public JLabel				labelStringsSubcategory;
 	public JTextArea			textFieldStringsInput;
 	public JTextArea			textFieldStringsOutput;
 	public JLabel				labelStrings;
+	public JTree				treeStringConversions;
+	public JPanel				panelStringsArguments;
 	
 	public static void init()
 	{
@@ -223,7 +227,7 @@ public class GUI
 		this.tabbedPane.addTab(I18n.getString("GUI.panelGraph.title"), null, this.panelGraph, I18n.getString("GUI.panelGraph.tooltip")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		this.panelStrings = new JPanel();
-		this.panelStrings.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("left:default:grow"), FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"), FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("fill:default:grow"), FormFactory.RELATED_GAP_ROWSPEC, }));
+		this.panelStrings.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("min:grow"), FormFactory.UNRELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"), FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, FormFactory.MIN_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("default:grow"), FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("fill:default:grow"), FormFactory.RELATED_GAP_ROWSPEC, }));
 		this.tabbedPane.addTab(I18n.getString("GUI.panelStrings.title"), null, this.panelStrings, I18n.getString("GUI.panelStrings.tooltip")); //$NON-NLS-1$
 		
 		this.panelSettingsTab = new JTabbedPane(SwingConstants.TOP);
@@ -1122,30 +1126,83 @@ public class GUI
 	
 	public void addStringsTab()
 	{
-		this.labelStringsCategory = new JLabel(I18n.getString("GUI.labelStringsCategory.text"));
-		this.panelStrings.add(this.labelStringsCategory, "2, 2, right, fill");
+		this.treeStringConversions = new JTree();
+		this.treeStringConversions.addTreeSelectionListener(new TreeSelectionListener()
+		{
+			public void valueChanged(TreeSelectionEvent e)
+			{
+				IStringConverter converter = getCurrentStringConverter();
+				panelStringsArguments.removeAll();
+				if (converter != null)
+				{
+					converter.addArguments(GUI.this, GUI.this.panelStringsArguments);
+					GUI.this.frame.repaint();
+				}
+				updateStringConverter();
+			}
+		});
+		this.treeStringConversions.setBorder(UIManager.getBorder("TextField.border"));
+		this.treeStringConversions.setModel(new DefaultTreeModel(new StringConversions("String Conversions")));
+		this.panelStrings.add(this.treeStringConversions, "2, 2, 1, 7, fill, fill");
 		
-		this.comboBoxStringsCategory = new JComboBox();
-		this.panelStrings.add(this.comboBoxStringsCategory, "6, 2, fill, fill");
-		
-		this.labelStringsSubcategory = new JLabel(I18n.getString("GUI.labelStringsSubcategory.text")); //$NON-NLS-1$
-		this.panelStrings.add(this.labelStringsSubcategory, "2, 4, right, fill");
-		
-		this.comboBoxStringsSubcategory = new JComboBox();
-		this.panelStrings.add(this.comboBoxStringsSubcategory, "6, 4, fill, fill");
+		this.panelStringsArguments = new JPanel();
+		this.panelStringsArguments.setBorder(new TitledBorder(null, "Arguments", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		this.panelStrings.add(this.panelStringsArguments, "4, 2, fill, fill");
+		this.panelStringsArguments.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		this.textFieldStringsInput = new JTextArea();
+		this.textFieldStringsInput.addKeyListener(new KeyAdapter()
+		{
+			@Override
+			public void keyPressed(KeyEvent e)
+			{
+				updateStringConverter();
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e)
+			{
+				updateStringConverter();
+			}
+		});
 		this.textFieldStringsInput.setBorder(UIManager.getBorder("TextField.border"));
 		this.textFieldStringsInput.setColumns(10);
-		this.panelStrings.add(this.textFieldStringsInput, "2, 8, fill, fill");
+		this.panelStrings.add(this.textFieldStringsInput, "4, 4, fill, fill");
 		
-		this.labelStrings = new JLabel("\u2192");
-		this.panelStrings.add(this.labelStrings, "4, 8, center, center");
+		this.labelStrings = new JLabel(I18n.getString("GUI.labelStrings.text")); //$NON-NLS-1$
+		this.panelStrings.add(this.labelStrings, "4, 6, center, center");
 		
 		this.textFieldStringsOutput = new JTextArea();
+		this.textFieldStringsOutput.setEditable(false);
 		this.textFieldStringsOutput.setBorder(UIManager.getBorder("TextField.border"));
 		this.textFieldStringsOutput.setColumns(10);
-		this.panelStrings.add(this.textFieldStringsOutput, "6, 8, fill, fill");
+		this.panelStrings.add(this.textFieldStringsOutput, "4, 8, fill, fill");
+	}
+	
+	public IStringConverter getCurrentStringConverter()
+	{
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeStringConversions.getLastSelectedPathComponent();
+		if (node == null || !node.isLeaf())
+		{
+			return null;
+		}
+		Object nodeInfo = node.getUserObject();
+		if (nodeInfo instanceof IStringConverter)
+		{
+			return (IStringConverter) nodeInfo;
+		}
+		return null;
+	}
+	
+	public void updateStringConverter()
+	{
+		IStringConverter converter = getCurrentStringConverter();
+		String text = this.textFieldStringsInput.getText();
+		if (converter != null)
+		{
+			text = converter.getConvertedString(text);
+		}
+		this.textFieldStringsOutput.setText(text);
 	}
 	
 	public void updateSettings()
