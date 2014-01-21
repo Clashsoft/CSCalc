@@ -84,12 +84,11 @@ public class CSCalc
 	
 	public void init()
 	{
-		this.resetSettings();
+		this.resetSettings(false);
 		this.devInfo("CSCalc version " + this.version, 1);
 		this.devInfo("Initializing...", 1);
 		this.loadSettings();
 		GUI.init();
-		GUI.instance.updateSettings();
 		this.reset();
 	}
 	
@@ -152,7 +151,7 @@ public class CSCalc
 		GUI.instance.resultTextField.setText(result);
 	}
 	
-	public void resetSettings()
+	public void resetSettings(boolean update)
 	{
 		this.properties = new Properties();
 		this.setLoggingLevel(0);
@@ -160,6 +159,11 @@ public class CSCalc
 		this.setColor(Color.LIGHT_GRAY);
 		this.setLAF(0);
 		this.setRadix(10);
+		
+		if (update)
+		{
+			GUI.instance.updateSettings();
+		}
 	}
 	
 	public void loadSettings()
@@ -343,7 +347,6 @@ public class CSCalc
 	public void setDevMode(boolean dev)
 	{
 		this.properties.setProperty("devmode", dev + "");
-		GUI.instance.setDevMode(dev);
 	}
 	
 	public boolean getDevMode()
@@ -639,7 +642,7 @@ public class CSCalc
 		}
 		else if ("reset".equals(text))
 		{
-			this.resetSettings();
+			this.resetSettings(true);
 		}
 		else if ("info".equals(text))
 		{
