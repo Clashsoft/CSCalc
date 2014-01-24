@@ -1132,11 +1132,15 @@ public class GUI
 			public void valueChanged(TreeSelectionEvent e)
 			{
 				IStringConverter converter = getCurrentStringConverter();
-				panelStringsArguments.removeAll();
+				GUI.this.panelStringsArguments.removeAll();
 				if (converter != null)
 				{
+					GUI.this.panelStringsArguments.setVisible(true);
 					converter.addArguments(GUI.this, GUI.this.panelStringsArguments);
-					GUI.this.frame.repaint();
+				}
+				else
+				{
+					GUI.this.panelStringsArguments.setVisible(false);
 				}
 				updateStringConverter();
 			}

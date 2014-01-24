@@ -14,9 +14,4 @@ public class StringConverterUppercase extends DefaultStringConverter
 	{
 		return input.toUpperCase();
 	}
-	
-	@Override
-	public void addArguments()
-	{
-	}
 }

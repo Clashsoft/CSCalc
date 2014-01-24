@@ -14,9 +14,4 @@ public class StringConverterLowercase extends DefaultStringConverter
 	{
 		return input.toLowerCase();
 	}
-	
-	@Override
-	public void addArguments()
-	{
-	}
 }

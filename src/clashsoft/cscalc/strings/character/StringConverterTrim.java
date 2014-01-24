@@ -14,9 +14,4 @@ public class StringConverterTrim extends DefaultStringConverter
 	{
 		return input.trim();
 	}
-	
-	@Override
-	public void addArguments()
-	{
-	}
 }

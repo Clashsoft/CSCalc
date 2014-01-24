@@ -21,7 +21,7 @@ public class StringConverterInsertPos extends DefaultStringConverter
 	{	
 		this.addLabel("Insert");
 		this.textField = this.addTextField(null);
-		this.addLabel("at Position");
+		this.addLabel("at position");
 		this.spinner = this.addSpinner();
 	}
 	

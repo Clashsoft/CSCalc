@@ -146,7 +146,10 @@ public abstract class DefaultStringConverter implements IStringConverter
 		this.addArguments();
 	}
 	
-	public abstract void addArguments();
+	public void addArguments()
+	{
+		this.panel.setVisible(false);
+	}
 	
 	@Override
 	public String getName()

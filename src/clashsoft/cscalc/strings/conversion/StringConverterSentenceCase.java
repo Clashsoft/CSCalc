@@ -43,9 +43,4 @@ public class StringConverterSentenceCase extends DefaultStringConverter
 		}
 		return builder.toString();
 	}
-	
-	@Override
-	public void addArguments()
-	{
-	}
 }
