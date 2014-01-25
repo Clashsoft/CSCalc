@@ -6,16 +6,16 @@ import clashsoft.csutil.strings.DefaultStringConverter;
 
 public class StringConverterAddEnd extends DefaultStringConverter
 {
-	public JTextField textField;
+	public JTextField	textField;
 	
 	public StringConverterAddEnd()
 	{
 		super("Add text to end");
 	}
-
+	
 	@Override
 	public void addArguments()
-	{	
+	{
 		this.addLabel("Add");
 		this.textField = this.addTextField(null);
 		this.addLabel("to end of text");

@@ -20,7 +20,7 @@ public strictfp class MathHelper
 	
 	public static double clamp(double d, double min, double max)
 	{
-		return d < min ? min : (d > max ? max : d);
+		return d < min ? min : d > max ? max : d;
 	}
 	
 	public static double power(double d1, double d2)
@@ -114,12 +114,12 @@ public strictfp class MathHelper
 	
 	public static int getDecimal(double d)
 	{
-		return (int) ((d % 1D) * DECIMAL_INT_FACTOR);
+		return (int) (d % 1D * DECIMAL_INT_FACTOR);
 	}
 	
 	public static double getDouble(long i, int d)
 	{
-		return (double) i + ((double) d / DECIMAL_INT_FACTOR);
+		return i + d / DECIMAL_INT_FACTOR;
 	}
 	
 	public static String toString(double d, int radix)

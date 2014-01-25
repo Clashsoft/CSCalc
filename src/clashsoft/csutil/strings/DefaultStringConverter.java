@@ -29,13 +29,13 @@ public abstract class DefaultStringConverter implements IStringConverter
 	public JLabel addLabel(String text)
 	{
 		JLabel label = new JLabel(text);
-		panel.add(label);
+		this.panel.add(label);
 		return label;
 	}
 	
 	public JTextField addTextField()
 	{
-		return addTextField(null);
+		return this.addTextField(null);
 	}
 	
 	public JTextField addTextField(String text)
@@ -47,13 +47,13 @@ public abstract class DefaultStringConverter implements IStringConverter
 			@Override
 			public void keyPressed(KeyEvent e)
 			{
-				update();
+				DefaultStringConverter.this.update();
 			}
 			
 			@Override
 			public void keyReleased(KeyEvent e)
 			{
-				update();
+				DefaultStringConverter.this.update();
 			}
 			
 		});
@@ -74,7 +74,7 @@ public abstract class DefaultStringConverter implements IStringConverter
 			@Override
 			public void stateChanged(ChangeEvent e)
 			{
-				update();
+				DefaultStringConverter.this.update();
 			}
 		});
 		this.panel.add(checkBox);
@@ -104,7 +104,7 @@ public abstract class DefaultStringConverter implements IStringConverter
 			@Override
 			public void stateChanged(ChangeEvent e)
 			{
-				update();
+				DefaultStringConverter.this.update();
 			}
 		});
 		this.panel.add(spinner);
@@ -113,7 +113,7 @@ public abstract class DefaultStringConverter implements IStringConverter
 	
 	public <E> JComboBox<E> addComboBox(E... items)
 	{
-		return addComboBox(0, items);
+		return this.addComboBox(0, items);
 	}
 	
 	public <E> JComboBox<E> addComboBox(int selectedIndex, E... items)
@@ -125,7 +125,7 @@ public abstract class DefaultStringConverter implements IStringConverter
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				update();
+				DefaultStringConverter.this.update();
 			}
 		});
 		this.panel.add(comboBox);

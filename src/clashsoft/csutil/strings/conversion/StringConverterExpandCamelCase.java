@@ -6,7 +6,7 @@ import clashsoft.csutil.strings.DefaultStringConverter;
 
 public class StringConverterExpandCamelCase extends DefaultStringConverter
 {
-	public JTextField textFieldSeperator;
+	public JTextField	textFieldSeperator;
 	
 	public StringConverterExpandCamelCase()
 	{

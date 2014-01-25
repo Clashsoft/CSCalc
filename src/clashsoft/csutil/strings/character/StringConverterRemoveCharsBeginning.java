@@ -7,7 +7,7 @@ import clashsoft.csutil.strings.DefaultStringConverter;
 
 public class StringConverterRemoveCharsBeginning extends DefaultStringConverter
 {
-	public JSpinner spinner;
+	public JSpinner	spinner;
 	
 	public StringConverterRemoveCharsBeginning()
 	{
@@ -17,9 +17,9 @@ public class StringConverterRemoveCharsBeginning extends DefaultStringConverter
 	@Override
 	public String getConvertedString(String input)
 	{
-		SpinnerNumberModel model = (SpinnerNumberModel)this.spinner.getModel();
+		SpinnerNumberModel model = (SpinnerNumberModel) this.spinner.getModel();
 		int len = input.length();
-		int pos = ((Number)model.getValue()).intValue();
+		int pos = ((Number) model.getValue()).intValue();
 		
 		model.setMaximum(len);
 		if (pos > len)

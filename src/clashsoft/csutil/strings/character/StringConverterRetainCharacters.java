@@ -6,7 +6,7 @@ import clashsoft.csutil.strings.DefaultStringConverter;
 
 public class StringConverterRetainCharacters extends DefaultStringConverter
 {
-	public JTextField textFieldCharacters;
+	public JTextField	textFieldCharacters;
 	
 	public StringConverterRetainCharacters()
 	{

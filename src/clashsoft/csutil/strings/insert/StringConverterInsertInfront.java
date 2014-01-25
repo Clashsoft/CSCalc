@@ -7,18 +7,18 @@ import clashsoft.csutil.strings.DefaultStringConverter;
 
 public class StringConverterInsertInfront extends DefaultStringConverter
 {
-	public JTextField textField;
-	public JTextField textFieldPattern;
-	public JComboBox comboBoxMode;
+	public JTextField	textField;
+	public JTextField	textFieldPattern;
+	public JComboBox	comboBoxMode;
 	
 	public StringConverterInsertInfront()
 	{
 		super("Insert text in front of existing text");
 	}
-
+	
 	@Override
 	public void addArguments()
-	{	
+	{
 		this.addLabel("Insert");
 		this.textField = this.addTextField(null);
 		this.addLabel("before");

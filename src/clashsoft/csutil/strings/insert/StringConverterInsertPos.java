@@ -8,17 +8,17 @@ import clashsoft.csutil.strings.DefaultStringConverter;
 
 public class StringConverterInsertPos extends DefaultStringConverter
 {
-	public JTextField textField;
-	public JSpinner spinner;
+	public JTextField	textField;
+	public JSpinner		spinner;
 	
 	public StringConverterInsertPos()
 	{
 		super("Insert text at position");
 	}
-
+	
 	@Override
 	public void addArguments()
-	{	
+	{
 		this.addLabel("Insert");
 		this.textField = this.addTextField(null);
 		this.addLabel("at position");
@@ -28,9 +28,9 @@ public class StringConverterInsertPos extends DefaultStringConverter
 	@Override
 	public String getConvertedString(String input)
 	{
-		SpinnerNumberModel model = (SpinnerNumberModel)this.spinner.getModel();
+		SpinnerNumberModel model = (SpinnerNumberModel) this.spinner.getModel();
 		int len = input.length();
-		int pos = ((Number)model.getValue()).intValue();
+		int pos = ((Number) model.getValue()).intValue();
 		
 		model.setMaximum(len);
 		if (pos > len)

@@ -50,7 +50,7 @@ public class StringConversions extends DefaultMutableTreeNode
 			node_2.add(new DefaultMutableTreeNode(new StringConverterReplace()));
 			node_1.add(node_2);
 		}
-		add(node_1);
+		this.add(node_1);
 		
 		node_1 = new DefaultMutableTreeNode("Characters");
 		{
@@ -73,7 +73,7 @@ public class StringConversions extends DefaultMutableTreeNode
 				node_1.add(node_2);
 			}
 		}
-		add(node_1);
+		this.add(node_1);
 		
 		node_1 = new DefaultMutableTreeNode("Conversions");
 		{
@@ -83,6 +83,6 @@ public class StringConversions extends DefaultMutableTreeNode
 			node_1.add(new DefaultMutableTreeNode(new StringConverterUppercase()));
 			node_1.add(new DefaultMutableTreeNode(new StringConverterExpandCamelCase()));
 		}
-		add(node_1);
+		this.add(node_1);
 	}
 }

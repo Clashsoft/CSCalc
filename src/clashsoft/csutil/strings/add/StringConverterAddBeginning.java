@@ -6,16 +6,16 @@ import clashsoft.csutil.strings.DefaultStringConverter;
 
 public class StringConverterAddBeginning extends DefaultStringConverter
 {
-	public JTextField textField;
+	public JTextField	textField;
 	
 	public StringConverterAddBeginning()
 	{
 		super("Add text to beginning");
 	}
-
+	
 	@Override
 	public void addArguments()
-	{	
+	{
 		this.addLabel("Add");
 		this.textField = this.addTextField(null);
 		this.addLabel("to beginning of text");

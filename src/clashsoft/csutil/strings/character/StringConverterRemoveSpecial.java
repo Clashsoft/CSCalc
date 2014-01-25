@@ -8,15 +8,15 @@ import clashsoft.csutil.strings.DefaultStringConverter;
 
 public class StringConverterRemoveSpecial extends DefaultStringConverter
 {
-	public JCheckBox checkBoxWhitespace;
-	public JCheckBox checkBoxDigits;
-	public JCheckBox checkBoxPunctuation;
+	public JCheckBox	checkBoxWhitespace;
+	public JCheckBox	checkBoxDigits;
+	public JCheckBox	checkBoxPunctuation;
 	
 	public StringConverterRemoveSpecial()
 	{
 		super("Remove special characters");
 	}
-
+	
 	@Override
 	public String getConvertedString(String input)
 	{
@@ -39,10 +39,22 @@ public class StringConverterRemoveSpecial extends DefaultStringConverter
 	
 	public static boolean isSpecial(char c, boolean whitespace, boolean digits, boolean punct)
 	{
-		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) return false;
-		if (whitespace && Character.isWhitespace(c)) return false;
-		if (digits && Character.isDigit(c)) return false;
-		if (punct && Pattern.matches("\\p{Punct}", String.valueOf(c))) return false;
+		if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
+		{
+			return false;
+		}
+		if (whitespace && Character.isWhitespace(c))
+		{
+			return false;
+		}
+		if (digits && Character.isDigit(c))
+		{
+			return false;
+		}
+		if (punct && Pattern.matches("\\p{Punct}", String.valueOf(c)))
+		{
+			return false;
+		}
 		return true;
 	}
 	

@@ -7,8 +7,11 @@ import clashsoft.csutil.gui.GUI;
 public interface IStringConverter
 {
 	public void addArguments(GUI gui, JPanel panel);
+	
 	public String getName();
+	
 	public String getConvertedString(String input);
 	
+	@Override
 	public String toString();
 }

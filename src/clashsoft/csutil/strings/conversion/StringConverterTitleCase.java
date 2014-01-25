@@ -6,7 +6,7 @@ import clashsoft.csutil.strings.DefaultStringConverter;
 
 public class StringConverterTitleCase extends DefaultStringConverter
 {
-	public JCheckBox checkBoxAcceptAllWhiteSpaces;
+	public JCheckBox	checkBoxAcceptAllWhiteSpaces;
 	
 	public StringConverterTitleCase()
 	{
@@ -35,7 +35,7 @@ public class StringConverterTitleCase extends DefaultStringConverter
 			}
 			else
 			{
-				if (c == ' ' || (allWhitespaces && Character.isWhitespace(c)))
+				if (c == ' ' || allWhitespaces && Character.isWhitespace(c))
 				{
 					whitespace = true;
 				}

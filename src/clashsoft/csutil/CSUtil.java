@@ -375,7 +375,7 @@ public class CSUtil
 	
 	public boolean getDevMode()
 	{
-		return Boolean.parseBoolean(properties.getProperty("devmode"));
+		return Boolean.parseBoolean(this.properties.getProperty("devmode"));
 	}
 	
 	public Color getColor()

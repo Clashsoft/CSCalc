@@ -1121,7 +1121,7 @@ public class GUI
 			@Override
 			public void valueChanged(TreeSelectionEvent e)
 			{
-				IStringConverter converter = getCurrentStringConverter();
+				IStringConverter converter = GUI.this.getCurrentStringConverter();
 				GUI.this.panelStringsArguments.removeAll();
 				if (converter != null)
 				{
@@ -1132,7 +1132,7 @@ public class GUI
 				{
 					GUI.this.panelStringsArguments.setVisible(false);
 				}
-				updateStringConverter();
+				GUI.this.updateStringConverter();
 			}
 		});
 		this.treeStringConversions.setBorder(UIManager.getBorder("TextField.border"));
@@ -1149,13 +1149,13 @@ public class GUI
 			@Override
 			public void keyPressed(KeyEvent e)
 			{
-				updateStringConverter();
+				GUI.this.updateStringConverter();
 			}
 			
 			@Override
 			public void keyReleased(KeyEvent e)
 			{
-				updateStringConverter();
+				GUI.this.updateStringConverter();
 			}
 		});
 		this.textFieldStringsInput.setBorder(UIManager.getBorder("TextField.border"));
@@ -1174,7 +1174,7 @@ public class GUI
 	
 	public IStringConverter getCurrentStringConverter()
 	{
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeStringConversions.getLastSelectedPathComponent();
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.treeStringConversions.getLastSelectedPathComponent();
 		if (node == null || !node.isLeaf())
 		{
 			return null;
@@ -1189,7 +1189,7 @@ public class GUI
 	
 	public void updateStringConverter()
 	{
-		IStringConverter converter = getCurrentStringConverter();
+		IStringConverter converter = this.getCurrentStringConverter();
 		String text = this.textFieldStringsInput.getText();
 		if (converter != null)
 		{
@@ -1217,13 +1217,21 @@ public class GUI
 		this.radioButtonLogDebug.setSelected(logLevel == 2);
 		
 		if (radix == 2)
+		{
 			this.radioButtonBinary.setSelected(true);
+		}
 		else if (radix == 8)
+		{
 			this.radioButtonOctal.setSelected(radix == 8);
+		}
 		else if (radix == 10)
+		{
 			this.radioButtonDecimal.setSelected(radix == 10);
+		}
 		else if (radix == 16)
+		{
 			this.radioButtonHexadecimal.setSelected(radix == 16);
+		}
 		else
 		{
 			this.radioButtonCustomRadix.setSelected(true);
@@ -1337,7 +1345,7 @@ public class GUI
 				}
 				catch (Exception e)
 				{
-					calc.devInfo("Error setting native LAF: " + e.getMessage());
+					GUI.this.calc.devInfo("Error setting native LAF: " + e.getMessage());
 					e.printStackTrace();
 				}
 			}

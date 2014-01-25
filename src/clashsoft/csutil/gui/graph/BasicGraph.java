@@ -23,9 +23,10 @@ public class BasicGraph extends Canvas
 	{
 		this.addMouseWheelListener(new MouseWheelListener()
 		{
+			@Override
 			public void mouseWheelMoved(MouseWheelEvent e)
 			{
-				zoom(e.getPreciseWheelRotation());
+				BasicGraph.this.zoom(e.getPreciseWheelRotation());
 			}
 		});
 		this.addMouseMotionListener(new MouseMotionAdapter()
@@ -133,16 +134,16 @@ public class BasicGraph extends Canvas
 			float centerX = width / 2F;
 			float centerY = height / 2F;
 			
-			float zoomX = getZoomX();
-			float zoomY = getZoomY();
-			float stepX = getStepX();
-			float stepY = getStepY();
+			float zoomX = this.getZoomX();
+			float zoomY = this.getZoomY();
+			float stepX = this.getStepX();
+			float stepY = this.getStepY();
 			
-			drawGrid(g, width, height, centerX, centerY, zoomX, zoomY, 0.25F, 0.25F);
+			this.drawGrid(g, width, height, centerX, centerY, zoomX, zoomY, 0.25F, 0.25F);
 			
-			for (int i = 0; i < getEquationCount(); i++)
+			for (int i = 0; i < this.getEquationCount(); i++)
 			{
-				drawGraph(g, i, width, height, centerX, centerY, zoomX, zoomY, stepX, stepY);
+				this.drawGraph(g, i, width, height, centerX, centerY, zoomX, zoomY, stepX, stepY);
 			}
 			
 			g.setColor(Color.BLUE);
@@ -162,9 +163,9 @@ public class BasicGraph extends Canvas
 	
 	public void drawGrid(Graphics g, int width, int height, float centerX, float centerY, float zoomX, float zoomY, float stepX, float stepY)
 	{
-		Color axisColor = getAxisColor();
-		Color intColor = getIntColor();
-		Color lineColor = getLineColor();
+		Color axisColor = this.getAxisColor();
+		Color intColor = this.getIntColor();
+		Color lineColor = this.getLineColor();
 		
 		int fontX = (int) centerX + 2;
 		int fontY = (int) centerY + 12;
