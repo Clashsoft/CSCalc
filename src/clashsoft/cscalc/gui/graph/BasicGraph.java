@@ -3,8 +3,7 @@ package clashsoft.cscalc.gui.graph;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 
 import clashsoft.cscalc.MathHelper;
 
@@ -12,8 +11,13 @@ public class BasicGraph extends Canvas
 {
 	private static final long	serialVersionUID	= 6584848915428177630L;
 	
+	private int					mouseX				= 0;
+	private int					mouseY				= 0;
+	
 	public float				zoomX				= 50F;
 	public float				zoomY				= 50F;
+	
+	public boolean				isPainting			= false;
 	
 	public BasicGraph()
 	{
@@ -22,6 +26,16 @@ public class BasicGraph extends Canvas
 			public void mouseWheelMoved(MouseWheelEvent e)
 			{
 				zoom(e.getPreciseWheelRotation());
+			}
+		});
+		this.addMouseMotionListener(new MouseMotionAdapter()
+		{
+			@Override
+			public void mouseMoved(MouseEvent e)
+			{
+				BasicGraph.this.mouseX = e.getX();
+				BasicGraph.this.mouseY = e.getY();
+				BasicGraph.this.repaint();
 			}
 		});
 		this.setBackground(Color.WHITE);
@@ -60,14 +74,12 @@ public class BasicGraph extends Canvas
 	
 	public float getStepX()
 	{
-		float z = getZoomX();
-		return z > 16F ? z / 1024F : z / 256F;
+		return 0.0625F;
 	}
 	
 	public float getStepY()
 	{
-		float z = getZoomY();
-		return z > 16F ? z / 1024F : z / 256F;
+		return 0.0625F;
 	}
 	
 	public void zoom(double zoom)
@@ -106,24 +118,45 @@ public class BasicGraph extends Canvas
 	@Override
 	public void paint(final Graphics g)
 	{
-		super.paint(g);
-		
-		final int width = this.getWidth();
-		final int height = this.getHeight();
-		
-		final float centerX = width / 2F;
-		final float centerY = height / 2F;
-		
-		final float zoomX = getZoomX();
-		final float zoomY = getZoomY();
-		final float stepX = getStepX();
-		final float stepY = getStepY();
-		
-		drawGrid(g, width, height, centerX, centerY, zoomX, zoomY, 0.1F, 0.1F);
-		
-		for (int i = 0; i < getEquationCount(); i++)
+		if (!this.isPainting)
 		{
-			drawGraph(g, i, width, height, centerX, centerY, zoomX, zoomY, stepX, stepY);
+			this.isPainting = true;
+			
+			super.paint(g);
+			
+			int mouseX = this.mouseX;
+			int mouseY = this.mouseY;
+			
+			int width = this.getWidth();
+			int height = this.getHeight();
+			
+			float centerX = width / 2F;
+			float centerY = height / 2F;
+			
+			float zoomX = getZoomX();
+			float zoomY = getZoomY();
+			float stepX = getStepX();
+			float stepY = getStepY();
+			
+			drawGrid(g, width, height, centerX, centerY, zoomX, zoomY, 0.25F, 0.25F);
+			
+			for (int i = 0; i < getEquationCount(); i++)
+			{
+				drawGraph(g, i, width, height, centerX, centerY, zoomX, zoomY, stepX, stepY);
+			}
+			
+			g.setColor(Color.BLUE);
+			g.drawLine(mouseX, 0, mouseX, height);
+			g.drawLine(0, mouseY, width, mouseY);
+			
+			if (this.getEquationCount() > 0)
+			{
+				float x = (mouseX - centerX) / zoomX;
+				float fx = this.getFX(x, 0);
+				g.drawString("f(" + x + ")=" + fx, mouseX + 12, mouseY + 22);
+			}
+			
+			this.isPainting = false;
 		}
 	}
 	
@@ -135,7 +168,6 @@ public class BasicGraph extends Canvas
 		
 		int fontX = (int) centerX + 2;
 		int fontY = (int) centerY + 12;
-		
 		
 		g.setColor(lineColor);
 		for (float f = stepX; f < centerX; f += stepX)
@@ -192,26 +224,29 @@ public class BasicGraph extends Canvas
 	public void drawGraph(Graphics g, int equation, int width, int height, float centerX, float centerY, float zoomX, float zoomY, float stepX, float stepY)
 	{
 		g.setColor(this.getGraphColor(equation));
-		for (float f1 = -centerX; f1 < centerX;)
+		for (float f0 = -centerX; f0 < centerX;)
 		{
-			float f0 = f1 + stepX;
-			float fx1 = this.getFX(f1, equation);
-			float fx2 = this.getFX(f0, equation);
+			float f1 = f0 + stepX;
+			float fx1 = this.getFX(f0, equation);
+			float fx2 = this.getFX(f1, equation);
 			
-			float x1 = f1 * zoomX;
-			float x2 = f0 * zoomX;
-			float y1 = fx1 * zoomY;
-			float y2 = fx2 * zoomY;
+			if (!Float.isNaN(fx1) && !Float.isNaN(fx2))
+			{
+				float x1 = f0 * zoomX;
+				float x2 = f1 * zoomX;
+				float y1 = fx1 * zoomY;
+				float y2 = fx2 * zoomY;
+				
+				int xp1 = (int) (centerX + x1);
+				int xp2 = (int) (centerX + x2);
+				int yp1 = (int) (centerY - y1);
+				int yp2 = (int) (centerY - y2);
+				
+				g.drawLine(xp1, yp1, xp2, yp2);
+				g.drawLine(xp1, yp1 + 1, xp2, yp2 + 1);
+			}
 			
-			int xp1 = (int) (centerX + x1);
-			int xp2 = (int) (centerX + x2);
-			int yp1 = (int) (centerY - y1);
-			int yp2 = (int) (centerY - y2);
-			
-			g.drawLine(xp1, yp1, xp2, yp2);
-			g.drawLine(xp1, yp1 + 1, xp2, yp2 + 1);
-			
-			f1 = f0;
+			f0 = f1;
 		}
 	}
 }

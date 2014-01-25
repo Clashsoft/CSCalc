@@ -73,7 +73,7 @@ public strictfp class MathHelper
 		}
 		catch (Exception ex)
 		{
-			return 0F;
+			return Double.NaN;
 		}
 	}
 	
@@ -92,7 +92,7 @@ public strictfp class MathHelper
 		}
 		catch (Exception ex)
 		{
-			return 0F;
+			return Float.NaN;
 		}
 	}
 	

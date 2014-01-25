@@ -10,9 +10,12 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import clashsoft.cscalc.CSCalc;
@@ -25,10 +28,6 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.tree.DefaultMutableTreeNode;
-
 public class GUI
 {
 	public static GUI			instance			= new GUI();
@@ -37,7 +36,7 @@ public class GUI
 	
 	public LookAndFeelInfo[]	lookAndFeels		= UIManager.getInstalledLookAndFeels();
 	
-	public JFrame				frame;
+	public JFrame				frameCSUtil;
 	
 	public JTextPane			inputTextField;
 	public JTextPane			resultTextField;
@@ -141,12 +140,13 @@ public class GUI
 	public JLabel				labelStrings;
 	public JTree				treeStringConversions;
 	public JPanel				panelStringsArguments;
+	public JButton				buttonReset;
 	
 	public static void init()
 	{
 		instance.calc = CSCalc.instance;
 		instance.initialize();
-		instance.frame.setVisible(true);
+		instance.frameCSUtil.setVisible(true);
 	}
 	
 	public GUI()
@@ -161,19 +161,10 @@ public class GUI
 	{
 		this.initLAF(this.calc.getLAF(), false);
 		
-		this.frame = new JFrame(I18n.getString("GUI.frame.title")); //$NON-NLS-1$
-		this.frame.setResizable(false);
-		this.frame.setBounds(100, 100, 480, 450);
-		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.frame.addKeyListener(new KeyAdapter()
-		{
-			@Override
-			public void keyPressed(KeyEvent e)
-			{
-				GUI.this.calc.window_keyTyped(e.getKeyChar());
-			}
-		});
-		this.frame.addWindowListener(new WindowAdapter()
+		this.frameCSUtil = new JFrame(I18n.getString("GUI.frameCSUtil.title")); //$NON-NLS-1$
+		this.frameCSUtil.setBounds(100, 100, 480, 450);
+		this.frameCSUtil.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.frameCSUtil.addWindowListener(new WindowAdapter()
 		{
 			@Override
 			public void windowClosing(WindowEvent e)
@@ -192,7 +183,7 @@ public class GUI
 				GUI.this.setCurrentTab(GUI.this.tabbedPane.getSelectedIndex());
 			}
 		});
-		this.frame.getContentPane().add(this.tabbedPane);
+		this.frameCSUtil.getContentPane().add(this.tabbedPane);
 		
 		this.addPanels();
 		this.addTextFields();
@@ -972,7 +963,7 @@ public class GUI
 		
 		this.colorChooser = new JColorChooser();
 		this.colorChooser.setToolTipText(I18n.getString("GUI.colorChooser.toolTipText")); //$NON-NLS-1$
-		this.colorChooser.setColor(this.frame.getContentPane().getBackground());
+		this.colorChooser.setColor(this.frameCSUtil.getContentPane().getBackground());
 		this.colorChooser.getSelectionModel().addChangeListener(new ChangeListener()
 		{
 			@Override
@@ -1069,38 +1060,19 @@ public class GUI
 		});
 		this.menuZoom.add(this.menuItemZoomCubed);
 		
-		GridBagLayout inputPanelConstraint = new GridBagLayout();
-		inputPanelConstraint.columnWidths = new int[] { 0, 415, 0, 0 };
-		inputPanelConstraint.rowHeights = new int[] { 0, 0 };
-		inputPanelConstraint.columnWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
-		inputPanelConstraint.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
 		this.panelDrawInput = new JPanel();
-		this.panelDrawInput.setLayout(inputPanelConstraint);
+		this.panelDrawInput.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.LABEL_COMPONENT_GAP_COLSPEC, FormFactory.MIN_COLSPEC, ColumnSpec.decode("260px:grow"), ColumnSpec.decode("61px"), ColumnSpec.decode("20dlu"), }, new RowSpec[] { RowSpec.decode("29px"), }));
 		this.panelGraph.add(this.panelDrawInput, BorderLayout.NORTH);
 		
-		GridBagConstraints gbc_lblFx = new GridBagConstraints();
-		gbc_lblFx.fill = GridBagConstraints.BOTH;
-		gbc_lblFx.insets = new Insets(0, 0, 0, 5);
-		gbc_lblFx.gridx = 0;
-		gbc_lblFx.gridy = 0;
 		this.labelFX = new JLabel(I18n.getString("GUI.labelFX.text")); //$NON-NLS-1$
-		this.panelDrawInput.add(this.labelFX, gbc_lblFx);
+		this.panelDrawInput.add(this.labelFX, "2, 1, fill, fill");
 		
-		GridBagConstraints graphConstraint = new GridBagConstraints();
-		graphConstraint.insets = new Insets(0, 0, 0, 5);
-		graphConstraint.fill = GridBagConstraints.BOTH;
-		graphConstraint.gridx = 1;
-		graphConstraint.gridy = 0;
 		this.comboBoxGraph = new JComboBox();
 		this.comboBoxGraph.setBackground(Color.WHITE);
 		this.comboBoxGraph.setEditable(true);
 		this.comboBoxGraph.setMaximumRowCount(10);
-		this.panelDrawInput.add(this.comboBoxGraph, graphConstraint);
+		this.panelDrawInput.add(this.comboBoxGraph, "3, 1, fill, fill");
 		
-		GridBagConstraints drawButtonConstraint = new GridBagConstraints();
-		drawButtonConstraint.fill = GridBagConstraints.BOTH;
-		drawButtonConstraint.gridx = 2;
-		drawButtonConstraint.gridy = 0;
 		this.buttonDraw = new JButton("\u2192");
 		this.buttonDraw.addActionListener(new ActionListener()
 		{
@@ -1121,7 +1093,18 @@ public class GUI
 				}
 			}
 		});
-		this.panelDrawInput.add(this.buttonDraw, drawButtonConstraint);
+		
+		this.buttonReset = new JButton(I18n.getString("GUI.buttonReset.text"));
+		this.buttonReset.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				GUI.this.comboBoxGraph.removeAllItems();
+				GUI.this.canvasGraph.removeAllEquations();
+			}
+		});
+		this.panelDrawInput.add(this.buttonReset, "4, 1, fill, fill");
+		this.panelDrawInput.add(this.buttonDraw, "5, 1, fill, fill");
 	}
 	
 	public void addStringsTab()
@@ -1226,13 +1209,20 @@ public class GUI
 		this.radioButtonLogExtended.setSelected(logLevel == 1);
 		this.radioButtonLogDebug.setSelected(logLevel == 2);
 		
-		boolean flag = false;
-		this.radioButtonBinary.setSelected(flag |= radix == 2);
-		this.radioButtonOctal.setSelected(flag |= radix == 8);
-		this.radioButtonDecimal.setSelected(flag |= radix == 10);
-		this.radioButtonHexadecimal.setSelected(flag |= radix == 16);
-		this.radioButtonCustomRadix.setSelected(!flag);
-		this.sliderRadix.setEnabled(!flag);
+		if (radix == 2)
+			this.radioButtonBinary.setSelected(true);
+		else if (radix == 8)
+			this.radioButtonOctal.setSelected(radix == 8);
+		else if (radix == 10)
+			this.radioButtonDecimal.setSelected(radix == 10);
+		else if (radix == 16)
+			this.radioButtonHexadecimal.setSelected(radix == 16);
+		else
+		{
+			this.radioButtonCustomRadix.setSelected(true);
+			this.sliderRadix.setEnabled(true);
+		}
+		
 		this.sliderRadix.setValue(radix);
 		this.labelRadix.setText("" + radix);
 	}
@@ -1263,20 +1253,20 @@ public class GUI
 	{
 		if (tab == this.tabbedPane.indexOfComponent(this.panelCalculateTab))
 		{
-			this.frame.setResizable(false);
-			this.frame.setSize(480, 450);
+			this.frameCSUtil.setResizable(false);
+			this.frameCSUtil.setSize(480, 450);
 		}
 		else
 		{
-			this.frame.setResizable(true);
-			this.frame.setSize(640, 480);
+			this.frameCSUtil.setResizable(true);
+			this.frameCSUtil.setSize(640, 480);
 		}
 	}
 	
 	public void setColor(Color color)
 	{
 		this.calc.setColor(color);
-		Component component = this.frame.getContentPane();
+		Component component = this.frameCSUtil.getContentPane();
 		this.setColor(component, color);
 	}
 	
@@ -1335,7 +1325,7 @@ public class GUI
 					if (update)
 					{
 						WebLookAndFeel.updateAllComponentUIs();
-						JOptionPane.showMessageDialog(GUI.this.frame, "Restart the Application to apply LAF changes", "Warning", JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(GUI.this.frameCSUtil, "Restart the Application to apply LAF changes", "Warning", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 				catch (Exception e)

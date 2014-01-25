@@ -38,13 +38,15 @@ public class Graph extends BasicGraph
 		return this.equations.contains(equation);
 	}
 	
-	public void clearEquations()
+	public void removeAllEquations()
 	{
 		this.equations.clear();
+		this.repaint();
 	}
 	
 	public void removeEquation(int i)
 	{
 		this.equations.remove(i);
+		this.repaint();
 	}
 }

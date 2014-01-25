@@ -235,29 +235,32 @@ public class CSCalc
 		{
 			double d = Math.pow(1D / radix, this.decimalPoint) * number;
 			this.devInfo("Adding Decimal Place: n=" + number + "; radix=" + radix + "; dp=" + this.decimalPoint + "; r=" + d, 1);
-			if (this.second)
+			double var = this.getCurrentVar();
+			if (var < 0)
 			{
-				this.var2 += d;
+				var -= number;
 			}
 			else
 			{
-				this.var1 += d;
+				var += number;
 			}
+			this.setCurrentVar(var);
 			this.decimalPoint++;
 		}
 		else
 		{
 			this.devInfo("Adding Number: n=" + number + "; radix=" + radix, 1);
-			if (this.second)
+			double var = this.getCurrentVar();
+			var *= radix;
+			if (var < 0)
 			{
-				this.var2 *= radix;
-				this.var2 += number;
+				var -= number;
 			}
 			else
 			{
-				this.var1 *= radix;
-				this.var1 += number;
+				var += number;
 			}
+			this.setCurrentVar(var);
 		}
 		this.update();
 	}
@@ -758,7 +761,7 @@ public class CSCalc
 			}
 			
 			String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
-			final ProcessBuilder builder = new ProcessBuilder(Arrays.asList(javaBin, "-jar", currentJar.getPath()));
+			ProcessBuilder builder = new ProcessBuilder(Arrays.asList(javaBin, "-jar", currentJar.getPath()));
 			builder.start();
 		}
 		catch (Exception ex)
