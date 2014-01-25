@@ -160,8 +160,6 @@ public class GUI
 	 */
 	private void initialize()
 	{
-		this.initLAF(this.calc.getLAF(), false);
-		
 		this.frameCSUtil = new JFrame(I18n.getString("GUI.frameCSUtil.title")); //$NON-NLS-1$
 		this.frameCSUtil.setBounds(100, 100, 480, 450);
 		this.frameCSUtil.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -173,6 +171,7 @@ public class GUI
 				GUI.this.calc.exit();
 			}
 		});
+		
 		
 		this.tabbedPane = new JTabbedPane(SwingConstants.TOP);
 		this.tabbedPane.setBounds(0, 0, 480, 448);
@@ -204,6 +203,8 @@ public class GUI
 		this.addSettingsTab();
 		
 		this.calc.devInfo("Done Initializing GUI", 2);
+		
+		this.updateSettings();
 	}
 	
 	private void addPanels()
@@ -1207,6 +1208,8 @@ public class GUI
 		int laf = this.calc.getLAF();
 		int radix = this.calc.getRadix();
 		
+		this.initLAF(laf, true);
+		
 		this.setDevMode(devMode);
 		this.setColor(color);
 		this.checkboxDevMode.setSelected(devMode);
@@ -1340,7 +1343,6 @@ public class GUI
 					if (update)
 					{
 						WebLookAndFeel.updateAllComponentUIs();
-						JOptionPane.showMessageDialog(GUI.this.frameCSUtil, "Restart the Application to apply LAF changes", "Warning", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 				catch (Exception e)
