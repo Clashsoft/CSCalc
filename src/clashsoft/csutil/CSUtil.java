@@ -5,9 +5,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Properties;
+import java.util.*;
 
 import javax.swing.JTextField;
 
@@ -15,17 +16,17 @@ import clashsoft.csutil.gui.GUI;
 
 public class CSUtil
 {
-	public static final String	ROOT		= "\u221A";
-	public static final String	XOR			= "\u22BB";
-	public static final String	NOT			= "\u00AC";
-	public static final String	PI			= "\u03C0";
-	public static final String	E			= "\u2107";
+	public static final String	ROOT			= "\u221A";
+	public static final String	XOR				= "\u22BB";
+	public static final String	NOT				= "\u00AC";
+	public static final String	PI				= "\u03C0";
+	public static final String	E				= "\u2107";
 	
 	public static CSUtil		instance;
 	
-	public String				version		= "0.1";
+	public String				version			= "0.1";
 	
-	public Path					memoryPath	= new File(getAppdataDirectory(), "memory.txt").toPath();
+	public Path					memoryPath		= new File(getAppdataDirectory(), "memory.txt").toPath();
 	
 	public double				var1;
 	public double				var2;
@@ -37,7 +38,9 @@ public class CSUtil
 	public double				result;
 	public double				mem;
 	
-	public Properties			properties	= new Properties();
+	public Properties			properties		= new Properties();
+	
+	public List<String>			consoleLines	= new ArrayList();
 	
 	public CSUtil()
 	{
@@ -54,7 +57,7 @@ public class CSUtil
 	
 	public static File getSaveDataFolder()
 	{
-		File f = new File(getAppdataDirectory(), "cscalc");
+		File f = new File(getAppdataDirectory(), "CSUtil");
 		if (!f.exists())
 		{
 			f.mkdirs();
@@ -87,7 +90,7 @@ public class CSUtil
 		this.resetSettings(false);
 		this.devInfo("CSCalc version " + this.version, 1);
 		this.devInfo("Initializing...", 1);
-		this.loadSettings();
+		this.load();
 		GUI.init();
 		this.reset();
 	}
@@ -166,7 +169,7 @@ public class CSUtil
 		}
 	}
 	
-	public void loadSettings()
+	public void load()
 	{
 		this.devInfo("Loading Settings", 1);
 		File file = new File(getSaveDataFolder(), "save.txt");
@@ -183,8 +186,9 @@ public class CSUtil
 		}
 	}
 	
-	public void saveSettings()
+	public void save()
 	{
+		this.devInfo("Saving settings", 1);
 		File file = new File(getSaveDataFolder(), "save.txt");
 		
 		try
@@ -197,6 +201,23 @@ public class CSUtil
 		catch (IOException ex)
 		{
 			this.devInfo("Error saving Settings: " + ex.getMessage(), 1);
+			ex.printStackTrace();
+		}
+		
+		this.devInfo("Saving log...");
+		
+		file = new File(getSaveDataFolder(), "log.txt");
+		
+		try
+		{
+			file.createNewFile();
+			
+			Files.write(file.toPath(), this.consoleLines, Charset.defaultCharset());
+			this.devInfo("Successfully saved log", 1);
+		}
+		catch (IOException ex)
+		{
+			this.devInfo("Error saving log: " + ex.getMessage(), 1);
 			ex.printStackTrace();
 		}
 	}
@@ -399,7 +420,9 @@ public class CSUtil
 	
 	public void devInfo(String text)
 	{
-		GUI.instance.print(text);
+		text = String.format("[%tr] %s", new Date(), text);
+		this.consoleLines.add(text);
+		System.out.println(text);
 	}
 	
 	public void devInfo(String text, int level)
@@ -746,7 +769,7 @@ public class CSUtil
 	
 	public void exit()
 	{
-		this.saveSettings();
+		this.save();
 		System.exit(0);
 	}
 	

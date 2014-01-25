@@ -1,8 +1,9 @@
 package clashsoft.csutil.gui;
 
+import java.util.List;
+
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Date;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -1097,6 +1098,7 @@ public class GUI
 		this.buttonReset = new JButton(I18n.getString("GUI.buttonReset.text"));
 		this.buttonReset.addActionListener(new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				GUI.this.comboBoxGraph.removeAllItems();
@@ -1116,6 +1118,7 @@ public class GUI
 		this.scrollPaneStrings.setViewportView(this.treeStringConversions);
 		this.treeStringConversions.addTreeSelectionListener(new TreeSelectionListener()
 		{
+			@Override
 			public void valueChanged(TreeSelectionEvent e)
 			{
 				IStringConverter converter = getCurrentStringConverter();
@@ -1334,21 +1337,21 @@ public class GUI
 				}
 				catch (Exception e)
 				{
-					GUI.this.print("Error setting native LAF: " + e.getMessage());
+					calc.devInfo("Error setting native LAF: " + e.getMessage());
 					e.printStackTrace();
 				}
 			}
 		}.start();
 	}
 	
-	public void print(String text)
+	public void print(List<String> lines)
 	{
-		if (this.consoleTextField != null)
+		StringBuilder builder = new StringBuilder();
+		for (String s : lines)
 		{
-			String oldText = GUI.instance.consoleTextField.getText();
-			this.consoleTextField.setText(String.format("%s[%tr] %s%n", oldText, new Date(), text));
+			builder.append(s).append('\n');
 		}
-		System.out.println(text);
+		this.consoleTextField.setText(builder.toString());
 	}
 	
 	private static void addPopup(Component component, final JPopupMenu popup)

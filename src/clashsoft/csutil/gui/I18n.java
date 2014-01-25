@@ -1,6 +1,7 @@
 package clashsoft.csutil.gui;
 
 import java.beans.Beans;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -16,7 +17,8 @@ public class I18n
 	
 	private static ResourceBundle loadBundle()
 	{
-		return ResourceBundle.getBundle(BUNDLE_NAME);
+		Locale.setDefault(Locale.ENGLISH);
+		return ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH);
 	}
 	
 	public static String getString(String key)

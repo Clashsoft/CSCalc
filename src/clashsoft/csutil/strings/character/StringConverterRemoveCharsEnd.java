@@ -11,7 +11,7 @@ public class StringConverterRemoveCharsEnd extends DefaultStringConverter
 	
 	public StringConverterRemoveCharsEnd()
 	{
-		super("Remove characters from beginning");
+		super("Remove characters from end");
 	}
 	
 	@Override
