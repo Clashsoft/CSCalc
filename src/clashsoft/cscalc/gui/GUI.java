@@ -45,13 +45,24 @@ public class GUI
 	public JTextPane			consoleTextField;
 	
 	public JTabbedPane			tabbedPane;
-	public JPanel				panelCalculateTab;
-	public JTabbedPane			panelSettingsTab;
+	public JPanel				panelCalc;
+	public JTabbedPane			panelSettings;
 	public JPanel				panelDevTab;
+	public JPanel				panelNumpad;
+	public JPanel				panelBasicOperations;
+	public JPanel				panelBinaryOperations;
+	public JPanel				panelClear;
+	public JPanel				panelConstants;
+	public JPanel				panelLAFSettings;
+	public JPanel				panelDevSettings;
+	public JPanel				panelGraph;
+	public JPanel				panelDrawInput;
+	public JPanel				panelCalcSettings;
+	public JPanel				panelRadix;
+	public JPanel				panelStrings;
 	
 	public JButton				buttonCalculate;
 	
-	public JPanel				panelNumpad;
 	public JButton				button0;
 	public JButton				button1;
 	public JButton				button2;
@@ -65,7 +76,6 @@ public class GUI
 	public JButton				buttonDecimalPoint;
 	public JButton				buttonNegate;
 	
-	public JPanel				panelBasicOperations;
 	public JButton				buttonAdd;
 	public JButton				buttonSubstract;
 	public JButton				buttonMultiply;
@@ -75,7 +85,6 @@ public class GUI
 	public JButton				buttonPower;
 	public JButton				buttonRoot;
 	
-	public JPanel				panelBinaryOperations;
 	public JButton				buttonAND;
 	public JButton				buttonOR;
 	public JButton				buttonXOR;
@@ -84,19 +93,14 @@ public class GUI
 	public JButton				buttonBitshiftRightU;
 	public JButton				buttonBitshiftLeft;
 	
-	public JPanel				panelClear;
 	public JButton				buttonCE;
 	public JButton				buttonC;
 	
-	public JPanel				panelConstants;
 	public JButton				buttonPI;
 	public JButton				buttonE;
 	public JButton				buttonInfinity;
 	public JButton				buttonNegativeInfinity;
 	public JButton				buttonNaN;
-	
-	public JPanel				panelLAFSettings;
-	public JPanel				panelDevSettings;
 	
 	public JButton				buttonFont;
 	public JColorChooser		colorChooser;
@@ -107,12 +111,11 @@ public class GUI
 	public JRadioButton			radioButtonLogExtended;
 	public JRadioButton			radioButtonLogMinimal;
 	
-	public JPanel				panelGraph;
-	public JPanel				panelDrawInput;
 	public Graph				canvasGraph;
 	public JButton				buttonDraw;
 	public JComboBox			comboBoxGraph;
 	public JLabel				labelFX;
+	public JButton				buttonReset;
 	
 	public JPopupMenu			popupMenuGraph;
 	public JMenu				menuZoom;
@@ -124,9 +127,6 @@ public class GUI
 	
 	private ButtonGroup			buttonGroupDisplay	= new ButtonGroup();
 	
-	public JPanel				panelCalcSettings;
-	public JPanel				panelRadix;
-	
 	public JRadioButton			radioButtonBinary;
 	public JRadioButton			radioButtonOctal;
 	public JRadioButton			radioButtonDecimal;
@@ -134,13 +134,13 @@ public class GUI
 	public JRadioButton			radioButtonCustomRadix;
 	public JSlider				sliderRadix;
 	public JLabel				labelRadix;
-	public JPanel				panelStrings;
+	
 	public JTextArea			textFieldStringsInput;
 	public JTextArea			textFieldStringsOutput;
 	public JLabel				labelStrings;
+	public JScrollPane			scrollPaneStrings;
 	public JTree				treeStringConversions;
 	public JPanel				panelStringsArguments;
-	public JButton				buttonReset;
 	
 	public static void init()
 	{
@@ -209,9 +209,9 @@ public class GUI
 	{
 		// Tab Panels
 		
-		this.panelCalculateTab = new JPanel();
-		this.panelCalculateTab.setLayout(null);
-		this.tabbedPane.addTab(I18n.getString("GUI.panelCalculateTab.text"), null, this.panelCalculateTab, I18n.getString("GUI.panelCalculateTab.toolTipText")); //$NON-NLS-1$ //$NON-NLS-2$
+		this.panelCalc = new JPanel();
+		this.panelCalc.setLayout(null);
+		this.tabbedPane.addTab(I18n.getString("GUI.panelCalculateTab.text"), null, this.panelCalc, I18n.getString("GUI.panelCalculateTab.toolTipText")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		this.panelGraph = new JPanel();
 		this.panelGraph.setLayout(new BorderLayout(0, 0));
@@ -221,8 +221,8 @@ public class GUI
 		this.panelStrings.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("min:grow"), FormFactory.UNRELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"), FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, FormFactory.MIN_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("default:grow"), FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("fill:default:grow"), FormFactory.RELATED_GAP_ROWSPEC, }));
 		this.tabbedPane.addTab(I18n.getString("GUI.panelStrings.title"), null, this.panelStrings, I18n.getString("GUI.panelStrings.tooltip")); //$NON-NLS-1$
 		
-		this.panelSettingsTab = new JTabbedPane(SwingConstants.TOP);
-		this.tabbedPane.addTab(I18n.getString("GUI.panelSettingsTab.text"), null, this.panelSettingsTab, I18n.getString("GUI.panelSettingsTab.toolTipText")); //$NON-NLS-1$ //$NON-NLS-2$
+		this.panelSettings = new JTabbedPane(SwingConstants.TOP);
+		this.tabbedPane.addTab(I18n.getString("GUI.panelSettingsTab.text"), null, this.panelSettings, I18n.getString("GUI.panelSettingsTab.toolTipText")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		this.panelDevTab = new JPanel();
 		this.panelDevTab.setLayout(new BorderLayout(0, 0));
@@ -231,11 +231,11 @@ public class GUI
 		// Settings Panels
 		
 		this.panelLAFSettings = new JPanel();
-		this.panelSettingsTab.addTab(I18n.getString("GUI.panelLookAndFeel.title"), null, this.panelLAFSettings, null);
+		this.panelSettings.addTab(I18n.getString("GUI.panelLookAndFeel.title"), null, this.panelLAFSettings, null);
 		
 		this.panelCalcSettings = new JPanel();
 		this.panelCalcSettings.setLayout(new BorderLayout(0, 0));
-		this.panelSettingsTab.addTab(I18n.getString("GUI.panelCalcSettings.title"), null, this.panelCalcSettings, null); //$NON-NLS-1$
+		this.panelSettings.addTab(I18n.getString("GUI.panelCalcSettings.title"), null, this.panelCalcSettings, null); //$NON-NLS-1$
 		
 		this.panelRadix = new JPanel();
 		this.panelRadix.setBorder(new TitledBorder(null, "Radix", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -245,7 +245,7 @@ public class GUI
 		// Dev Settings Panels
 		
 		this.panelDevSettings = new JPanel();
-		this.panelSettingsTab.addTab(I18n.getString("GUI.panelDevSettings.title"), null, this.panelDevSettings, null); //$NON-NLS-1$
+		this.panelSettings.addTab(I18n.getString("GUI.panelDevSettings.title"), null, this.panelDevSettings, null); //$NON-NLS-1$
 		
 		// Calculate Panels
 		
@@ -253,31 +253,31 @@ public class GUI
 		this.panelNumpad.setBounds(6, 110, 124, 176);
 		this.panelNumpad.setBorder(new TitledBorder(I18n.getString("GUI.panelNumpad.borderTitle"))); //$NON-NLS-1$
 		this.panelNumpad.setLayout(null);
-		this.panelCalculateTab.add(this.panelNumpad);
+		this.panelCalc.add(this.panelNumpad);
 		
 		this.panelBasicOperations = new JPanel();
 		this.panelBasicOperations.setBounds(142, 110, 166, 94);
 		this.panelBasicOperations.setBorder(new TitledBorder(I18n.getString("GUI.panelBasicOperations.borderTitle"))); //$NON-NLS-1$
 		this.panelBasicOperations.setLayout(null);
-		this.panelCalculateTab.add(this.panelBasicOperations);
+		this.panelCalc.add(this.panelBasicOperations);
 		
 		this.panelConstants = new JPanel();
 		this.panelConstants.setBounds(320, 216, 124, 94);
 		this.panelConstants.setBorder(new TitledBorder(I18n.getString("GUI.panelAdvancedOperations.borderTitle"))); //$NON-NLS-1$
 		this.panelConstants.setLayout(null);
-		this.panelCalculateTab.add(this.panelConstants);
+		this.panelCalc.add(this.panelConstants);
 		
 		this.panelBinaryOperations = new JPanel();
 		this.panelBinaryOperations.setBounds(142, 216, 166, 94);
 		this.panelBinaryOperations.setBorder(new TitledBorder(I18n.getString("GUI.panelBinaryOperations.borderTitle"))); //$NON-NLS-1$
 		this.panelBinaryOperations.setLayout(null);
-		this.panelCalculateTab.add(this.panelBinaryOperations);
+		this.panelCalc.add(this.panelBinaryOperations);
 		
 		this.panelClear = new JPanel();
 		this.panelClear.setBounds(320, 110, 124, 94);
 		this.panelClear.setBorder(new TitledBorder(I18n.getString("GUI.panelClear.borderTitle"))); //$NON-NLS-1$
 		this.panelClear.setLayout(null);
-		this.panelCalculateTab.add(this.panelClear);
+		this.panelCalc.add(this.panelClear);
 	}
 	
 	private void addNumpadButtons()
@@ -739,10 +739,10 @@ public class GUI
 		this.inputTextField = new JTextPane();
 		this.inputTextField.setText(I18n.getString("GUI.inputTextField.text")); //$NON-NLS-1$
 		this.inputTextField.setBounds(6, 6, 447, 52);
-		this.inputTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
+		this.inputTextField.setBorder(UIManager.getBorder("TextField.border"));
 		this.inputTextField.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		this.inputTextField.setEditable(false);
-		this.panelCalculateTab.add(this.inputTextField);
+		this.panelCalc.add(this.inputTextField);
 		
 		doc = this.inputTextField.getStyledDocument();
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
@@ -750,10 +750,10 @@ public class GUI
 		this.resultTextField = new JTextPane();
 		this.resultTextField.setText(I18n.getString("GUI.resultTextField.text")); //$NON-NLS-1$
 		this.resultTextField.setBounds(6, 70, 447, 28);
-		this.resultTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
+		this.resultTextField.setBorder(UIManager.getBorder("TextField.border"));
 		this.resultTextField.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		this.resultTextField.setEditable(false);
-		this.panelCalculateTab.add(this.resultTextField);
+		this.panelCalc.add(this.resultTextField);
 		
 		doc = this.resultTextField.getStyledDocument();
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
@@ -794,7 +794,7 @@ public class GUI
 				GUI.this.calc.buttonCalculate_click();
 			}
 		});
-		this.panelCalculateTab.add(this.buttonCalculate);
+		this.panelCalc.add(this.buttonCalculate);
 	}
 	
 	private void addSettingsTab()
@@ -1109,7 +1109,11 @@ public class GUI
 	
 	public void addStringsTab()
 	{
+		this.scrollPaneStrings = new JScrollPane();
+		this.panelStrings.add(this.scrollPaneStrings, "2, 2, 1, 7, fill, fill");
+		
 		this.treeStringConversions = new JTree();
+		this.scrollPaneStrings.setViewportView(this.treeStringConversions);
 		this.treeStringConversions.addTreeSelectionListener(new TreeSelectionListener()
 		{
 			public void valueChanged(TreeSelectionEvent e)
@@ -1130,7 +1134,6 @@ public class GUI
 		});
 		this.treeStringConversions.setBorder(UIManager.getBorder("TextField.border"));
 		this.treeStringConversions.setModel(new DefaultTreeModel(new StringConversions("String Conversions")));
-		this.panelStrings.add(this.treeStringConversions, "2, 2, 1, 7, fill, fill");
 		
 		this.panelStringsArguments = new JPanel();
 		this.panelStringsArguments.setBorder(new TitledBorder(null, "Arguments", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -1190,6 +1193,7 @@ public class GUI
 			text = converter.getConvertedString(text);
 		}
 		this.textFieldStringsOutput.setText(text);
+		this.frameCSUtil.repaint();
 	}
 	
 	public void updateSettings()
@@ -1251,7 +1255,7 @@ public class GUI
 	
 	public void setCurrentTab(int tab)
 	{
-		if (tab == this.tabbedPane.indexOfComponent(this.panelCalculateTab))
+		if (tab == this.tabbedPane.indexOfComponent(this.panelCalc))
 		{
 			this.frameCSUtil.setResizable(false);
 			this.frameCSUtil.setSize(480, 450);

@@ -18,7 +18,7 @@ public class StringConverterRemoveFirst extends DefaultStringConverter
 	@Override
 	public void addArguments()
 	{
-		this.addLabel("Replace first occurence of");
+		this.addLabel("Remove first occurence of");
 		this.textFieldPattern = this.addTextField(null);
 		this.checkBoxMode = this.addCheckBox("Regular Expression");
 	}
