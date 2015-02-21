@@ -10,37 +10,42 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.swing.JTextField;
 
 import clashsoft.csutil.gui.GUI;
 
 public class CSUtil
 {
-	public static final String	ROOT			= "\u221A";
-	public static final String	XOR				= "\u22BB";
-	public static final String	NOT				= "\u00AC";
-	public static final String	PI				= "\u03C0";
-	public static final String	E				= "\u2107";
+	public static final String			ROOT			= "\u221A";
+	public static final String			XOR				= "\u22BB";
+	public static final String			NOT				= "\u00AC";
+	public static final String			PI				= "\u03C0";
+	public static final String			E				= "\u2107";
 	
-	public static CSUtil		instance;
+	public static CSUtil				instance;
 	
-	public String				version			= "0.1";
+	public static final String			version			= "0.1";
 	
-	public Path					memoryPath		= new File(getAppdataDirectory(), "memory.txt").toPath();
+	public static final Path			memoryPath		= new File(getAppdataDirectory(), "memory.txt").toPath();
 	
-	public double				var1;
-	public double				var2;
+	public static final ScriptEngine	scriptEngine	= new ScriptEngineManager().getEngineByName("JavaScript");
 	
-	public boolean				second;
-	public String				mode;
-	public byte					decimalPoint;
+	public double						var1;
+	public double						var2;
 	
-	public double				result;
-	public double				mem;
+	public boolean						second;
+	public String						mode;
+	public byte							decimalPoint;
 	
-	public Properties			properties		= new Properties();
+	public double						result;
+	public double						mem;
 	
-	public List<String>			consoleLines	= new ArrayList();
+	public Properties					properties		= new Properties();
+	
+	public List<String>					consoleLines	= new ArrayList();
 	
 	public CSUtil()
 	{
@@ -83,12 +88,10 @@ public class CSUtil
 		return System.getProperty("user.dir");
 	}
 	
-	// Ladefunktion
-	
 	public void init()
 	{
 		this.resetSettings(false);
-		this.devInfo("CSCalc version " + this.version, 1);
+		this.devInfo("CSCalc version " + version, 1);
 		this.devInfo("Initializing...", 1);
 		this.load();
 		GUI.init();
@@ -662,7 +665,14 @@ public class CSUtil
 			else
 			{
 				String s1 = text.substring(5);
-				double result = MathHelper.parse(s1);
+				Object result = null;
+				try
+				{
+					result = scriptEngine.eval(s1);
+				}
+				catch (ScriptException ex)
+				{
+				}
 				this.devInfo(s1 + " = " + result);
 			}
 		}
@@ -672,8 +682,8 @@ public class CSUtil
 		}
 		else if ("info".equals(text))
 		{
-			this.devInfo("CSCalc version " + this.version);
-			this.devInfo("Copyright (c) 2014, Clashsoft");
+			this.devInfo("CSCalc version " + version);
+			this.devInfo("Copyright (c) 2014-2015, Clashsoft");
 		}
 		else if ("?".equals(text) || "help".equals(text))
 		{

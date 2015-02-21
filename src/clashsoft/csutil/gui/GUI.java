@@ -1,18 +1,13 @@
 package clashsoft.csutil.gui;
 
-import java.util.List;
-
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -20,7 +15,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import clashsoft.csutil.CSUtil;
-import clashsoft.csutil.gui.graph.Graph;
 import clashsoft.csutil.strings.IStringConverter;
 
 import com.alee.laf.WebLookAndFeel;
@@ -112,12 +106,6 @@ public class GUI
 	public JRadioButton			radioButtonLogExtended;
 	public JRadioButton			radioButtonLogMinimal;
 	
-	public Graph				canvasGraph;
-	public JButton				buttonDraw;
-	public JComboBox			comboBoxGraph;
-	public JLabel				labelFX;
-	public JButton				buttonReset;
-	
 	public JPopupMenu			popupMenuGraph;
 	public JMenu				menuZoom;
 	public JMenuItem			menuItemZoomDefault;
@@ -172,17 +160,9 @@ public class GUI
 			}
 		});
 		
-		
 		this.tabbedPane = new JTabbedPane(SwingConstants.TOP);
 		this.tabbedPane.setBounds(0, 0, 480, 448);
-		this.tabbedPane.addChangeListener(new ChangeListener()
-		{
-			@Override
-			public void stateChanged(ChangeEvent e)
-			{
-				GUI.this.setCurrentTab(GUI.this.tabbedPane.getSelectedIndex());
-			}
-		});
+		this.tabbedPane.addChangeListener(e -> GUI.this.setCurrentTab(GUI.this.tabbedPane.getSelectedIndex()));
 		this.frameCSUtil.getContentPane().add(this.tabbedPane);
 		
 		this.addPanels();
@@ -197,7 +177,6 @@ public class GUI
 		this.addAdvancedOperationButtons();
 		this.addClearButtons();
 		
-		this.addGraphTab();
 		this.addStringsTab();
 		
 		this.addSettingsTab();
@@ -220,7 +199,12 @@ public class GUI
 		this.tabbedPane.addTab(I18n.getString("GUI.panelGraph.title"), null, this.panelGraph, I18n.getString("GUI.panelGraph.tooltip")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		this.panelStrings = new JPanel();
-		this.panelStrings.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("min:grow"), FormFactory.UNRELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"), FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, FormFactory.MIN_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("default:grow"), FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("fill:default:grow"), FormFactory.RELATED_GAP_ROWSPEC, }));
+		this.panelStrings.setLayout(new FormLayout(new ColumnSpec[] {
+				FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("min:grow"), FormFactory.UNRELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.MIN_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("default:grow"),
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("fill:default:grow"),
+				FormFactory.RELATED_GAP_ROWSPEC, }));
 		this.tabbedPane.addTab(I18n.getString("GUI.panelStrings.title"), null, this.panelStrings, I18n.getString("GUI.panelStrings.tooltip")); //$NON-NLS-1$
 		
 		this.panelSettings = new JTabbedPane(SwingConstants.TOP);
@@ -241,7 +225,12 @@ public class GUI
 		
 		this.panelRadix = new JPanel();
 		this.panelRadix.setBorder(new TitledBorder(null, "Radix", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		this.panelRadix.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("max(82dlu;default)"), FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"), FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("0dlu"), }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, }));
+		this.panelRadix.setLayout(new FormLayout(new ColumnSpec[] {
+				FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("max(82dlu;default)"), FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("0dlu"), }, new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, }));
 		this.panelCalcSettings.add(this.panelRadix);
 		
 		// Dev Settings Panels
@@ -286,148 +275,64 @@ public class GUI
 	{
 		this.button0 = new JButton(I18n.getString("GUI.button0.text")); //$NON-NLS-1$
 		this.button0.setBounds(47, 140, 29, 29);
-		this.button0.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.button0_click();
-			}
-		});
+		this.button0.addActionListener(e -> GUI.this.calc.button0_click());
 		this.panelNumpad.add(this.button0);
 		
 		this.button1 = new JButton(I18n.getString("GUI.button1.text")); //$NON-NLS-1$
 		this.button1.setBounds(6, 99, 29, 29);
-		this.button1.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.button1_click();
-			}
-		});
+		this.button1.addActionListener(e -> GUI.this.calc.button1_click());
 		this.panelNumpad.add(this.button1);
 		
 		this.button2 = new JButton(I18n.getString("GUI.button2.text")); //$NON-NLS-1$
 		this.button2.setBounds(47, 99, 29, 29);
-		this.button2.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.button2_click();
-			}
-		});
+		this.button2.addActionListener(e -> GUI.this.calc.button2_click());
 		this.panelNumpad.add(this.button2);
 		
 		this.button3 = new JButton(I18n.getString("GUI.button3.text")); //$NON-NLS-1$
 		this.button3.setBounds(88, 99, 29, 29);
-		this.button3.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.button3_click();
-			}
-		});
+		this.button3.addActionListener(e -> GUI.this.calc.button3_click());
 		this.panelNumpad.add(this.button3);
 		
 		this.button4 = new JButton(I18n.getString("GUI.button4.text")); //$NON-NLS-1$
 		this.button4.setBounds(6, 58, 29, 29);
-		this.button4.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.button4_click();
-			}
-		});
+		this.button4.addActionListener(e -> GUI.this.calc.button4_click());
 		this.panelNumpad.add(this.button4);
 		
 		this.button5 = new JButton(I18n.getString("GUI.button5.text")); //$NON-NLS-1$
 		this.button5.setBounds(47, 58, 29, 29);
-		this.button5.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.button5_click();
-			}
-		});
+		this.button5.addActionListener(e -> GUI.this.calc.button5_click());
 		this.panelNumpad.add(this.button5);
 		
 		this.button6 = new JButton(I18n.getString("GUI.button6.text")); //$NON-NLS-1$
 		this.button6.setBounds(88, 58, 29, 29);
-		this.button6.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.button6_click();
-			}
-		});
+		this.button6.addActionListener(e -> GUI.this.calc.button6_click());
 		this.panelNumpad.add(this.button6);
 		
 		this.button7 = new JButton(I18n.getString("GUI.button7.text")); //$NON-NLS-1$
 		this.button7.setBounds(6, 17, 29, 29);
-		this.button7.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.button7_click();
-			}
-		});
+		this.button7.addActionListener(e -> GUI.this.calc.button7_click());
 		this.panelNumpad.add(this.button7);
 		
 		this.button8 = new JButton(I18n.getString("GUI.button8.text")); //$NON-NLS-1$
 		this.button8.setBounds(47, 17, 29, 29);
-		this.button8.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.button8_click();
-			}
-		});
+		this.button8.addActionListener(e -> GUI.this.calc.button8_click());
 		this.panelNumpad.add(this.button8);
 		
 		this.button9 = new JButton(I18n.getString("GUI.button9.text")); //$NON-NLS-1$
 		this.button9.setBounds(88, 17, 29, 29);
-		this.button9.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.button9_click();
-			}
-		});
+		this.button9.addActionListener(e -> GUI.this.calc.button9_click());
 		this.panelNumpad.add(this.button9);
 		
 		this.buttonDecimalPoint = new JButton(I18n.getString("GUI.buttonDecimalPoint.text")); //$NON-NLS-1$
 		this.buttonDecimalPoint.setToolTipText(I18n.getString("GUI.buttonDecimalPoint.toolTipText")); //$NON-NLS-1$
 		this.buttonDecimalPoint.setBounds(88, 140, 29, 29);
-		this.buttonDecimalPoint.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonDecimalPoint_click();
-			}
-		});
+		this.buttonDecimalPoint.addActionListener(e -> GUI.this.calc.buttonDecimalPoint_click());
 		this.panelNumpad.add(this.buttonDecimalPoint);
 		
 		this.buttonNegate = new JButton(I18n.getString("GUI.buttonNegate.text")); //$NON-NLS-1$
 		this.buttonNegate.setToolTipText(I18n.getString("GUI.buttonNegate.toolTipText")); //$NON-NLS-1$
 		this.buttonNegate.setBounds(6, 140, 29, 29);
-		this.buttonNegate.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonNegate_click();
-			}
-		});
+		this.buttonNegate.addActionListener(e -> GUI.this.calc.buttonNegate_click());
 		this.panelNumpad.add(this.buttonNegate);
 	}
 	
@@ -436,105 +341,49 @@ public class GUI
 		this.buttonAdd = new JButton(I18n.getString("GUI.buttonAdd.text")); //$NON-NLS-1$
 		this.buttonAdd.setToolTipText(I18n.getString("GUI.buttonAdd.toolTipText")); //$NON-NLS-1$
 		this.buttonAdd.setBounds(6, 17, 29, 29);
-		this.buttonAdd.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonAdd_click();
-			}
-		});
+		this.buttonAdd.addActionListener(e -> GUI.this.calc.buttonAdd_click());
 		this.panelBasicOperations.add(this.buttonAdd);
 		
 		this.buttonSubstract = new JButton(I18n.getString("GUI.buttonSubstract.text")); //$NON-NLS-1$
 		this.buttonSubstract.setToolTipText(I18n.getString("GUI.buttonSubstract.toolTipText")); //$NON-NLS-1$
 		this.buttonSubstract.setBounds(47, 17, 29, 29);
-		this.buttonSubstract.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonSubstract_click();
-			}
-		});
+		this.buttonSubstract.addActionListener(e -> GUI.this.calc.buttonSubstract_click());
 		this.panelBasicOperations.add(this.buttonSubstract);
 		
 		this.buttonMultiply = new JButton(I18n.getString("GUI.buttonMultiply.text")); //$NON-NLS-1$
 		this.buttonMultiply.setToolTipText(I18n.getString("GUI.buttonMultiply.toolTipText")); //$NON-NLS-1$
 		this.buttonMultiply.setBounds(6, 58, 29, 29);
-		this.buttonMultiply.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonMultiply_click();
-			}
-		});
+		this.buttonMultiply.addActionListener(e -> GUI.this.calc.buttonMultiply_click());
 		this.panelBasicOperations.add(this.buttonMultiply);
 		
 		this.buttonDivide = new JButton(I18n.getString("GUI.buttonDivide.text")); //$NON-NLS-1$
 		this.buttonDivide.setToolTipText(I18n.getString("GUI.buttonDivide.toolTipText")); //$NON-NLS-1$
 		this.buttonDivide.setBounds(47, 58, 29, 29);
-		this.buttonDivide.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonDivide_click();
-			}
-		});
+		this.buttonDivide.addActionListener(e -> GUI.this.calc.buttonDivide_click());
 		this.panelBasicOperations.add(this.buttonDivide);
 		
 		this.buttonRemainder = new JButton(I18n.getString("GUI.buttonRemainder.text")); //$NON-NLS-1$
 		this.buttonRemainder.setToolTipText(I18n.getString("GUI.buttonRemainder.toolTipText")); //$NON-NLS-1$
 		this.buttonRemainder.setBounds(88, 17, 29, 29);
-		this.buttonRemainder.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonRemainder_click();
-			}
-		});
+		this.buttonRemainder.addActionListener(e -> GUI.this.calc.buttonRemainder_click());
 		this.panelBasicOperations.add(this.buttonRemainder);
 		
 		this.buttonReciprocal = new JButton(I18n.getString("GUI.buttonReciprocal.text")); //$NON-NLS-1$
 		this.buttonReciprocal.setToolTipText(I18n.getString("GUI.buttonReciprocal.toolTipText")); //$NON-NLS-1$
-		this.buttonReciprocal.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonReciprocal_click();
-			}
-		});
+		this.buttonReciprocal.addActionListener(e -> GUI.this.calc.buttonReciprocal_click());
 		this.buttonReciprocal.setBounds(88, 58, 29, 29);
 		this.panelBasicOperations.add(this.buttonReciprocal);
 		
 		this.buttonPower = new JButton(I18n.getString("GUI.buttonPower.text")); //$NON-NLS-1$
 		this.buttonPower.setToolTipText(I18n.getString("GUI.buttonPower.toolTipText"));
 		this.buttonPower.setBounds(129, 17, 29, 29);
-		this.buttonPower.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonPower_click();
-			}
-		});
+		this.buttonPower.addActionListener(e -> GUI.this.calc.buttonPower_click());
 		this.panelBasicOperations.add(this.buttonPower);
 		
 		this.buttonRoot = new JButton(I18n.getString("GUI.buttonRoot.text")); //$NON-NLS-1$
 		this.buttonRoot.setToolTipText(I18n.getString("GUI.buttonRoot.toolTipText")); //$NON-NLS-1$
 		this.buttonRoot.setBounds(129, 58, 29, 29);
-		this.buttonRoot.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonRoot_click();
-			}
-		});
+		this.buttonRoot.addActionListener(e -> GUI.this.calc.buttonRoot_click());
 		this.panelBasicOperations.add(this.buttonRoot);
 	}
 	
@@ -543,93 +392,44 @@ public class GUI
 		this.buttonAND = new JButton(I18n.getString("GUI.buttonAND.text")); //$NON-NLS-1$
 		this.buttonAND.setToolTipText(I18n.getString("GUI.buttonAND.toolTipText")); //$NON-NLS-1$
 		this.buttonAND.setBounds(6, 17, 29, 29);
-		this.buttonAND.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonAND_click();
-			}
-		});
+		this.buttonAND.addActionListener(e -> GUI.this.calc.buttonAND_click());
 		this.panelBinaryOperations.add(this.buttonAND);
 		
 		this.buttonOR = new JButton(I18n.getString("GUI.buttonOR.text")); //$NON-NLS-1$
 		this.buttonOR.setToolTipText(I18n.getString("GUI.buttonOR.toolTipText")); //$NON-NLS-1$
 		this.buttonOR.setBounds(47, 17, 29, 29);
-		this.buttonOR.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonOR_click();
-			}
-		});
+		this.buttonOR.addActionListener(e -> GUI.this.calc.buttonOR_click());
 		this.panelBinaryOperations.add(this.buttonOR);
 		
 		this.buttonXOR = new JButton(I18n.getString("GUI.buttonXOR.text")); //$NON-NLS-1$
 		this.buttonXOR.setToolTipText(I18n.getString("GUI.buttonXOR.toolTipText")); //$NON-NLS-1$
 		this.buttonXOR.setBounds(88, 17, 29, 29);
-		this.buttonXOR.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonXOR_click();
-			}
-		});
+		this.buttonXOR.addActionListener(e -> GUI.this.calc.buttonXOR_click());
 		this.panelBinaryOperations.add(this.buttonXOR);
 		
 		this.buttonNOT = new JButton(CSUtil.NOT);
 		this.buttonNOT.setToolTipText(I18n.getString("GUI.buttonNOT.toolTipText")); //$NON-NLS-1$
 		this.buttonNOT.setBounds(129, 17, 29, 29);
-		this.buttonNOT.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonNOT_click();
-			}
-		});
+		this.buttonNOT.addActionListener(e -> GUI.this.calc.buttonNOT_click());
 		this.panelBinaryOperations.add(this.buttonNOT);
 		
 		this.buttonBitshiftRight = new JButton(I18n.getString("GUI.buttonBitshiftRight.text")); //$NON-NLS-1$
 		this.buttonBitshiftRight.setToolTipText(I18n.getString("GUI.buttonBitshiftRight.toolTipText")); //$NON-NLS-1$
 		this.buttonBitshiftRight.setBounds(6, 58, 29, 29);
-		this.buttonBitshiftRight.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonBitshiftRight_click();
-			}
-		});
+		this.buttonBitshiftRight.addActionListener(e -> GUI.this.calc.buttonBitshiftRight_click());
 		this.panelBinaryOperations.add(this.buttonBitshiftRight);
 		
 		this.buttonBitshiftRightU = new JButton(I18n.getString("GUI.buttonBitshiftRightU.text")); //$NON-NLS-1$
 		this.buttonBitshiftRightU.setToolTipText(I18n.getString("GUI.buttonBitshiftRightU.toolTipText")); //$NON-NLS-1$
 		this.buttonBitshiftRightU.setBounds(47, 58, 29, 29);
 		this.buttonBitshiftRightU.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
-		this.buttonBitshiftRightU.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonBitshiftRightU_click();
-			}
-		});
+		this.buttonBitshiftRightU.addActionListener(e -> GUI.this.calc.buttonBitshiftRightU_click());
 		this.panelBinaryOperations.add(this.buttonBitshiftRightU);
 		
 		this.buttonBitshiftLeft = new JButton(I18n.getString("GUI.buttonBitshiftLeft.text")); //$NON-NLS-1$
 		this.buttonBitshiftLeft.setToolTipText(I18n.getString("GUI.buttonBitshiftLeft.toolTipText")); //$NON-NLS-1$
 		this.buttonBitshiftLeft.setBounds(88, 58, 29, 29);
-		this.buttonBitshiftLeft.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonBitshiftLeft_click();
-			}
-		});
+		this.buttonBitshiftLeft.addActionListener(e -> GUI.this.calc.buttonBitshiftLeft_click());
 		this.panelBinaryOperations.add(this.buttonBitshiftLeft);
 	}
 	
@@ -638,27 +438,13 @@ public class GUI
 		this.buttonCE = new JButton(I18n.getString("GUI.buttonCE.text")); //$NON-NLS-1$
 		this.buttonCE.setToolTipText(I18n.getString("GUI.buttonCE.toolTipText")); //$NON-NLS-1$
 		this.buttonCE.setBounds(6, 17, 112, 29);
-		this.buttonCE.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonCE_click();
-			}
-		});
+		this.buttonCE.addActionListener(e -> GUI.this.calc.buttonCE_click());
 		this.panelClear.add(this.buttonCE);
 		
 		this.buttonC = new JButton(I18n.getString("GUI.buttonC.text")); //$NON-NLS-1$
 		this.buttonC.setToolTipText(I18n.getString("GUI.buttonC.toolTipText")); //$NON-NLS-1$
 		this.buttonC.setBounds(6, 58, 112, 29);
-		this.buttonC.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonC_click();
-			}
-		});
+		this.buttonC.addActionListener(e -> GUI.this.calc.buttonC_click());
 		this.panelClear.add(this.buttonC);
 	}
 	
@@ -668,67 +454,32 @@ public class GUI
 		this.buttonPI = new JButton(I18n.getString("GUI.buttonPI.text")); //$NON-NLS-1$
 		this.buttonPI.setToolTipText(I18n.getString("GUI.buttonPI.toolTipText")); //$NON-NLS-1$
 		this.buttonPI.setBounds(6, 17, 29, 29);
-		this.buttonPI.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonPI_click();
-			}
-		});
+		this.buttonPI.addActionListener(e -> GUI.this.calc.buttonPI_click());
 		this.panelConstants.add(this.buttonPI);
 		
 		this.buttonE = new JButton(I18n.getString("GUI.buttonE.text")); //$NON-NLS-1$
 		this.buttonE.setToolTipText(I18n.getString("GUI.buttonE.toolTipText")); //$NON-NLS-1$
 		this.buttonE.setBounds(47, 17, 29, 29);
-		this.buttonE.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonE_click();
-			}
-		});
+		this.buttonE.addActionListener(e -> GUI.this.calc.buttonE_click());
 		this.panelConstants.add(this.buttonE);
 		
 		this.buttonInfinity = new JButton(I18n.getString("GUI.buttonInfinity.text")); //$NON-NLS-1$
 		this.buttonInfinity.setToolTipText(I18n.getString("GUI.buttonInfinity.toolTipText")); //$NON-NLS-1$
 		this.buttonInfinity.setBounds(6, 58, 29, 29);
-		this.buttonInfinity.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonInfinity_click();
-			}
-		});
+		this.buttonInfinity.addActionListener(e -> GUI.this.calc.buttonInfinity_click());
 		this.panelConstants.add(this.buttonInfinity);
 		
 		this.buttonNegativeInfinity = new JButton(I18n.getString("GUI.buttonNegativeInfinity.text")); //$NON-NLS-1$
 		this.buttonNegativeInfinity.setToolTipText(I18n.getString("GUI.buttonNegativeInfinity.toolTipText")); //$NON-NLS-1$
 		this.buttonNegativeInfinity.setBounds(47, 58, 29, 29);
-		this.buttonNegativeInfinity.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonNegativeInfinity_click();
-			}
-		});
+		this.buttonNegativeInfinity.addActionListener(e -> GUI.this.calc.buttonNegativeInfinity_click());
 		this.panelConstants.add(this.buttonNegativeInfinity);
 		
 		this.buttonNaN = new JButton(I18n.getString("GUI.buttonNaN.text")); //$NON-NLS-1$
 		this.buttonNaN.setToolTipText(I18n.getString("GUI.buttonNaN.toolTipText")); //$NON-NLS-1$
 		this.buttonNaN.setBounds(88, 17, 29, 29);
 		this.buttonNaN.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
-		this.buttonNaN.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonNaN_click();
-			}
-		});
+		this.buttonNaN.addActionListener(e -> GUI.this.calc.buttonNaN_click());
 		this.panelConstants.add(this.buttonNaN);
 	}
 	
@@ -761,14 +512,14 @@ public class GUI
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 		
 		this.consoleTextField = new JTextPane();
-		this.consoleTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
+		this.consoleTextField.setBorder(new LineBorder(Color.BLACK));
 		this.consoleTextField.setEditable(false);
 		
 		JScrollPane scrollPane = new JScrollPane(this.consoleTextField);
 		this.panelDevTab.add(scrollPane, BorderLayout.CENTER);
 		
 		this.commandTextField = new JTextField();
-		this.commandTextField.setBorder(new LineBorder(new Color(0, 0, 0)));
+		this.commandTextField.setBorder(new LineBorder(Color.BLACK));
 		this.commandTextField.setColumns(10);
 		this.commandTextField.addKeyListener(new KeyAdapter()
 		{
@@ -788,88 +539,54 @@ public class GUI
 		this.buttonCalculate.setToolTipText(I18n.getString("GUI.buttonCalculate.toolTipText")); //$NON-NLS-1$
 		this.buttonCalculate.setBounds(6, 322, 447, 54);
 		this.buttonCalculate.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		this.buttonCalculate.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.calc.buttonCalculate_click();
-			}
-		});
+		this.buttonCalculate.addActionListener(e -> GUI.this.calc.buttonCalculate_click());
 		this.panelCalc.add(this.buttonCalculate);
 	}
 	
 	private void addSettingsTab()
 	{
 		this.radioButtonBinary = new JRadioButton(I18n.getString("GUI.radioButtonBinary.text"));
-		this.radioButtonBinary.addItemListener(new ItemListener()
-		{
-			@Override
-			public void itemStateChanged(ItemEvent e)
+		this.radioButtonBinary.addItemListener(e -> {
+			if (GUI.this.radioButtonBinary.isSelected())
 			{
-				if (GUI.this.radioButtonBinary.isSelected())
-				{
-					GUI.this.setRadix(2);
-				}
+				GUI.this.setRadix(2);
 			}
 		});
 		this.panelRadix.add(this.radioButtonBinary, "2, 2");
 		this.buttonGroupDisplay.add(this.radioButtonBinary);
 		
 		this.radioButtonOctal = new JRadioButton(I18n.getString("GUI.radioButtonOctal.text")); //$NON-NLS-1$
-		this.radioButtonOctal.addItemListener(new ItemListener()
-		{
-			@Override
-			public void itemStateChanged(ItemEvent e)
+		this.radioButtonOctal.addItemListener(e -> {
+			if (GUI.this.radioButtonOctal.isSelected())
 			{
-				if (GUI.this.radioButtonOctal.isSelected())
-				{
-					GUI.this.setRadix(8);
-				}
+				GUI.this.setRadix(8);
 			}
 		});
 		this.panelRadix.add(this.radioButtonOctal, "2, 4");
 		this.buttonGroupDisplay.add(this.radioButtonOctal);
 		
 		this.radioButtonDecimal = new JRadioButton(I18n.getString("GUI.radioButtonDecimal.text"));
-		this.radioButtonDecimal.addItemListener(new ItemListener()
-		{
-			@Override
-			public void itemStateChanged(ItemEvent e)
+		this.radioButtonDecimal.addItemListener(e -> {
+			if (GUI.this.radioButtonDecimal.isSelected())
 			{
-				if (GUI.this.radioButtonDecimal.isSelected())
-				{
-					GUI.this.setRadix(10);
-				}
+				GUI.this.setRadix(10);
 			}
 		});
 		this.panelRadix.add(this.radioButtonDecimal, "2, 6");
 		this.buttonGroupDisplay.add(this.radioButtonDecimal);
 		
 		this.radioButtonHexadecimal = new JRadioButton(I18n.getString("GUI.radioButtonHexadecimal.text"));
-		this.radioButtonHexadecimal.addItemListener(new ItemListener()
-		{
-			@Override
-			public void itemStateChanged(ItemEvent e)
+		this.radioButtonHexadecimal.addItemListener(e -> {
+			if (GUI.this.radioButtonHexadecimal.isSelected())
 			{
-				if (GUI.this.radioButtonHexadecimal.isSelected())
-				{
-					GUI.this.setRadix(16);
-				}
+				GUI.this.setRadix(16);
 			}
 		});
 		this.panelRadix.add(this.radioButtonHexadecimal, "2, 8");
 		this.buttonGroupDisplay.add(this.radioButtonHexadecimal);
 		
 		this.radioButtonCustomRadix = new JRadioButton(I18n.getString("GUI.radioButtonCustomRadix.text"));
-		this.radioButtonCustomRadix.addItemListener(new ItemListener()
-		{
-			@Override
-			public void itemStateChanged(ItemEvent e)
-			{
-				GUI.this.sliderRadix.setEnabled(GUI.this.radioButtonCustomRadix.isSelected());
-			}
-		});
+		this.radioButtonCustomRadix.addItemListener(e -> GUI.this.sliderRadix.setEnabled(GUI.this.radioButtonCustomRadix.isSelected()));
 		this.panelRadix.add(this.radioButtonCustomRadix, "2, 10, fill, top");
 		this.buttonGroupDisplay.add(this.radioButtonCustomRadix);
 		
@@ -882,14 +599,7 @@ public class GUI
 		this.sliderRadix.setEnabled(false);
 		this.sliderRadix.setMinimum(2);
 		this.sliderRadix.setMaximum(36);
-		this.sliderRadix.addChangeListener(new ChangeListener()
-		{
-			@Override
-			public void stateChanged(ChangeEvent e)
-			{
-				GUI.this.setRadix(GUI.this.sliderRadix.getValue());
-			}
-		});
+		this.sliderRadix.addChangeListener(e -> GUI.this.setRadix(GUI.this.sliderRadix.getValue()));
 		this.panelRadix.add(this.sliderRadix, "4, 10, fill, top");
 		
 		this.labelRadix = new JLabel("0");
@@ -898,14 +608,7 @@ public class GUI
 		this.checkboxDevMode = new JCheckBox(I18n.getString("GUI.checkboxDevMode.text")); //$NON-NLS-1$
 		this.checkboxDevMode.setBounds(6, 6, 112, 23);
 		this.checkboxDevMode.setToolTipText(I18n.getString("GUI.checkboxDevMode.toolTipText")); //$NON-NLS-1$
-		this.checkboxDevMode.addChangeListener(new ChangeListener()
-		{
-			@Override
-			public void stateChanged(ChangeEvent e)
-			{
-				GUI.this.calc.setDevMode(GUI.this.checkboxDevMode.isSelected());
-			}
-		});
+		this.checkboxDevMode.addChangeListener(e -> GUI.this.calc.setDevMode(GUI.this.checkboxDevMode.isSelected()));
 		this.panelDevSettings.setLayout(null);
 		this.panelDevSettings.add(this.checkboxDevMode);
 		
@@ -915,45 +618,30 @@ public class GUI
 		
 		this.radioButtonLogMinimal = new JRadioButton(I18n.getString("GUI.radioButtonLogMinimal.text")); //$NON-NLS-1$
 		this.radioButtonLogMinimal.setBounds(6, 69, 88, 23);
-		this.radioButtonLogMinimal.addChangeListener(new ChangeListener()
-		{
-			@Override
-			public void stateChanged(ChangeEvent e)
+		this.radioButtonLogMinimal.addChangeListener(e -> {
+			if (GUI.this.radioButtonLogMinimal.isSelected())
 			{
-				if (GUI.this.radioButtonLogMinimal.isSelected())
-				{
-					GUI.this.calc.setLoggingLevel(0);
-				}
+				GUI.this.calc.setLoggingLevel(0);
 			}
 		});
 		this.panelDevSettings.add(this.radioButtonLogMinimal);
 		
 		this.radioButtonLogDebug = new JRadioButton(I18n.getString("GUI.radioButtonLogDebug.text")); //$NON-NLS-1$
 		this.radioButtonLogDebug.setBounds(6, 104, 74, 23);
-		this.radioButtonLogDebug.addChangeListener(new ChangeListener()
-		{
-			@Override
-			public void stateChanged(ChangeEvent e)
+		this.radioButtonLogDebug.addChangeListener(e -> {
+			if (GUI.this.radioButtonLogDebug.isSelected())
 			{
-				if (GUI.this.radioButtonLogDebug.isSelected())
-				{
-					GUI.this.calc.setLoggingLevel(2);
-				}
+				GUI.this.calc.setLoggingLevel(2);
 			}
 		});
 		this.panelDevSettings.add(this.radioButtonLogDebug);
 		
 		this.radioButtonLogExtended = new JRadioButton(I18n.getString("GUI.radioButtonLogExtended.text")); //$NON-NLS-1$
 		this.radioButtonLogExtended.setBounds(6, 140, 117, 23);
-		this.radioButtonLogExtended.addChangeListener(new ChangeListener()
-		{
-			@Override
-			public void stateChanged(ChangeEvent e)
+		this.radioButtonLogExtended.addChangeListener(e -> {
+			if (GUI.this.radioButtonLogExtended.isSelected())
 			{
-				if (GUI.this.radioButtonLogExtended.isSelected())
-				{
-					GUI.this.calc.setLoggingLevel(1);
-				}
+				GUI.this.calc.setLoggingLevel(1);
 			}
 		});
 		this.panelDevSettings.add(this.radioButtonLogExtended);
@@ -966,15 +654,12 @@ public class GUI
 		this.colorChooser = new JColorChooser();
 		this.colorChooser.setToolTipText(I18n.getString("GUI.colorChooser.toolTipText")); //$NON-NLS-1$
 		this.colorChooser.setColor(this.frameCSUtil.getContentPane().getBackground());
-		this.colorChooser.getSelectionModel().addChangeListener(new ChangeListener()
-		{
-			@Override
-			public void stateChanged(ChangeEvent e)
-			{
-				GUI.this.setColor(GUI.this.colorChooser.getColor());
-			}
-		});
-		this.panelLAFSettings.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("190px:grow"), FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("190px:grow"), FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("24px"), FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("260px:grow"), FormFactory.RELATED_GAP_ROWSPEC, }));
+		this.colorChooser.getSelectionModel().addChangeListener(e -> GUI.this.setColor(GUI.this.colorChooser.getColor()));
+		this.panelLAFSettings.setLayout(new FormLayout(new ColumnSpec[] {
+				FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("190px:grow"), FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("190px:grow"),
+				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("24px"), FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("260px:grow"),
+				FormFactory.RELATED_GAP_ROWSPEC, }));
 		this.panelLAFSettings.add(this.colorChooser, "2, 4, 3, 1, fill, fill");
 		
 		DefaultComboBoxModel model = new DefaultComboBoxModel();
@@ -987,127 +672,11 @@ public class GUI
 		
 		this.comboBoxLAF = new JComboBox();
 		this.comboBoxLAF.setModel(model);
-		this.comboBoxLAF.addItemListener(new ItemListener()
-		{
-			@Override
-			public void itemStateChanged(ItemEvent e)
-			{
-				GUI.this.setLAF(GUI.this.comboBoxLAF.getSelectedIndex(), true);
-			}
-		});
+		this.comboBoxLAF.addItemListener(e -> GUI.this.setLAF(GUI.this.comboBoxLAF.getSelectedIndex(), true));
 		this.panelLAFSettings.add(this.comboBoxLAF, "2, 2, fill, fill");
 		
 		this.buttonFont = new JButton(I18n.getString("GUI.buttonFont.text")); //$NON-NLS-1$
 		this.panelLAFSettings.add(this.buttonFont, "4, 2, fill, fill");
-	}
-	
-	private void addGraphTab()
-	{
-		this.canvasGraph = new Graph();
-		this.panelGraph.add(this.canvasGraph, BorderLayout.CENTER);
-		
-		this.popupMenuGraph = new JPopupMenu();
-		addPopup(this.canvasGraph, this.popupMenuGraph);
-		
-		this.menuZoom = new JMenu(I18n.getString("GUI.menuZoom.text")); //$NON-NLS-1$
-		this.popupMenuGraph.add(this.menuZoom);
-		
-		this.menuItemZoomInfo = new JMenuItem(I18n.getString("GUI.menuItemZoomInfo.text")); //$NON-NLS-1$
-		this.menuItemZoomInfo.setEnabled(false);
-		this.menuZoom.add(this.menuItemZoomInfo);
-		
-		this.menuZoom.addSeparator();
-		
-		this.menuItemZoomDefault = new JMenuItem(I18n.getString("GUI.menuItemZoomDefault.text")); //$NON-NLS-1$
-		this.menuItemZoomDefault.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.canvasGraph.setZoom(50F);
-			}
-		});
-		this.menuZoom.add(this.menuItemZoomDefault);
-		
-		this.menuItemZoomNumber = new JMenuItem(I18n.getString("GUI.menuItemZoomNumber.text")); //$NON-NLS-1$
-		this.menuItemZoomNumber.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.canvasGraph.setZoom(100F);
-			}
-		});
-		this.menuZoom.add(this.menuItemZoomNumber);
-		
-		this.menuItemZoomMultipied = new JMenuItem(I18n.getString("GUI.menuItemZoomMultipied.text")); //$NON-NLS-1$
-		this.menuItemZoomMultipied.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.canvasGraph.setZoom(40F);
-			}
-		});
-		this.menuZoom.add(this.menuItemZoomMultipied);
-		
-		this.menuItemZoomCubed = new JMenuItem(I18n.getString("GUI.menuItemZoomCubed.text")); //$NON-NLS-1$
-		this.menuItemZoomCubed.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.canvasGraph.setZoom(10F);
-			}
-		});
-		this.menuZoom.add(this.menuItemZoomCubed);
-		
-		this.panelDrawInput = new JPanel();
-		this.panelDrawInput.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.LABEL_COMPONENT_GAP_COLSPEC, FormFactory.MIN_COLSPEC, ColumnSpec.decode("260px:grow"), ColumnSpec.decode("61px"), ColumnSpec.decode("20dlu"), }, new RowSpec[] { RowSpec.decode("29px"), }));
-		this.panelGraph.add(this.panelDrawInput, BorderLayout.NORTH);
-		
-		this.labelFX = new JLabel(I18n.getString("GUI.labelFX.text")); //$NON-NLS-1$
-		this.panelDrawInput.add(this.labelFX, "2, 1, fill, fill");
-		
-		this.comboBoxGraph = new JComboBox();
-		this.comboBoxGraph.setBackground(Color.WHITE);
-		this.comboBoxGraph.setEditable(true);
-		this.comboBoxGraph.setMaximumRowCount(10);
-		this.panelDrawInput.add(this.comboBoxGraph, "3, 1, fill, fill");
-		
-		this.buttonDraw = new JButton("\u2192");
-		this.buttonDraw.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				String item = (String) GUI.this.comboBoxGraph.getEditor().getItem();
-				if (!GUI.this.canvasGraph.hasEquation(item))
-				{
-					GUI.this.comboBoxGraph.addItem(item);
-					GUI.this.canvasGraph.addEquation(item);
-				}
-				
-				while (GUI.this.canvasGraph.getEquationCount() > 10)
-				{
-					GUI.this.comboBoxGraph.removeItemAt(0);
-					GUI.this.canvasGraph.removeEquation(0);
-				}
-			}
-		});
-		
-		this.buttonReset = new JButton(I18n.getString("GUI.buttonReset.text"));
-		this.buttonReset.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GUI.this.comboBoxGraph.removeAllItems();
-				GUI.this.canvasGraph.removeAllEquations();
-			}
-		});
-		this.panelDrawInput.add(this.buttonReset, "4, 1, fill, fill");
-		this.panelDrawInput.add(this.buttonDraw, "5, 1, fill, fill");
 	}
 	
 	public void addStringsTab()
@@ -1117,24 +686,19 @@ public class GUI
 		
 		this.treeStringConversions = new JTree();
 		this.scrollPaneStrings.setViewportView(this.treeStringConversions);
-		this.treeStringConversions.addTreeSelectionListener(new TreeSelectionListener()
-		{
-			@Override
-			public void valueChanged(TreeSelectionEvent e)
+		this.treeStringConversions.addTreeSelectionListener(e -> {
+			IStringConverter converter = GUI.this.getCurrentStringConverter();
+			GUI.this.panelStringsArguments.removeAll();
+			if (converter != null)
 			{
-				IStringConverter converter = GUI.this.getCurrentStringConverter();
-				GUI.this.panelStringsArguments.removeAll();
-				if (converter != null)
-				{
-					GUI.this.panelStringsArguments.setVisible(true);
-					converter.addArguments(GUI.this, GUI.this.panelStringsArguments);
-				}
-				else
-				{
-					GUI.this.panelStringsArguments.setVisible(false);
-				}
-				GUI.this.updateStringConverter();
+				GUI.this.panelStringsArguments.setVisible(true);
+				converter.addArguments(GUI.this, GUI.this.panelStringsArguments);
 			}
+			else
+			{
+				GUI.this.panelStringsArguments.setVisible(false);
+			}
+			GUI.this.updateStringConverter();
 		});
 		this.treeStringConversions.setBorder(UIManager.getBorder("TextField.border"));
 		this.treeStringConversions.setModel(new DefaultTreeModel(new StringConversions("String Conversions")));
@@ -1194,7 +758,13 @@ public class GUI
 		String text = this.textFieldStringsInput.getText();
 		if (converter != null)
 		{
-			text = converter.getConvertedString(text);
+			try
+			{
+				text = converter.getConvertedString(text);
+			}
+			catch (Exception ex)
+			{
+			}
 		}
 		this.textFieldStringsOutput.setText(text);
 		this.frameCSUtil.repaint();
@@ -1362,34 +932,5 @@ public class GUI
 			builder.append(s).append('\n');
 		}
 		this.consoleTextField.setText(builder.toString());
-	}
-	
-	private static void addPopup(Component component, final JPopupMenu popup)
-	{
-		component.addMouseListener(new MouseAdapter()
-		{
-			@Override
-			public void mousePressed(MouseEvent e)
-			{
-				if (e.isPopupTrigger())
-				{
-					this.showMenu(e);
-				}
-			}
-			
-			@Override
-			public void mouseReleased(MouseEvent e)
-			{
-				if (e.isPopupTrigger())
-				{
-					this.showMenu(e);
-				}
-			}
-			
-			private void showMenu(MouseEvent e)
-			{
-				popup.show(e.getComponent(), e.getX(), e.getY());
-			}
-		});
 	}
 }

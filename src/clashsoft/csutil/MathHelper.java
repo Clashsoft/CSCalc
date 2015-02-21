@@ -2,9 +2,6 @@ package clashsoft.csutil;
 
 import java.text.DecimalFormatSymbols;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
 public strictfp class MathHelper
 {
 	/**
@@ -13,10 +10,7 @@ public strictfp class MathHelper
 	 * <p>
 	 * Equals 2<sup>32</sup>.
 	 */
-	public static double				DECIMAL_INT_FACTOR	= 2147483648D;
-	
-	public static ScriptEngineManager	scriptEngineManager	= new ScriptEngineManager();
-	public static ScriptEngine			javaScriptEngine	= scriptEngineManager.getEngineByName("JavaScript");
+	public static double	DECIMAL_INT_FACTOR	= 2147483648D;
 	
 	public static double clamp(double d, double min, double max)
 	{
@@ -61,44 +55,6 @@ public strictfp class MathHelper
 	public static double xor(double d1, double d2)
 	{
 		return (long) d1 ^ (long) d2;
-	}
-	
-	public static double parse(String equation)
-	{
-		try
-		{
-			Object obj = javaScriptEngine.eval(equation);
-			float f = ((Number) obj).floatValue();
-			return f;
-		}
-		catch (Exception ex)
-		{
-			return Double.NaN;
-		}
-	}
-	
-	public static double parse(String equation, double x)
-	{
-		return parse(equation.replace("x", "(" + x + ")"));
-	}
-	
-	public static float parsef(String equation)
-	{
-		try
-		{
-			Object obj = javaScriptEngine.eval(equation);
-			float f = ((Number) obj).floatValue();
-			return f;
-		}
-		catch (Exception ex)
-		{
-			return Float.NaN;
-		}
-	}
-	
-	public static float parsef(String equation, float x)
-	{
-		return parsef(equation.replace("x", "(" + x + ")"));
 	}
 	
 	public static byte getDecimalPlaces(double d)

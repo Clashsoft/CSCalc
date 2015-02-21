@@ -1,7 +1,5 @@
 package clashsoft.csutil.strings;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.regex.Matcher;
@@ -9,8 +7,6 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import clashsoft.csutil.gui.GUI;
 
@@ -45,17 +41,10 @@ public abstract class DefaultStringConverter implements IStringConverter
 		textField.addKeyListener(new KeyAdapter()
 		{
 			@Override
-			public void keyPressed(KeyEvent e)
+			public void keyTyped(KeyEvent e)
 			{
-				DefaultStringConverter.this.update();
+				DefaultStringConverter.this.gui.updateStringConverter();
 			}
-			
-			@Override
-			public void keyReleased(KeyEvent e)
-			{
-				DefaultStringConverter.this.update();
-			}
-			
 		});
 		this.panel.add(textField);
 		return textField;
@@ -69,14 +58,7 @@ public abstract class DefaultStringConverter implements IStringConverter
 	public JCheckBox addCheckBox(String text, boolean selected)
 	{
 		JCheckBox checkBox = new JCheckBox(text, selected);
-		checkBox.addChangeListener(new ChangeListener()
-		{
-			@Override
-			public void stateChanged(ChangeEvent e)
-			{
-				DefaultStringConverter.this.update();
-			}
-		});
+		checkBox.addChangeListener(e -> DefaultStringConverter.this.gui.updateStringConverter());
 		this.panel.add(checkBox);
 		return checkBox;
 	}
@@ -99,14 +81,7 @@ public abstract class DefaultStringConverter implements IStringConverter
 	public JSpinner addSpinner(int value, int min, int max, int step)
 	{
 		JSpinner spinner = new JSpinner(new SpinnerNumberModel(value, min, max, step));
-		spinner.addChangeListener(new ChangeListener()
-		{
-			@Override
-			public void stateChanged(ChangeEvent e)
-			{
-				DefaultStringConverter.this.update();
-			}
-		});
+		spinner.addChangeListener(e -> DefaultStringConverter.this.gui.updateStringConverter());
 		this.panel.add(spinner);
 		return spinner;
 	}
@@ -120,21 +95,9 @@ public abstract class DefaultStringConverter implements IStringConverter
 	{
 		JComboBox comboBox = new JComboBox<>(items);
 		comboBox.setSelectedIndex(selectedIndex);
-		comboBox.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				DefaultStringConverter.this.update();
-			}
-		});
+		comboBox.addActionListener(e -> DefaultStringConverter.this.gui.updateStringConverter());
 		this.panel.add(comboBox);
 		return comboBox;
-	}
-	
-	public void update()
-	{
-		this.gui.updateStringConverter();
 	}
 	
 	@Override
