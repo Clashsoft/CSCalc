@@ -50,7 +50,7 @@ public class GUI
 	public JPanel				panelConstants;
 	public JPanel				panelLAFSettings;
 	public JPanel				panelDevSettings;
-	public JPanel				panelGraph;
+	public JPanel				panelFileRename;
 	public JPanel				panelDrawInput;
 	public JPanel				panelCalcSettings;
 	public JPanel				panelRadix;
@@ -194,10 +194,6 @@ public class GUI
 		this.panelCalc.setLayout(null);
 		this.tabbedPane.addTab(I18n.getString("GUI.panelCalculateTab.text"), null, this.panelCalc, I18n.getString("GUI.panelCalculateTab.toolTipText")); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		this.panelGraph = new JPanel();
-		this.panelGraph.setLayout(new BorderLayout(0, 0));
-		this.tabbedPane.addTab(I18n.getString("GUI.panelGraph.title"), null, this.panelGraph, I18n.getString("GUI.panelGraph.tooltip")); //$NON-NLS-1$ //$NON-NLS-2$
-		
 		this.panelStrings = new JPanel();
 		this.panelStrings.setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("min:grow"), FormFactory.UNRELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"),
@@ -206,6 +202,10 @@ public class GUI
 				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("fill:default:grow"),
 				FormFactory.RELATED_GAP_ROWSPEC, }));
 		this.tabbedPane.addTab(I18n.getString("GUI.panelStrings.title"), null, this.panelStrings, I18n.getString("GUI.panelStrings.tooltip")); //$NON-NLS-1$
+		
+		this.panelFileRename = new JPanel();
+		this.panelFileRename.setLayout(new BorderLayout(0, 0));
+		this.tabbedPane.addTab(I18n.getString("GUI.panelFileRename.title"), null, this.panelFileRename, I18n.getString("GUI.panelFileRename.tooltip")); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		this.panelSettings = new JTabbedPane(SwingConstants.TOP);
 		this.tabbedPane.addTab(I18n.getString("GUI.panelSettingsTab.text"), null, this.panelSettings, I18n.getString("GUI.panelSettingsTab.toolTipText")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -450,7 +450,6 @@ public class GUI
 	
 	private void addAdvancedOperationButtons()
 	{
-		
 		this.buttonPI = new JButton(I18n.getString("GUI.buttonPI.text")); //$NON-NLS-1$
 		this.buttonPI.setToolTipText(I18n.getString("GUI.buttonPI.toolTipText")); //$NON-NLS-1$
 		this.buttonPI.setBounds(6, 17, 29, 29);
