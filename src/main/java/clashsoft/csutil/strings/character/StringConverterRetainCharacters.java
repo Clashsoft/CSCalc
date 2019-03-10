@@ -1,18 +1,18 @@
 package clashsoft.csutil.strings.character;
 
-import javax.swing.JTextField;
-
 import clashsoft.csutil.strings.DefaultStringConverter;
+
+import javax.swing.*;
 
 public class StringConverterRetainCharacters extends DefaultStringConverter
 {
-	public JTextField	textFieldCharacters;
-	
+	public JTextField textFieldCharacters;
+
 	public StringConverterRetainCharacters()
 	{
 		super("Retain characters");
 	}
-	
+
 	@Override
 	public String getConvertedString(String input)
 	{
@@ -29,7 +29,7 @@ public class StringConverterRetainCharacters extends DefaultStringConverter
 		}
 		return builder.toString();
 	}
-	
+
 	@Override
 	public void addArguments()
 	{

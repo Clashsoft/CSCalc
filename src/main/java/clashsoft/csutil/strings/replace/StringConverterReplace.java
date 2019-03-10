@@ -1,21 +1,20 @@
 package clashsoft.csutil.strings.replace;
 
-import javax.swing.JCheckBox;
-import javax.swing.JTextField;
-
 import clashsoft.csutil.strings.DefaultStringConverter;
+
+import javax.swing.*;
 
 public class StringConverterReplace extends DefaultStringConverter
 {
-	public JTextField	textField;
-	public JTextField	textFieldPattern;
-	public JCheckBox	checkBoxMode;
-	
+	public JTextField textField;
+	public JTextField textFieldPattern;
+	public JCheckBox  checkBoxMode;
+
 	public StringConverterReplace()
 	{
 		super("Replace text");
 	}
-	
+
 	@Override
 	public void addArguments()
 	{
@@ -25,7 +24,7 @@ public class StringConverterReplace extends DefaultStringConverter
 		this.textField = this.addTextField(null);
 		this.checkBoxMode = this.addCheckBox("Regular Expression");
 	}
-	
+
 	@Override
 	public String getConvertedString(String input)
 	{

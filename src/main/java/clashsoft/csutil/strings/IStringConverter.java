@@ -1,17 +1,17 @@
 package clashsoft.csutil.strings;
 
-import javax.swing.JPanel;
-
 import clashsoft.csutil.gui.GUI;
+
+import javax.swing.*;
 
 public interface IStringConverter
 {
-	public void addArguments(GUI gui, JPanel panel);
-	
-	public String getName();
-	
-	public String getConvertedString(String input);
-	
+	void addArguments(GUI gui, JPanel panel);
+
+	String getName();
+
+	String getConvertedString(String input);
+
 	@Override
-	public String toString();
+	String toString();
 }

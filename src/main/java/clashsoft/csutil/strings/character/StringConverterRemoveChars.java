@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class StringConverterRemoveChars extends DefaultStringConverter
 {
-	public JTextField	textFieldCharacters;
+	public JTextField textFieldCharacters;
 
 	public StringConverterRemoveChars()
 	{

@@ -18,7 +18,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class StringConversions extends DefaultMutableTreeNode
 {
-	private static final long	serialVersionUID	= 4322866774371636879L;
+	private static final long serialVersionUID = 4322866774371636879L;
 
 	public StringConversions(Object userObject)
 	{

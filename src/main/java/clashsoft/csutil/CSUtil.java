@@ -19,33 +19,33 @@ import java.util.*;
 
 public class CSUtil
 {
-	public static final String			ROOT			= "\u221A";
-	public static final String			XOR				= "\u22BB";
-	public static final String			NOT				= "\u00AC";
-	public static final String			PI				= "\u03C0";
-	public static final String			E				= "\u2107";
+	public static final String ROOT = "\u221A";
+	public static final String XOR  = "\u22BB";
+	public static final String NOT  = "\u00AC";
+	public static final String PI   = "\u03C0";
+	public static final String E    = "\u2107";
 
-	public static CSUtil				instance;
+	public static CSUtil instance;
 
-	public static final String			version			= "0.1";
+	public static final String version = "0.1";
 
-	public static final Path			memoryPath		= new File(getAppdataDirectory(), "memory.txt").toPath();
+	public static final Path memoryPath = new File(getAppdataDirectory(), "memory.txt").toPath();
 
-	public static final ScriptEngine	scriptEngine	= new ScriptEngineManager().getEngineByName("JavaScript");
+	public static final ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("JavaScript");
 
-	public double						var1;
-	public double						var2;
+	public double var1;
+	public double var2;
 
-	public boolean						second;
-	public String						mode;
-	public byte							decimalPoint;
+	public boolean second;
+	public String  mode;
+	public byte    decimalPoint;
 
-	public double						result;
-	public double						mem;
+	public double result;
+	public double mem;
 
-	public Properties					properties		= new Properties();
+	public Properties properties = new Properties();
 
-	public List<String>					consoleLines	= new ArrayList();
+	public List<String> consoleLines = new ArrayList();
 
 	public CSUtil()
 	{
@@ -258,7 +258,8 @@ public class CSUtil
 		if (this.decimalPoint > 0)
 		{
 			double d = Math.pow(1D / radix, this.decimalPoint) * number;
-			this.devInfo("Adding Decimal Place: n=" + number + "; radix=" + radix + "; dp=" + this.decimalPoint + "; r=" + d, 1);
+			this.devInfo(
+				"Adding Decimal Place: n=" + number + "; radix=" + radix + "; dp=" + this.decimalPoint + "; r=" + d, 1);
 			double var = this.getCurrentVar();
 			if (var < 0)
 			{
@@ -296,7 +297,7 @@ public class CSUtil
 	 * operator won't be set. This is used by the calculate button (=)
 	 *
 	 * @param op
-	 *            the operator
+	 * 	the operator
 	 */
 	public void setCalculation(String op)
 	{

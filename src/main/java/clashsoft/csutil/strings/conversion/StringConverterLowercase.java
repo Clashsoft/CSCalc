@@ -8,7 +8,7 @@ public class StringConverterLowercase extends DefaultStringConverter
 	{
 		super("lowercase");
 	}
-	
+
 	@Override
 	public String getConvertedString(String input)
 	{

@@ -8,7 +8,7 @@ public class StringConverterRemoveVowels extends DefaultStringConverter
 	{
 		super("Remove vowels");
 	}
-	
+
 	@Override
 	public String getConvertedString(String input)
 	{

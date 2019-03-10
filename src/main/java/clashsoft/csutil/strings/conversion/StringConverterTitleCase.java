@@ -1,18 +1,18 @@
 package clashsoft.csutil.strings.conversion;
 
-import javax.swing.JCheckBox;
-
 import clashsoft.csutil.strings.DefaultStringConverter;
+
+import javax.swing.*;
 
 public class StringConverterTitleCase extends DefaultStringConverter
 {
-	public JCheckBox	checkBoxAcceptAllWhiteSpaces;
-	
+	public JCheckBox checkBoxAcceptAllWhiteSpaces;
+
 	public StringConverterTitleCase()
 	{
 		super("Title Case");
 	}
-	
+
 	@Override
 	public String getConvertedString(String input)
 	{
@@ -20,11 +20,11 @@ public class StringConverterTitleCase extends DefaultStringConverter
 		int len = input.length();
 		StringBuilder builder = new StringBuilder(len);
 		boolean whitespace = true;
-		
+
 		for (int i = 0; i < len; i++)
 		{
 			char c = input.charAt(i);
-			
+
 			if (whitespace)
 			{
 				if (Character.isLetter(c))
@@ -48,7 +48,7 @@ public class StringConverterTitleCase extends DefaultStringConverter
 		}
 		return builder.toString();
 	}
-	
+
 	@Override
 	public void addArguments()
 	{

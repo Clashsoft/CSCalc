@@ -11,16 +11,16 @@ public class I18n
 	{
 		// do not instantiate
 	}
-	
-	private static final String			BUNDLE_NAME		= "clashsoft.csutil.lang.lang"; //$NON-NLS-1$
-	private static final ResourceBundle	RESOURCE_BUNDLE	= loadBundle();
-	
+
+	private static final String         BUNDLE_NAME     = "clashsoft.csutil.lang.lang"; //$NON-NLS-1$
+	private static final ResourceBundle RESOURCE_BUNDLE = loadBundle();
+
 	private static ResourceBundle loadBundle()
 	{
 		Locale.setDefault(Locale.ENGLISH);
 		return ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH);
 	}
-	
+
 	public static String getString(String key)
 	{
 		try

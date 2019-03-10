@@ -8,7 +8,7 @@ public class StringConverterTrim extends DefaultStringConverter
 	{
 		super("Remove trailing whitespaces");
 	}
-	
+
 	@Override
 	public String getConvertedString(String input)
 	{

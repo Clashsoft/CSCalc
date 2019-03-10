@@ -7,9 +7,9 @@ import java.util.regex.Pattern;
 
 public class StringConverterRemoveSpecial extends DefaultStringConverter
 {
-	public JCheckBox	checkBoxWhitespace;
-	public JCheckBox	checkBoxDigits;
-	public JCheckBox	checkBoxPunctuation;
+	public JCheckBox checkBoxWhitespace;
+	public JCheckBox checkBoxDigits;
+	public JCheckBox checkBoxPunctuation;
 
 	public StringConverterRemoveSpecial()
 	{
@@ -50,11 +50,7 @@ public class StringConverterRemoveSpecial extends DefaultStringConverter
 		{
 			return false;
 		}
-		if (punct && Pattern.matches("\\p{Punct}", String.valueOf(c)))
-		{
-			return false;
-		}
-		return true;
+		return !punct || !Pattern.matches("\\p{Punct}", String.valueOf(c));
 	}
 
 	@Override

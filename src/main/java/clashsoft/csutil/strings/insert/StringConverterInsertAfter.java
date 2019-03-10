@@ -6,9 +6,9 @@ import javax.swing.*;
 
 public class StringConverterInsertAfter extends DefaultStringConverter
 {
-	public JTextField	textField;
-	public JTextField	textFieldPattern;
-	public JComboBox	comboBoxMode;
+	public JTextField textField;
+	public JTextField textFieldPattern;
+	public JComboBox  comboBoxMode;
 
 	public StringConverterInsertAfter()
 	{

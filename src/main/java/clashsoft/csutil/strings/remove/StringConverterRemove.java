@@ -6,8 +6,8 @@ import javax.swing.*;
 
 public class StringConverterRemove extends DefaultStringConverter
 {
-	public JTextField	textFieldPattern;
-	public JCheckBox	checkBoxMode;
+	public JTextField textFieldPattern;
+	public JCheckBox  checkBoxMode;
 
 	public StringConverterRemove()
 	{

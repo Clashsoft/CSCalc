@@ -8,18 +8,18 @@ public class StringConverterSentenceCase extends DefaultStringConverter
 	{
 		super("Sentence case");
 	}
-	
+
 	@Override
 	public String getConvertedString(String input)
 	{
 		int len = input.length();
 		StringBuilder builder = new StringBuilder(len);
 		boolean upper = true;
-		
+
 		for (int i = 0; i < len; i++)
 		{
 			char c = input.charAt(i);
-			
+
 			if (upper)
 			{
 				if (!Character.isWhitespace(c))

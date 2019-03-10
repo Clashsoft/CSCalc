@@ -6,7 +6,7 @@ import javax.swing.*;
 
 public class StringConverterAddEnd extends DefaultStringConverter
 {
-	public JTextField	textField;
+	public JTextField textField;
 
 	public StringConverterAddEnd()
 	{

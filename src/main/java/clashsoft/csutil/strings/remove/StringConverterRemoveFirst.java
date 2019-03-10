@@ -1,20 +1,19 @@
 package clashsoft.csutil.strings.remove;
 
-import javax.swing.JCheckBox;
-import javax.swing.JTextField;
-
 import clashsoft.csutil.strings.DefaultStringConverter;
+
+import javax.swing.*;
 
 public class StringConverterRemoveFirst extends DefaultStringConverter
 {
-	public JTextField	textFieldPattern;
-	public JCheckBox	checkBoxMode;
-	
+	public JTextField textFieldPattern;
+	public JCheckBox  checkBoxMode;
+
 	public StringConverterRemoveFirst()
 	{
 		super("Remove text from beginning");
 	}
-	
+
 	@Override
 	public void addArguments()
 	{
@@ -22,7 +21,7 @@ public class StringConverterRemoveFirst extends DefaultStringConverter
 		this.textFieldPattern = this.addTextField(null);
 		this.checkBoxMode = this.addCheckBox("Regular Expression");
 	}
-	
+
 	@Override
 	public String getConvertedString(String input)
 	{

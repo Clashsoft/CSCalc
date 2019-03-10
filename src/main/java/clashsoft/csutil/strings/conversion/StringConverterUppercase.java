@@ -8,7 +8,7 @@ public class StringConverterUppercase extends DefaultStringConverter
 	{
 		super("UPPERCASE");
 	}
-	
+
 	@Override
 	public String getConvertedString(String input)
 	{
