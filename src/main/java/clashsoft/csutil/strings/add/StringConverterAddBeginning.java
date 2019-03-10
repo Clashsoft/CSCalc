@@ -1,18 +1,18 @@
 package clashsoft.csutil.strings.add;
 
-import javax.swing.JTextField;
-
 import clashsoft.csutil.strings.DefaultStringConverter;
+
+import javax.swing.*;
 
 public class StringConverterAddBeginning extends DefaultStringConverter
 {
 	public JTextField	textField;
-	
+
 	public StringConverterAddBeginning()
 	{
 		super("Add text to beginning");
 	}
-	
+
 	@Override
 	public void addArguments()
 	{
@@ -20,7 +20,7 @@ public class StringConverterAddBeginning extends DefaultStringConverter
 		this.textField = this.addTextField(null);
 		this.addLabel("to beginning of text");
 	}
-	
+
 	@Override
 	public String getConvertedString(String input)
 	{

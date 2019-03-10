@@ -1,7 +1,5 @@
 package clashsoft.csutil.gui;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-
 import clashsoft.csutil.strings.add.StringConverterAddBeginning;
 import clashsoft.csutil.strings.add.StringConverterAddEnd;
 import clashsoft.csutil.strings.character.*;
@@ -16,14 +14,16 @@ import clashsoft.csutil.strings.replace.StringConverterReplace;
 import clashsoft.csutil.strings.replace.StringConverterReplaceFirst;
 import clashsoft.csutil.strings.replace.StringConverterReplaceLast;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class StringConversions extends DefaultMutableTreeNode
 {
 	private static final long	serialVersionUID	= 4322866774371636879L;
-	
+
 	public StringConversions(Object userObject)
 	{
 		super(userObject);
-		
+
 		DefaultMutableTreeNode node_1;
 		DefaultMutableTreeNode node_2;
 		node_1 = new DefaultMutableTreeNode("Text");
@@ -32,13 +32,13 @@ public class StringConversions extends DefaultMutableTreeNode
 			node_2.add(new DefaultMutableTreeNode(new StringConverterAddBeginning()));
 			node_2.add(new DefaultMutableTreeNode(new StringConverterAddEnd()));
 			node_1.add(node_2);
-			
+
 			node_2 = new DefaultMutableTreeNode("Insert");
 			node_2.add(new DefaultMutableTreeNode(new StringConverterInsertInfront()));
 			node_2.add(new DefaultMutableTreeNode(new StringConverterInsertAfter()));
 			node_2.add(new DefaultMutableTreeNode(new StringConverterInsertPos()));
 			node_1.add(node_2);
-			
+
 			node_2 = new DefaultMutableTreeNode("Remove");
 			node_2.add(new DefaultMutableTreeNode(new StringConverterRemoveFirst()));
 			node_2.add(new DefaultMutableTreeNode(new StringConverterRemoveLast()));
@@ -51,18 +51,18 @@ public class StringConversions extends DefaultMutableTreeNode
 			node_1.add(node_2);
 		}
 		this.add(node_1);
-		
+
 		node_1 = new DefaultMutableTreeNode("Characters");
 		{
 			node_1.add(new DefaultMutableTreeNode(new StringConverterTrim()));
-			
+
 			node_2 = new DefaultMutableTreeNode("Replace");
 			{
 				node_2.add(new DefaultMutableTreeNode(new StringConverterReplaceCharacters()));
 				node_2.add(new DefaultMutableTreeNode(new StringConverterRetainCharacters()));
 			}
 			node_1.add(node_2);
-			
+
 			node_2 = new DefaultMutableTreeNode("Remove");
 			{
 				node_2.add(new DefaultMutableTreeNode(new StringConverterRemoveChars()));
@@ -74,7 +74,7 @@ public class StringConversions extends DefaultMutableTreeNode
 			}
 		}
 		this.add(node_1);
-		
+
 		node_1 = new DefaultMutableTreeNode("Conversions");
 		{
 			node_1.add(new DefaultMutableTreeNode(new StringConverterLowercase()));

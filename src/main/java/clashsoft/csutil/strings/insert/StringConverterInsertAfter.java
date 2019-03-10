@@ -1,21 +1,20 @@
 package clashsoft.csutil.strings.insert;
 
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
-
 import clashsoft.csutil.strings.DefaultStringConverter;
+
+import javax.swing.*;
 
 public class StringConverterInsertAfter extends DefaultStringConverter
 {
 	public JTextField	textField;
 	public JTextField	textFieldPattern;
 	public JComboBox	comboBoxMode;
-	
+
 	public StringConverterInsertAfter()
 	{
 		super("Insert text after existing text");
 	}
-	
+
 	@Override
 	public void addArguments()
 	{
@@ -26,7 +25,7 @@ public class StringConverterInsertAfter extends DefaultStringConverter
 		this.addLabel("Mode:");
 		this.comboBoxMode = this.addComboBox("First Index", "Last Index", "Regular Expression");
 	}
-	
+
 	@Override
 	public String getConvertedString(String input)
 	{

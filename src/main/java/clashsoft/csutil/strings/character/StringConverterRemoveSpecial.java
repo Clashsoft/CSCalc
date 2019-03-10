@@ -1,22 +1,21 @@
 package clashsoft.csutil.strings.character;
 
-import java.util.regex.Pattern;
-
-import javax.swing.JCheckBox;
-
 import clashsoft.csutil.strings.DefaultStringConverter;
+
+import javax.swing.*;
+import java.util.regex.Pattern;
 
 public class StringConverterRemoveSpecial extends DefaultStringConverter
 {
 	public JCheckBox	checkBoxWhitespace;
 	public JCheckBox	checkBoxDigits;
 	public JCheckBox	checkBoxPunctuation;
-	
+
 	public StringConverterRemoveSpecial()
 	{
 		super("Remove special characters");
 	}
-	
+
 	@Override
 	public String getConvertedString(String input)
 	{
@@ -25,7 +24,7 @@ public class StringConverterRemoveSpecial extends DefaultStringConverter
 		boolean whitespace = !this.checkBoxWhitespace.isSelected();
 		boolean digits = !this.checkBoxDigits.isSelected();
 		boolean punct = !this.checkBoxPunctuation.isSelected();
-		
+
 		for (int i = 0; i < len; i++)
 		{
 			char c = input.charAt(i);
@@ -36,7 +35,7 @@ public class StringConverterRemoveSpecial extends DefaultStringConverter
 		}
 		return builder.toString();
 	}
-	
+
 	public static boolean isSpecial(char c, boolean whitespace, boolean digits, boolean punct)
 	{
 		if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
@@ -57,7 +56,7 @@ public class StringConverterRemoveSpecial extends DefaultStringConverter
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void addArguments()
 	{

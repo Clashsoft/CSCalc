@@ -1,20 +1,19 @@
 package clashsoft.csutil.strings.character;
 
-import java.util.regex.Pattern;
-
-import javax.swing.JTextField;
-
 import clashsoft.csutil.strings.DefaultStringConverter;
+
+import javax.swing.*;
+import java.util.regex.Pattern;
 
 public class StringConverterRemoveChars extends DefaultStringConverter
 {
 	public JTextField	textFieldCharacters;
-	
+
 	public StringConverterRemoveChars()
 	{
 		super("Remove characters");
 	}
-	
+
 	@Override
 	public String getConvertedString(String input)
 	{
@@ -25,7 +24,7 @@ public class StringConverterRemoveChars extends DefaultStringConverter
 		}
 		return input;
 	}
-	
+
 	@Override
 	public void addArguments()
 	{
